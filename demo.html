@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Try a Demo | DBell Creations</title>
+    <meta name="keywords" content="Demo, Web App, DBell Creations">
+    <meta name="description" content="Try a live demo of one of our custom-built web applications.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="img/favicon.ico">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Jost:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+
+    <!-- Bootstrap & Custom Styles -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script>
+        window.addEventListener("load", function () {
+          const spinner = document.getElementById("spinner");
+          if (spinner) {
+            spinner.classList.remove("show");
+          }
+        });
+      </script>
+      
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+
+        <!-- Spinner -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Navbar -->
+        <div class="container-xxl position-relative p-0">
+            <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+                <a href="index.html" class="navbar-brand p-0">
+                    <h1 class="m-0">DBell Creations</h1>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav mx-auto py-0">
+                        <a href="index.html" class="nav-item nav-link">Home</a>
+                        <a href="about.html" class="nav-item nav-link">About</a>
+                        <a href="project.html" class="nav-item nav-link">Project</a>
+                        <a href="frequentlyaskedquestions.html" class="nav-item nav-link">FAQ's</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Services</a>
+                            <div class="dropdown-menu m-0">
+                                <a href="webDesign.html" class="dropdown-item">Web Design</a>
+                                <a href="marketing.html" class="dropdown-item">Digital Marketing</a>
+                                <a href="seo.html" class="dropdown-item">SEO</a>
+                            </div>
+                        </div>
+                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <a href="contact.html" class="btn rounded-pill py-2 px-4 ms-3 d-none d-lg-block">Get Started</a>
+                </div>
+            </nav>
+
+            <div class="container-xxl py-5 bg-primary hero-header">
+                <div class="container my-5 py-5 px-lg-5">
+                    <div class="row g-5 py-5">
+                        <div class="col-12 text-center">
+                            <h1 class="text-white animated slideInDown">Live Demos</h1>
+                            <hr class="bg-white mx-auto mt-0" style="width: 90px;">
+                            <p class="text-white">Test out any of our custom web apps live below.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Navbar End -->
+
+        <!-- Demo Apps Section -->
+        <div class="container-xxl py-5">
+            <div class="container py-5 px-lg-5">
+                <div class="row g-5">
+                    <div class="col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="rounded bg-light p-4">
+                            <img class="img-fluid rounded mb-3" src="img/WorkorderDemo-front.png" alt="Workorder">
+                            <h4>Work Order System</h4>
+                            <p>Manage, track, and assign work orders efficiently through this full-featured demo web app.</p>
+                            <a href="https://dbellcreations.com/workorder" target="_blank" class="btn btn-primary rounded-pill px-4 py-2">Launch Demo</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="rounded bg-light p-4">
+                            <img class="img-fluid rounded mb-3" src="img/Helpdesk-front.png" alt="Helpdesk">
+                            <h4>Help Desk & Ticketing</h4>
+                            <p>See how we simplify support workflows using a sleek ticketing and customer service portal.</p>
+                            <a href="https://dbellcreations.com/demo" target="_blank" class="btn btn-primary rounded-pill px-4 py-2">Try Help Desk</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Demo Apps Section End -->
