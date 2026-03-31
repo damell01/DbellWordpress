@@ -10,7 +10,7 @@
     <meta name="description" content="Get in touch with DBell Creations for a free consultation on web design, custom software, business automation, SEO, or digital marketing. We're based in Fairhope, AL.">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="img/WebsiteSmallIcon.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -113,37 +113,36 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-7">
                         <div class="wow fadeInUp" data-wow-delay="0.3s">
-                            <p class="text-center mb-4"> <a href="https://htmlcodex.com/contact-form"></a>.</p>
-                            
-                            <form  method="Post" event.preventDefault(); action="sendEmail.php">
-                                
-                               <fieldset> 
+                            <form method="post" action="sendEmail.php">
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text" name="contactName" class="form-control" id="name" placeholder="Your Name">
+                                            <input type="text" name="contactName" class="form-control" id="name" placeholder="Your Name" required>
                                             <label for="name">Your Name</label>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="email" name="contactEmail" class="form-control" id="email" placeholder="Your Email">
+                                            <input type="email" name="contactEmail" class="form-control" id="email" placeholder="Your Email" required>
                                             <label for="email">Your Email</label>
                                         </div>
                                     </div>
-                                   
                                     <div class="col-12">
                                         <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Leave a message here" id="message" name="contactMessage" style="height: 150px"></textarea>
+                                            <input type="tel" name="contactPhone" class="form-control" id="phone" placeholder="Your Phone">
+                                            <label for="phone">Your Phone (optional)</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" placeholder="Leave a message here" id="message" name="contactMessage" style="height: 150px" required></textarea>
                                             <label for="message">Message</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        
                                         <button class="btn btn-primary w-100 py-3" type="submit">Send Message</button>
                                     </div>
                                 </div>
-                            </fieldset>
                             </form>
                         </div>
                     </div>
@@ -154,72 +153,65 @@
         
 
         <!-- Footer Start -->
-        <footer> 
-        <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">
-            <div class="container py-5 px-lg-5">
-                <div class="row g-5">
-                    <div class="col-md-6 col-lg-3">
-                        <p class="section-title text-white h5 mb-4">Address<span></span></p>
-                        <p><i class="fa fa-map-marker-alt me-3"></i>Fairhope, AL</p>
-                        <p><i class="fa fa-phone-alt me-3"></i> <a id="number" href="tel:251-406-2292">251-406-2292</a> </p>
-                        <p><i class="fa fa-envelope me-3"></i><a id="number" href="mailto:dbellcreations@gmail.com">Dbellcreations@gmail.com</a>  </p>
-                        <div class="d-flex pt-2">
-                            
-                            <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/profile.php?id=100090989871594&mibextid=LQQJ4d"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-light btn-social" href="https://www.instagram.com/dbellcreations/"><i class="fab fa-instagram"></i></a>
-                           
+        <footer>
+            <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">
+                <div class="container py-5 px-lg-5">
+                    <div class="row g-5">
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">DBell Creations<span></span></p>
+                            <p class="text-white-50 small mb-3">Full-service digital agency in Fairhope, AL &mdash; web design, software, automation, SEO, and marketing.</p>
+                            <p><i class="fa fa-map-marker-alt me-3"></i>Fairhope, AL</p>
+                            <p><i class="fa fa-phone-alt me-3"></i><a id="number" href="tel:251-406-2292">251-406-2292</a></p>
+                            <p><i class="fa fa-envelope me-3"></i><a id="number" href="mailto:dbellcreations@gmail.com">Dbellcreations@gmail.com</a></p>
+                            <div class="d-flex pt-2">
+                                <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/profile.php?id=100090989871594&mibextid=LQQJ4d" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-light btn-social" href="https://www.instagram.com/dbellcreations/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <p class="section-title text-white h5 mb-4">Quick Link<span></span></p>
-                        <a class="btn btn-link" href="about.html">About Us</a>
-                        <a class="btn btn-link" href="contact.html">Contact Us</a>
-                        
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <p class="section-title text-white h5 mb-4">Gallery<span></span></p>
-                        <div class="row g-2">
-                            <div class="col-4">
-                                <img class="img-fluid" src="img/ToolExpoMockup.webp" alt="TE">
-                            </div>
-                            <div class="col-4">
-                                <img class="img-fluid" src="img/AdamsComputerMock.webp" alt="AdamsOffroad">
-                            </div>
-                            <div class="col-4">
-                                <img class="img-fluid" src="img/FastenersConnectorsMockup.webp" alt="Image">
-                            </div>
-                            
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Services<span></span></p>
+                            <a class="btn btn-link" href="webDesign.html">Web Design</a>
+                            <a class="btn btn-link" href="software.html">Custom Software</a>
+                            <a class="btn btn-link" href="automations.html">Business Automation</a>
+                            <a class="btn btn-link" href="marketing.html">Digital Marketing</a>
+                            <a class="btn btn-link" href="seo.html">SEO Optimization</a>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <p class="section-title text-white h5 mb-4">Newsletter<span></span></p>
-                        <p>Subscribe</p>
-                        <div class="position-relative w-100 mt-3">
-                            <input class="form-control border-0 rounded-pill w-100 ps-4 pe-5" type="text" placeholder="Your Email" style="height: 48px;">
-                            <button type="button" class="btn shadow-none position-absolute top-0 end-0 mt-1 me-2"><i class="fa fa-paper-plane text-primary fs-4"></i></button>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Quick Links<span></span></p>
+                            <a class="btn btn-link" href="about.html">About Us</a>
+                            <a class="btn btn-link" href="project.html">Portfolio</a>
+                            <a class="btn btn-link" href="frequentlyaskedquestions.html">FAQs</a>
+                            <a class="btn btn-link" href="contact.html">Contact Us</a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Recent Work<span></span></p>
+                            <div class="row g-2">
+                                <div class="col-4"><img class="img-fluid rounded" src="img/ToolExpoMockup.webp" alt="Tool Expo" loading="lazy"></div>
+                                <div class="col-4"><img class="img-fluid rounded" src="img/AdamsComputerMock.webp" alt="Adams Offroad" loading="lazy"></div>
+                                <div class="col-4"><img class="img-fluid rounded" src="img/FastenersConnectorsMockup.webp" alt="Fasteners" loading="lazy"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="container px-lg-5">
-                <div class="copyright">
-                    <div class="row">
-                        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                            &copy; <a class="border-bottom" href="#">Dbell Creations</a>
-							
-						
-                        </div>
-                        <div class="col-md-6 text-center text-md-end">
-                            <div class="footer-menu">
-                                <a href="about.html">Home</a>
-                                <a href="frequentlyaskedquestions.html">FAQs</a>
+                <div class="container px-lg-5">
+                    <div class="copyright">
+                        <div class="row">
+                            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                                &copy; 2024 <a class="border-bottom" href="index.html">DBell Creations</a>. All Rights Reserved.
+                            </div>
+                            <div class="col-md-6 text-center text-md-end">
+                                <div class="footer-menu">
+                                    <a href="index.html">Home</a>
+                                    <a href="about.html">About</a>
+                                    <a href="contact.html">Contact</a>
+                                    <a href="frequentlyaskedquestions.html">FAQs</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
         <!-- Footer End -->
 
 
