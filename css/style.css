@@ -589,3 +589,88 @@ h6,
 .footer .footer-menu a:hover {
     color: var(--secondary);
 }
+
+/*** Automation Card ***/
+.automation-card {
+    border: 1px solid rgba(0,0,0,.05);
+    transition: .3s;
+}
+
+.automation-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(98, 34, 204, .12);
+    border-color: var(--primary);
+}
+
+.automation-card .automation-icon i {
+    transition: .3s;
+}
+
+.automation-card:hover .automation-icon i {
+    transform: scale(1.15);
+}
+
+
+/*** Hero Enhancement ***/
+.hero-header .text-white-50 {
+    opacity: 0.85;
+}
+
+.hero-header .badge-trust {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+
+/*** Process Steps ***/
+.process-step {
+    position: relative;
+}
+
+.process-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 35px;
+    right: -50%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    z-index: 0;
+    display: none;
+}
+
+@media (min-width: 992px) {
+    .process-step:not(:last-child)::after {
+        display: block;
+    }
+}
+
+
+/*** Feature Items Enhanced ***/
+.feature-item {
+    border: 1px solid transparent;
+    transition: .4s;
+}
+
+.feature-item:hover {
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(98, 34, 204, .1);
+}
+
+
+/*** Section spacing fix ***/
+.gap-3 {
+    gap: 1rem !important;
+}
+
+.gap-4 {
+    gap: 1.5rem !important;
+}
