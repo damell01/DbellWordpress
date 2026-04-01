@@ -111,13 +111,13 @@
                     <p class="section-title text-secondary justify-content-center"><span></span>Get In Touch<span></span></p>
                     <h2 class="mb-4">How Would You Like to Connect?</h2>
                     <div class="d-inline-flex rounded-pill p-1 gap-1" style="background:#f0ebfa;">
-                        <button class="btn rounded-pill px-4 py-2 active" id="tab-contact" onclick="switchTab('contact')" type="button" style="font-weight:600;">Send a Message</button>
-                        <button class="btn rounded-pill px-4 py-2" id="tab-booking" onclick="switchTab('booking')" type="button" style="font-weight:600;">Book a Consultation</button>
+                        <button class="btn rounded-pill px-4 py-2" id="tab-contact" onclick="switchTab('contact')" type="button" style="font-weight:600;">Send a Message</button>
+                        <button class="btn rounded-pill px-4 py-2 active" id="tab-booking" onclick="switchTab('booking')" type="button" style="font-weight:600;">Book a Consultation</button>
                     </div>
                 </div>
 
                 <!-- Contact Form -->
-                <div id="panel-contact" class="row justify-content-center">
+                <div id="panel-contact" class="row justify-content-center" style="display:none!important;">
                     <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.3s">
                         <div class="booking-card p-4 p-lg-5">
                             <form method="post" action="sendEmail.php">
@@ -159,7 +159,7 @@
                 </div>
 
                 <!-- Booking Calendar -->
-                <div id="panel-booking" class="row justify-content-center" style="display:none!important;">
+                <div id="panel-booking" class="row justify-content-center">
                     <div class="col-lg-9 wow fadeInUp" data-wow-delay="0.3s">
                         <div class="booking-card p-4 p-lg-5">
                             <form id="bookingForm" method="post" action="sendEmail.php">
@@ -221,26 +221,49 @@
                                         <!-- Mini calendar -->
                                         <div id="mini-calendar" class="mb-4"></div>
                                         <input type="hidden" id="bookDate">
-                                        <p id="selected-date-display" class="text-primary fw-semibold mb-3" style="min-height:1.4em;font-size:14px;"></p>
+                                        <div class="bg-light border rounded-3 p-3 mb-3">
+                                            <p id="selected-date-display" class="text-primary fw-semibold mb-1" style="min-height:1.4em;font-size:14px;">Selected date: none yet</p>
+                                            <p id="selected-time-display" class="text-dark mb-0" style="min-height:1.4em;font-size:14px;">Selected time: none yet</p>
+                                        </div>
 
                                         <!-- Time slots -->
-                                        <label class="form-label fw-semibold mb-3">Preferred Time</label>
+                                        <label class="form-label fw-semibold mb-3">Choose a Time Slot</label>
                                         <div class="row g-2 mb-4">
-                                            <div class="col-6 col-md-3">
-                                                <input type="radio" class="btn-check" name="bookTime" id="time-morning" value="Morning (9am–12pm)">
-                                                <label class="time-slot-btn" for="time-morning">Morning</label>
+                                            <div class="col-6 col-md-4">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-0900" value="9:00 AM">
+                                                <label class="time-slot-btn" for="time-0900">9:00 AM</label>
                                             </div>
-                                            <div class="col-6 col-md-3">
-                                                <input type="radio" class="btn-check" name="bookTime" id="time-midday" value="Midday (12pm–2pm)">
-                                                <label class="time-slot-btn" for="time-midday">Midday</label>
+                                            <div class="col-6 col-md-4">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-0930" value="9:30 AM">
+                                                <label class="time-slot-btn" for="time-0930">9:30 AM</label>
                                             </div>
-                                            <div class="col-6 col-md-3">
-                                                <input type="radio" class="btn-check" name="bookTime" id="time-afternoon" value="Afternoon (2pm–5pm)">
-                                                <label class="time-slot-btn" for="time-afternoon">Afternoon</label>
+                                            <div class="col-6 col-md-4">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-1000" value="10:00 AM">
+                                                <label class="time-slot-btn" for="time-1000">10:00 AM</label>
                                             </div>
-                                            <div class="col-6 col-md-3">
-                                                <input type="radio" class="btn-check" name="bookTime" id="time-evening" value="Evening (5pm–7pm)">
-                                                <label class="time-slot-btn" for="time-evening">Evening</label>
+                                            <div class="col-6 col-md-4">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-1030" value="10:30 AM">
+                                                <label class="time-slot-btn" for="time-1030">10:30 AM</label>
+                                            </div>
+                                            <div class="col-6 col-md-4">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-1100" value="11:00 AM">
+                                                <label class="time-slot-btn" for="time-1100">11:00 AM</label>
+                                            </div>
+                                            <div class="col-6 col-md-4">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-1300" value="1:00 PM">
+                                                <label class="time-slot-btn" for="time-1300">1:00 PM</label>
+                                            </div>
+                                            <div class="col-6 col-md-4">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-1330" value="1:30 PM">
+                                                <label class="time-slot-btn" for="time-1330">1:30 PM</label>
+                                            </div>
+                                            <div class="col-6 col-md-4">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-1400" value="2:00 PM">
+                                                <label class="time-slot-btn" for="time-1400">2:00 PM</label>
+                                            </div>
+                                            <div class="col-6 col-md-4">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-1430" value="2:30 PM">
+                                                <label class="time-slot-btn" for="time-1430">2:30 PM</label>
                                             </div>
                                         </div>
 
@@ -359,10 +382,15 @@
         var wrap = document.getElementById('form-feedback');
         var box = document.getElementById('form-feedback-box');
 
-        if (mode === 'booking') {
-            switchTab('booking');
+        if (submitted === '1' || submitted === '0') {
+            if (mode === 'contact') {
+                switchTab('contact');
+            } else {
+                switchTab('booking');
+            }
         } else {
-            switchTab('contact');
+            // Default view should open the calendar first.
+            switchTab('booking');
         }
 
         if (submitted === '1') {
@@ -379,6 +407,14 @@
     }
 
     /* ─── Mini Calendar ─── */
+
+            var timeRadios = document.querySelectorAll('input[name="bookTime"]');
+            timeRadios.forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    var timeDisplay = document.getElementById('selected-time-display');
+                    timeDisplay.textContent = 'Selected time: ' + this.value;
+                });
+            });
     (function () {
         showFeedbackFromQuery();
         var today = new Date();
@@ -451,7 +487,7 @@
                 el.addEventListener('click', function() {
                     selectedDate = new Date(parseInt(this.getAttribute('data-ts')));
                     document.getElementById('bookDate').value = fmt(selectedDate);
-                    document.getElementById('selected-date-display').textContent = 'Selected: ' + fmt(selectedDate);
+                    document.getElementById('selected-date-display').textContent = 'Selected date: ' + fmt(selectedDate);
                     render(currentMonth, currentYear);
                 });
             });
@@ -486,6 +522,11 @@
                     alert('Please select a preferred consultation date from the calendar.');
                     return;
                 }
+                if (!timeEl) {
+                    e.preventDefault();
+                    alert('Please choose an exact consultation time slot.');
+                    return;
+                }
 
                 var msg = 'CONSULTATION BOOKING REQUEST\n\n'
                     + 'Name: '  + document.getElementById('bookName').value + '\n'
@@ -493,7 +534,7 @@
                     + (phone   ? 'Phone: '   + phone   + '\n' : '')
                     + (service ? 'Service: ' + service + '\n' : '')
                     + 'Preferred Date: ' + date + '\n'
-                    + (timeEl  ? 'Preferred Time: ' + timeEl.value + '\n' : '')
+                    + 'Preferred Time: ' + timeEl.value + '\n'
                     + (notes   ? '\nProject Notes:\n' + notes : '');
 
                 document.getElementById('bookingMessage').value = msg;
