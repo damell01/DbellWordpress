@@ -1,0 +1,14 @@
+Options -Indexes
+
+# If deployed with document root at the project root (not public/), redirect to public/
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Allow direct access to install/
+    RewriteCond %{REQUEST_URI} ^/install
+    RewriteRule ^ - [L]
+
+    # If the request is already in public/, skip
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

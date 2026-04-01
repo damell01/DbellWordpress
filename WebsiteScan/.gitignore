@@ -1,0 +1,29 @@
+# Environment and config
+.env
+config/installed.lock
+
+# Dependencies
+vendor/
+node_modules/
+
+# Storage
+storage/logs/*.log
+storage/cache/*
+storage/exports/*
+storage/reports/*
+
+# Keep directories
+!storage/logs/.gitkeep
+!storage/cache/.gitkeep
+!storage/exports/.gitkeep
+!storage/reports/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo

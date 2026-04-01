@@ -1,0 +1,7 @@
+Options -Indexes
+
+# Block access to installer if already installed
+<FilesMatch "index\.php$">
+Order allow,deny
+Allow from all
+</FilesMatch>
