@@ -21,8 +21,9 @@ require BASE_PATH . '/app/Core/helpers.php';
 
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $isInstallRoute = str_starts_with($requestPath, '/install');
+$hasEnvConfig = file_exists(BASE_PATH . '/.env');
 
-if (!file_exists(BASE_PATH . '/config/installed.lock') && !$isInstallRoute) {
+if (!file_exists(BASE_PATH . '/config/installed.lock') && !$hasEnvConfig && !$isInstallRoute) {
     header('Location: /install/');
     exit;
 }
