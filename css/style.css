@@ -424,23 +424,22 @@ p { line-height: 1.75; }
 /*** Hero Header ***/
 .hero-header {
     margin-bottom: 0;
-    padding: 14rem 0 10rem;
+    padding: 14rem 0 8rem;
     background:
         url(../img/blob-top-left.png),
         url(../img/blob-top-right.png),
         url(../img/blob-bottom-left.png),
         url(../img/blob-bottom-right.png),
-        url(../img/blob-center.png),
-        url(../img/bg-bottom.png);
+        url(../img/blob-center.png);
     background-position:
         left 0px top 0px,
         right 0px top 0px,
         left 0px bottom 0px,
         right 0px bottom 0px,
-        center center,
-        center bottom;
+        center center;
     background-repeat: no-repeat;
     position: relative;
+    overflow: hidden;
 }
 
 /* Subtle overlay for hero text legibility */
@@ -452,10 +451,22 @@ p { line-height: 1.75; }
     pointer-events: none;
 }
 
+/* Inner page compact hero — no huge empty space */
+.page-hero {
+    padding: 3.5rem 0 2.5rem !important;
+}
+.page-hero .container {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
 @media (max-width: 991.98px) {
     .hero-header {
-        padding: 7rem 0 6rem;
+        padding: 7rem 0 5rem;
         margin-bottom: 0;
+    }
+    .page-hero {
+        padding: 2.5rem 0 1.5rem !important;
     }
 }
 
@@ -1210,6 +1221,167 @@ textarea.form-control {
 .accordion-body {
     color: #6b6380;
     line-height: 1.75;
+
+
+    /*** Booking / Consultation Calendar ***/
+    .booking-card {
+        border: 1.5px solid #ebe6f5;
+        border-radius: var(--radius-lg) !important;
+        box-shadow: var(--shadow-md);
+    }
+
+    #mini-calendar {
+        background: #faf9fc;
+        border: 1.5px solid #e3ddf0;
+        border-radius: var(--radius-md);
+        padding: 20px;
+    }
+
+    .cal-day {
+        padding: 7px 4px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        text-align: center;
+        cursor: default;
+        user-select: none;
+    }
+
+    .cal-available {
+        cursor: pointer;
+        color: var(--dark);
+        transition: background 0.18s, color 0.18s;
+    }
+
+    .cal-available:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+    }
+
+    .cal-today {
+        font-weight: 700;
+        color: var(--primary);
+        border: 1.5px solid var(--primary);
+    }
+
+    .cal-selected {
+        cursor: pointer;
+        background: var(--primary) !important;
+        color: #fff !important;
+    }
+
+    .cal-past {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    .cal-empty {
+        visibility: hidden;
+    }
+
+    .cal-day-name {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .time-slot-btn {
+        border: 1.5px solid #d8d1ec;
+        border-radius: 50px;
+        padding: 10px 16px;
+        background: #faf9fc;
+        color: var(--dark);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: center;
+        width: 100%;
+    }
+
+    .time-slot-btn:hover,
+    .btn-check:checked + .time-slot-btn {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+        box-shadow: var(--shadow-primary);
+    }
+
+    /* About page stats */
+    .stat-box {
+        background: #fff;
+        border: 1.5px solid #ebe6f5;
+        border-radius: var(--radius-md);
+        padding: 28px 20px;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+    .stat-box:hover {
+        border-color: var(--primary);
+        box-shadow: var(--shadow-primary);
+        transform: translateY(-4px);
+    }
+    .stat-box h2 {
+        font-size: 2.2rem;
+        color: var(--primary);
+        margin-bottom: 4px;
+    }
+
+    /* About value cards */
+    .value-card {
+        background: #fff;
+        border: 1.5px solid #ebe6f5;
+        border-radius: var(--radius-md);
+        padding: 32px 24px;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        height: 100%;
+    }
+    .value-card:hover {
+        border-color: var(--primary);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-5px);
+    }
+    .value-card .icon-wrap {
+        width: 58px;
+        height: 58px;
+        background: var(--primary-light);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        font-size: 1.4rem;
+        color: var(--primary);
+        transition: var(--transition);
+    }
+    .value-card:hover .icon-wrap {
+        background: var(--primary);
+        color: #fff;
+    }
+
+    /* How-we-do-it badge on service cards */
+    .how-badge {
+        display: inline-block;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border-radius: 50px;
+        padding: 3px 10px;
+        margin-bottom: 8px;
+    }
+    .how-text {
+        font-size: 13px;
+        color: #8577a0;
+        line-height: 1.55;
+        border-top: 1px solid #f0ebfa;
+        padding-top: 12px;
+        margin-top: 12px;
+    }
     background: #faf9fc;
 }
 

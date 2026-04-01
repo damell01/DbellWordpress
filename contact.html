@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Contact Us | Get a Free Quote | DBell Creations</title>
+    <title>Contact Us | Contact Us | DBell Creations</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta name="keywords" content="contact DBell Creations, free quote web design, free consultation digital agency, Fairhope AL web agency contact">
     <meta name="description" content="Get in touch with DBell Creations for a free consultation on web design, custom software, business automation, SEO, or digital marketing. We're based in Fairhope, AL.">
@@ -78,13 +78,13 @@
                         <a href="frequentlyaskedquestions.html" class="nav-item nav-link">FAQ</a>
                         <a href="contact.html" class="nav-item nav-link active">Contact</a>
                     </div>
-                    <a href="contact.html" class="btn rounded-pill py-2 px-4 ms-3 d-none d-lg-block">Get a Free Quote</a>
+                    <a href="contact.html" class="btn rounded-pill py-2 px-4 ms-3 d-none d-lg-block">Contact Us</a>
                 </div>
             </nav>
 
-            <div class="container-xxl py-5 bg-primary hero-header">
-                <div class="container my-5 py-5 px-lg-5">
-                    <div class="row g-5 py-5">
+            <div class="container-xxl bg-primary hero-header page-hero">
+                <div class="container py-2 px-lg-5">
+                    <div class="row g-3 py-2">
                         <div class="col-12 text-center">
                             <h1 class="text-white animated slideInDown">Contact</h1>
                             <hr class="bg-white mx-auto mt-0" style="width: 90px;">
@@ -150,7 +150,161 @@
             </div>
         </div>
         <!-- Contact End -->
-        
+
+
+        <!-- Contact / Booking Tabs Start -->
+        <div class="container-xxl py-5">
+            <div class="container py-5 px-lg-5">
+
+                <!-- Tab buttons -->
+                <div class="wow fadeInUp text-center mb-5" data-wow-delay="0.1s">
+                    <p class="section-title text-secondary justify-content-center"><span></span>Get In Touch<span></span></p>
+                    <h2 class="mb-4">How Would You Like to Connect?</h2>
+                    <div class="d-inline-flex rounded-pill p-1 gap-1" style="background:#f0ebfa;">
+                        <button class="btn rounded-pill px-4 py-2 active" id="tab-contact" onclick="switchTab('contact')" type="button" style="font-weight:600;">Send a Message</button>
+                        <button class="btn rounded-pill px-4 py-2" id="tab-booking" onclick="switchTab('booking')" type="button" style="font-weight:600;">Book a Consultation</button>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div id="panel-contact" class="row justify-content-center">
+                    <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="booking-card p-4 p-lg-5">
+                            <form method="post" action="sendEmail.php">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" name="contactName" class="form-control" id="name" placeholder="Your Name" required>
+                                            <label for="name">Your Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="email" name="contactEmail" class="form-control" id="email" placeholder="Your Email" required>
+                                            <label for="email">Your Email</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <input type="tel" name="contactPhone" class="form-control" id="phone" placeholder="Your Phone">
+                                            <label for="phone">Your Phone (optional)</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" placeholder="Leave a message here" id="message" name="contactMessage" style="height: 150px" required></textarea>
+                                            <label for="message">Message</label>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="contactSubject" value="Website Contact Form">
+                                    <div class="col-12">
+                                        <button class="btn btn-primary w-100 py-3 rounded-pill" type="submit">Send Message</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Calendar -->
+                <div id="panel-booking" class="row justify-content-center" style="display:none!important;">
+                    <div class="col-lg-9 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="booking-card p-4 p-lg-5">
+                            <form id="bookingForm" method="post" action="sendEmail.php">
+                                <input type="hidden" name="contactSubject" value="Consultation Booking Request">
+                                <input type="hidden" name="contactMessage" id="bookingMessage">
+
+                                <div class="row g-4">
+                                    <!-- Left: personal details + service -->
+                                    <div class="col-lg-5">
+                                        <h5 class="mb-4 fw-bold">Your Details</h5>
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <div class="form-floating">
+                                                    <input type="text" name="contactName" class="form-control" id="bookName" placeholder="Your Name" required>
+                                                    <label for="bookName">Your Name</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-floating">
+                                                    <input type="email" name="contactEmail" class="form-control" id="bookEmail" placeholder="Your Email" required>
+                                                    <label for="bookEmail">Your Email</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-floating">
+                                                    <input type="tel" class="form-control" id="bookPhone" placeholder="Your Phone">
+                                                    <label for="bookPhone">Phone (optional)</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-floating">
+                                                    <select class="form-select" id="bookService">
+                                                        <option value="">-- Select a Service --</option>
+                                                        <option>Web Design</option>
+                                                        <option>Business Automation</option>
+                                                        <option>Custom Software</option>
+                                                        <option>Digital Marketing</option>
+                                                        <option>SEO Optimization</option>
+                                                        <option>Not Sure / General</option>
+                                                    </select>
+                                                    <label for="bookService">Service Interested In</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-floating">
+                                                    <textarea class="form-control" id="bookNotes" placeholder="Brief project description" style="height:110px;"></textarea>
+                                                    <label for="bookNotes">Tell us about your project (optional)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: calendar + time -->
+                                    <div class="col-lg-7">
+                                        <h5 class="mb-4 fw-bold">Pick a Date &amp; Time</h5>
+
+                                        <!-- Mini calendar -->
+                                        <div id="mini-calendar" class="mb-4"></div>
+                                        <input type="hidden" id="bookDate">
+                                        <p id="selected-date-display" class="text-primary fw-semibold mb-3" style="min-height:1.4em;font-size:14px;"></p>
+
+                                        <!-- Time slots -->
+                                        <label class="form-label fw-semibold mb-3">Preferred Time</label>
+                                        <div class="row g-2 mb-4">
+                                            <div class="col-6 col-md-3">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-morning" value="Morning (9am–12pm)">
+                                                <label class="time-slot-btn" for="time-morning">Morning</label>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-midday" value="Midday (12pm–2pm)">
+                                                <label class="time-slot-btn" for="time-midday">Midday</label>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-afternoon" value="Afternoon (2pm–5pm)">
+                                                <label class="time-slot-btn" for="time-afternoon">Afternoon</label>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <input type="radio" class="btn-check" name="bookTime" id="time-evening" value="Evening (5pm–7pm)">
+                                                <label class="time-slot-btn" for="time-evening">Evening</label>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary rounded-pill w-100 py-3 fw-bold">
+                                            <i class="fa fa-calendar-check me-2"></i>Book My Free Consultation
+                                        </button>
+                                        <p class="text-muted small mt-3 text-center">We'll reach out within 24 hours to confirm your appointment.</p>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Contact / Booking Tabs End -->
+
 
         <!-- Footer Start -->
         <footer>
@@ -235,3 +389,143 @@
 </body>
 
 </html>
+
+
+    <script>
+    /* ─── Tab switcher ─── */
+    function switchTab(tab) {
+        var isContact = (tab === 'contact');
+        document.getElementById('panel-contact').style.setProperty('display', isContact ? '' : 'none', 'important');
+        document.getElementById('panel-booking').style.setProperty('display', isContact ? 'none' : '', 'important');
+        document.getElementById('tab-contact').classList.toggle('active', isContact);
+        document.getElementById('tab-contact').classList.toggle('btn-primary', isContact);
+        document.getElementById('tab-booking').classList.toggle('active', !isContact);
+        document.getElementById('tab-booking').classList.toggle('btn-primary', !isContact);
+    }
+    // init tab styles
+    document.getElementById('tab-contact').classList.add('btn-primary');
+    document.getElementById('tab-booking').style.color = 'var(--dark)';
+
+    /* ─── Mini Calendar ─── */
+    (function () {
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        var currentMonth = today.getMonth();
+        var currentYear  = today.getFullYear();
+        var selectedDate = null;
+        var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        var DAYS   = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+        function fmt(d) {
+            return d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+        }
+
+        function render(month, year) {
+            var cal = document.getElementById('mini-calendar');
+            if (!cal) return;
+
+            var firstDay = new Date(year, month, 1).getDay();
+            var totalDays = new Date(year, month + 1, 0).getDate();
+
+            var html = '<div class="d-flex align-items-center justify-content-between mb-3">'
+                + '<button class="btn btn-sm btn-outline-primary rounded-circle px-2" id="cal-prev" type="button"><i class="fa fa-chevron-left" style="font-size:11px;"></i></button>'
+                + '<strong>' + MONTHS[month] + ' ' + year + '</strong>'
+                + '<button class="btn btn-sm btn-outline-primary rounded-circle px-2" id="cal-next" type="button"><i class="fa fa-chevron-right" style="font-size:11px;"></i></button>'
+                + '</div>';
+
+            html += '<div class="row g-1 mb-1 text-center">';
+            for (var i = 0; i < 7; i++) {
+                html += '<div class="col cal-day-name text-muted">' + DAYS[i] + '</div>';
+            }
+            html += '</div>';
+
+            var day = 1;
+            var started = false;
+            while (day <= totalDays) {
+                html += '<div class="row g-1 mb-1 text-center">';
+                for (var col = 0; col < 7; col++) {
+                    if (!started && col < firstDay) {
+                        html += '<div class="col cal-day cal-empty"></div>';
+                    } else if (day > totalDays) {
+                        html += '<div class="col cal-day cal-empty"></div>';
+                    } else {
+                        started = true;
+                        var dt = new Date(year, month, day);
+                        dt.setHours(0,0,0,0);
+                        var isPast     = dt < today;
+                        var isToday    = dt.getTime() === today.getTime();
+                        var isSelected = selectedDate && dt.getTime() === selectedDate.getTime();
+                        var cls = 'col cal-day ';
+                        if (isPast && !isToday) {
+                            cls += 'cal-past';
+                            html += '<div class="' + cls + '">' + day + '</div>';
+                        } else if (isSelected) {
+                            cls += 'cal-selected cal-available';
+                            html += '<div class="' + cls + '" data-ts="' + dt.getTime() + '">' + day + '</div>';
+                        } else {
+                            cls += 'cal-available' + (isToday ? ' cal-today' : '');
+                            html += '<div class="' + cls + '" data-ts="' + dt.getTime() + '">' + day + '</div>';
+                        }
+                        day++;
+                    }
+                }
+                html += '</div>';
+            }
+
+            cal.innerHTML = html;
+
+            cal.querySelectorAll('.cal-available').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    selectedDate = new Date(parseInt(this.getAttribute('data-ts')));
+                    document.getElementById('bookDate').value = fmt(selectedDate);
+                    document.getElementById('selected-date-display').textContent = 'Selected: ' + fmt(selectedDate);
+                    render(currentMonth, currentYear);
+                });
+            });
+
+            document.getElementById('cal-prev').addEventListener('click', function() {
+                currentMonth--;
+                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+                render(currentMonth, currentYear);
+            });
+            document.getElementById('cal-next').addEventListener('click', function() {
+                currentMonth++;
+                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+                render(currentMonth, currentYear);
+            });
+        }
+
+        render(currentMonth, currentYear);
+
+        /* ─── Booking form submit: compose message ─── */
+        var bookingForm = document.getElementById('bookingForm');
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', function(e) {
+                var date    = document.getElementById('bookDate').value;
+                var timeEl  = document.querySelector('input[name="bookTime"]:checked');
+                var service = document.getElementById('bookService').value;
+                var phone   = document.getElementById('bookPhone').value;
+                var notes   = document.getElementById('bookNotes').value;
+                var email   = document.getElementById('bookEmail').value;
+
+                if (!date) {
+                    e.preventDefault();
+                    alert('Please select a preferred consultation date from the calendar.');
+                    return;
+                }
+
+                var msg = 'CONSULTATION BOOKING REQUEST\n\n'
+                    + 'Name: '  + document.getElementById('bookName').value + '\n'
+                    + 'Email: ' + email + '\n'
+                    + (phone   ? 'Phone: '   + phone   + '\n' : '')
+                    + (service ? 'Service: ' + service + '\n' : '')
+                    + 'Preferred Date: ' + date + '\n'
+                    + (timeEl  ? 'Preferred Time: ' + timeEl.value + '\n' : '')
+                    + (notes   ? '\nProject Notes:\n' + notes : '');
+
+                document.getElementById('bookingMessage').value = msg;
+            });
+        }
+    })();
+    </script>
+
