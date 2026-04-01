@@ -5,6 +5,7 @@ use App\Models\Setting;
 
 class MailService {
     private array $config;
+    private string $lastError = '';
 
     public function __construct() {
         $this->config = require base_path('config/mail.php');
@@ -38,7 +39,12 @@ class MailService {
     }
 
     public function send(string $to, string $subject, string $htmlBody, string $textBody = ''): bool {
-        if (empty($this->config['from'])) return false;
+        $this->lastError = '';
+
+        if (empty($this->config['from'])) {
+            $this->lastError = 'Mail sender address is missing. Set From Email first.';
+            return false;
+        }
 
         $driver = $this->config['driver'] ?? 'mail';
 
@@ -47,6 +53,38 @@ class MailService {
         }
 
         return $this->sendNative($to, $subject, $htmlBody, $textBody);
+    }
+
+    public function getLastError(): string {
+        return $this->lastError;
+    }
+
+    public function sendTestEmail(string $to): bool {
+        $appName = config('app.name', 'VerityScan');
+        $driver = strtoupper((string) ($this->config['driver'] ?? 'mail'));
+        $host = (string) ($this->config['smtp_host'] ?? '');
+        $port = (string) ($this->config['smtp_port'] ?? '');
+        $encryption = (string) ($this->config['encryption'] ?? '');
+        $time = date('Y-m-d H:i:s');
+
+        $html = "<h2>{$appName} Test Email</h2>"
+            . "<p>This is a test email from your WebsiteScan admin settings.</p>"
+            . "<p><strong>Sent at:</strong> {$time}</p>"
+            . "<p><strong>Driver:</strong> {$driver}</p>"
+            . ($host !== '' ? "<p><strong>SMTP Host:</strong> " . htmlspecialchars($host) . "</p>" : '')
+            . ($port !== '' ? "<p><strong>SMTP Port:</strong> " . htmlspecialchars($port) . "</p>" : '')
+            . ($encryption !== '' ? "<p><strong>Encryption:</strong> " . htmlspecialchars($encryption) . "</p>" : '')
+            . "<p>If you received this email, outgoing mail is working.</p>";
+
+        $text = "{$appName} test email\n"
+            . "Sent at: {$time}\n"
+            . "Driver: {$driver}\n"
+            . ($host !== '' ? "SMTP Host: {$host}\n" : '')
+            . ($port !== '' ? "SMTP Port: {$port}\n" : '')
+            . ($encryption !== '' ? "Encryption: {$encryption}\n" : '')
+            . "\nIf you received this email, outgoing mail is working.";
+
+        return $this->send($to, "[{$appName}] Test Email", $html, $text);
     }
 
     private function sendNative(string $to, string $subject, string $html, string $text): bool {
@@ -68,7 +106,12 @@ class MailService {
         $body .= $html . "\r\n\r\n";
         $body .= "--{$boundary}--";
 
-        return @mail($to, $subject, $body, $headers);
+        $sent = @mail($to, $subject, $body, $headers);
+        if (!$sent) {
+            $this->lastError = 'PHP mail() failed to hand off the message.';
+        }
+
+        return $sent;
     }
 
     private function sendSmtp(string $to, string $subject, string $html, string $text): bool {
@@ -84,23 +127,88 @@ class MailService {
         try {
             $prefix = ($encryption === 'ssl') ? 'ssl://' : '';
             $sock   = fsockopen($prefix . $host, $port, $errno, $errstr, 15);
-            if (!$sock) return false;
-
-            $this->smtpRead($sock);
-
-            if ($encryption === 'tls') {
-                $this->smtpCommand($sock, "EHLO " . gethostname());
-                $this->smtpCommand($sock, "STARTTLS");
-                stream_socket_enable_crypto($sock, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+            if (!$sock) {
+                $this->lastError = 'SMTP connection failed: ' . trim((string) $errstr);
+                return false;
             }
 
-            $this->smtpCommand($sock, "EHLO " . gethostname());
-            $this->smtpCommand($sock, "AUTH LOGIN");
-            $this->smtpCommand($sock, base64_encode($user));
-            $this->smtpCommand($sock, base64_encode($pass));
-            $this->smtpCommand($sock, "MAIL FROM: <{$from}>");
-            $this->smtpCommand($sock, "RCPT TO: <{$to}>");
-            $this->smtpCommand($sock, "DATA");
+            $greeting = $this->smtpRead($sock);
+            if (!$this->smtpResponseOk($greeting, ['220'])) {
+                $this->lastError = 'SMTP greeting failed.';
+                fclose($sock);
+                return false;
+            }
+
+            if ($encryption === 'tls') {
+                $ehlo = $this->smtpCommand($sock, "EHLO " . gethostname());
+                if (!$this->smtpResponseOk($ehlo, ['250'])) {
+                    $this->lastError = 'SMTP EHLO failed before STARTTLS.';
+                    fclose($sock);
+                    return false;
+                }
+
+                $startTls = $this->smtpCommand($sock, 'STARTTLS');
+                if (!$this->smtpResponseOk($startTls, ['220'])) {
+                    $this->lastError = 'SMTP STARTTLS failed.';
+                    fclose($sock);
+                    return false;
+                }
+
+                if (!stream_socket_enable_crypto($sock, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+                    $this->lastError = 'SMTP TLS negotiation failed.';
+                    fclose($sock);
+                    return false;
+                }
+            }
+
+            $ehlo = $this->smtpCommand($sock, "EHLO " . gethostname());
+            if (!$this->smtpResponseOk($ehlo, ['250'])) {
+                $this->lastError = 'SMTP EHLO failed.';
+                fclose($sock);
+                return false;
+            }
+
+            $authLogin = $this->smtpCommand($sock, 'AUTH LOGIN');
+            if (!$this->smtpResponseOk($authLogin, ['334'])) {
+                $this->lastError = 'SMTP AUTH LOGIN was rejected.';
+                fclose($sock);
+                return false;
+            }
+
+            $authUser = $this->smtpCommand($sock, base64_encode($user));
+            if (!$this->smtpResponseOk($authUser, ['334'])) {
+                $this->lastError = 'SMTP username was rejected.';
+                fclose($sock);
+                return false;
+            }
+
+            $authPass = $this->smtpCommand($sock, base64_encode($pass));
+            if (!$this->smtpResponseOk($authPass, ['235'])) {
+                $this->lastError = 'SMTP password was rejected.';
+                fclose($sock);
+                return false;
+            }
+
+            $mailFrom = $this->smtpCommand($sock, "MAIL FROM: <{$from}>");
+            if (!$this->smtpResponseOk($mailFrom, ['250'])) {
+                $this->lastError = 'SMTP MAIL FROM was rejected.';
+                fclose($sock);
+                return false;
+            }
+
+            $rcptTo = $this->smtpCommand($sock, "RCPT TO: <{$to}>");
+            if (!$this->smtpResponseOk($rcptTo, ['250', '251'])) {
+                $this->lastError = 'SMTP RCPT TO was rejected for that address.';
+                fclose($sock);
+                return false;
+            }
+
+            $dataStart = $this->smtpCommand($sock, 'DATA');
+            if (!$this->smtpResponseOk($dataStart, ['354'])) {
+                $this->lastError = 'SMTP DATA command was rejected.';
+                fclose($sock);
+                return false;
+            }
 
             $body  = "--{$boundary}\r\n";
             $body .= "Content-Type: text/plain; charset=UTF-8\r\n\r\n";
@@ -118,14 +226,31 @@ class MailService {
             $message .= "\r\n" . $body . "\r\n.\r\n";
 
             fputs($sock, $message);
-            $this->smtpRead($sock);
+            $dataResult = $this->smtpRead($sock);
+            if (!$this->smtpResponseOk($dataResult, ['250'])) {
+                $this->lastError = 'SMTP server did not accept the message body.';
+                fclose($sock);
+                return false;
+            }
+
             $this->smtpCommand($sock, "QUIT");
             fclose($sock);
             return true;
         } catch (\Throwable $e) {
             error_log('MailService SMTP error: ' . $e->getMessage());
+            $this->lastError = 'SMTP error: ' . $e->getMessage();
             return false;
         }
+    }
+
+    private function smtpResponseOk(string $response, array $okCodes): bool {
+        foreach ($okCodes as $code) {
+            if (str_starts_with($response, $code)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function smtpCommand($sock, string $command): string {

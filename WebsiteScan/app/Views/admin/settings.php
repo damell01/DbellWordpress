@@ -249,6 +249,24 @@
 GOOGLE_PAGESPEED_API_KEY=your_pagespeed_key</code></pre>
             </div>
         </div>
+        <div class="admin-card mt-4">
+            <div class="admin-card-header"><h6 class="fw-semibold mb-0"><i class="bi bi-envelope-check me-2"></i>Send Test Email</h6></div>
+            <div class="admin-card-body">
+                <p class="small text-muted mb-3">Save settings first, then send a test email to confirm delivery.</p>
+                <form method="POST" action="<?= url('admin/settings/test-email') ?>" class="row g-2">
+                    <?= csrf_field() ?>
+                    <div class="col-12">
+                        <label class="form-label">Send Test To</label>
+                        <input type="email" name="test_email_to" class="form-control" value="<?= e($all['admin_email'] ?? '') ?>" placeholder="owner@yourdomain.com" required>
+                    </div>
+                    <div class="col-12 d-grid">
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="bi bi-send-check me-2"></i>Send Test Email
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 <script>

@@ -419,6 +419,7 @@
         var params = new URLSearchParams(window.location.search);
         var submitted = params.get('submitted');
         var mode = params.get('mode');
+        var mail = params.get('mail');
         var wrap = document.getElementById('form-feedback');
         var box = document.getElementById('form-feedback-box');
 
@@ -431,13 +432,21 @@
         if (submitted === '1') {
             wrap.style.display = '';
             box.className = 'alert alert-success mb-0 rounded-3';
-            box.innerHTML = '<strong>Thanks for submitting.</strong> We got your request and will follow up shortly.';
+            if (mail === 'sent') {
+                box.innerHTML = '<strong>Thanks for submitting.</strong> Your request email was sent successfully, and we will follow up shortly.';
+            } else {
+                box.innerHTML = '<strong>Thanks for submitting.</strong> We got your request and will follow up shortly.';
+            }
             trackLeadEvent('lead_form_success', { mode: mode || 'booking' });
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else if (submitted === '0') {
             wrap.style.display = '';
             box.className = 'alert alert-danger mb-0 rounded-3';
-            box.innerHTML = '<strong>Submission failed.</strong> Please double-check your info and try again.';
+            if (mail === 'failed') {
+                box.innerHTML = '<strong>Email delivery failed.</strong> Your request could not be emailed right now. Please try again or email us directly at dbellcreations@gmail.com.';
+            } else {
+                box.innerHTML = '<strong>Submission failed.</strong> Please double-check your info and try again.';
+            }
             trackLeadEvent('lead_form_failure', { mode: mode || 'booking' });
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }

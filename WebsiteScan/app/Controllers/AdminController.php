@@ -202,6 +202,30 @@ class AdminController extends BaseController {
         $this->redirect('admin/settings');
     }
 
+    public function sendTestEmail(Request $request): void {
+        $email = trim((string) $request->post('test_email_to', ''));
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            Session::setFlash('error', 'Enter a valid recipient email for the test message.');
+            $this->redirect('admin/settings');
+            return;
+        }
+
+        $mailer = new \App\Services\MailService();
+        $sent = $mailer->sendTestEmail($email);
+
+        if ($sent) {
+            Session::setFlash('success', 'Test email sent to ' . $email . '. Check that inbox (and spam folder).');
+        } else {
+            $detail = $mailer->getLastError();
+            Session::setFlash(
+                'error',
+                'Test email failed.' . ($detail !== '' ? ' ' . $detail : ' Please verify your mail settings and try again.')
+            );
+        }
+
+        $this->redirect('admin/settings');
+    }
+
     private function writeDebugOverride(bool $enabled): bool {
         $path = base_path('config/debug.local.php');
         $contents = "<?php\nreturn [\n    'debug' => " . ($enabled ? 'true' : 'false') . ",\n];\n";

@@ -55,6 +55,15 @@ function safeRedirectPath($path) {
     return $path;
 }
 
+function appendQueryValue($path, $key, $value) {
+    if (!$path) {
+        return null;
+    }
+
+    $separator = (strpos($path, '?') !== false) ? '&' : '?';
+    return $path . $separator . rawurlencode($key) . '=' . rawurlencode($value);
+}
+
 
 if($_POST) {
 
@@ -126,14 +135,14 @@ if($_POST) {
         if ($mail) {
             updateRateLimit($ip);
             if ($redirectSuccess) {
-                header("Location: " . $redirectSuccess);
+                header("Location: " . appendQueryValue($redirectSuccess, 'mail', 'sent'));
                 exit;
             }
             echo "OK";
         }
         else {
             if ($redirectError) {
-                header("Location: " . $redirectError);
+                header("Location: " . appendQueryValue($redirectError, 'mail', 'failed'));
                 exit;
             }
             echo "Something went wrong. Please try again.";
@@ -149,7 +158,7 @@ if($_POST) {
         $response .= (isset($error['rate'])) ? $error['rate'] . "<br />" : null;
 
         if ($redirectError) {
-            header("Location: " . $redirectError);
+            header("Location: " . appendQueryValue($redirectError, 'mail', 'invalid'));
             exit;
         }
         

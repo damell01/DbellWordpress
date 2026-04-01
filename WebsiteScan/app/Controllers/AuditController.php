@@ -95,16 +95,34 @@ class AuditController extends BaseController {
 
         $reportUrl = url("report/{$report['report_token']}");
         $mailer = new \App\Services\MailService();
-        $mailConfig = require base_path('config/mail.php');
-        $mailConfigured = !empty($mailConfig['from']);
 
         $lead = $leadId ? $db->fetch("SELECT * FROM leads WHERE id = ?", [$leadId]) : [];
-        if ($lead && $mailConfigured) {
-            $mailer->notifyAdminNewLead($lead, $reportUrl);
+        $adminNotified = false;
+        if ($lead) {
+            $adminNotified = $mailer->notifyAdminNewLead($lead, $reportUrl);
         }
 
-        if ($mailConfigured && $email !== '' && !empty($report['report_token'])) {
-            $mailer->sendReportLink($email, $name, $reportUrl);
+        $reportEmailSent = false;
+        if ($email !== '' && !empty($report['report_token'])) {
+            $reportEmailSent = $mailer->sendReportLink($email, $name, $reportUrl);
+        }
+
+        if ($email !== '') {
+            if ($reportEmailSent) {
+                Session::setFlash('success', 'Audit complete. Your report email was sent to ' . $email . '.');
+            } else {
+                $detail = $mailer->getLastError();
+                Session::setFlash(
+                    'error',
+                    'Audit complete, but report email delivery failed.' . ($detail !== '' ? ' ' . $detail : '')
+                );
+            }
+        } elseif (!$adminNotified && $lead) {
+            $detail = $mailer->getLastError();
+            Session::setFlash(
+                'error',
+                'Audit complete, but admin notification email delivery failed.' . ($detail !== '' ? ' ' . $detail : '')
+            );
         }
 
         $this->redirect("report/{$report['report_token']}");
@@ -182,7 +200,7 @@ class AuditController extends BaseController {
         ]);
 
         $mailer = new \App\Services\MailService();
-        $mailer->notifyAdminContactRequest([
+        $adminSent = $mailer->notifyAdminContactRequest([
             'name'         => $name,
             'email'        => $email,
             'phone'        => $phone,
@@ -192,7 +210,16 @@ class AuditController extends BaseController {
             'report_url'   => url("report/{$token}"),
         ]);
 
-        Session::setFlash('success', 'Thank you! We\'ll be in touch shortly to discuss fixing your website.');
+        if ($adminSent) {
+            Session::setFlash('success', 'Thank you! Your request was sent and our team was notified by email.');
+        } else {
+            $detail = $mailer->getLastError();
+            Session::setFlash(
+                'error',
+                'Your request was saved, but notification email delivery failed.' . ($detail !== '' ? ' ' . $detail : '')
+            );
+        }
+
         $this->redirect("report/{$token}#request-help");
     }
 

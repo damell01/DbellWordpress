@@ -60,9 +60,18 @@ class HomeController extends BaseController {
         ]);
 
         $mailer = new \App\Services\MailService();
-        $mailer->notifyAdminContactRequest($request->all());
+        $adminSent = $mailer->notifyAdminContactRequest($request->all());
 
-        Session::setFlash('success', 'Thank you! We\'ll be in touch soon.');
+        if ($adminSent) {
+            Session::setFlash('success', 'Thank you! Your message was sent and our team was notified by email.');
+        } else {
+            $detail = $mailer->getLastError();
+            Session::setFlash(
+                'error',
+                'Your message was saved, but notification email delivery failed.' . ($detail !== '' ? ' ' . $detail : '')
+            );
+        }
+
         $this->redirect($redirectTo);
     }
 
