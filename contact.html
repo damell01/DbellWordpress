@@ -31,13 +31,6 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-    <script language="JavaScript">
-        var frmvalidator  = new Validator("contactform");
-        frmvalidator.addValidation("name","req","Please provide your name");
-        frmvalidator.addValidation("email","req","Please provide your email");
-        frmvalidator.addValidation("email","email",
-          "Please enter a valid email address");
-        </script>
 </head>
 
 <body>
@@ -86,7 +79,8 @@
                 <div class="container my-5 py-5 px-lg-5">
                     <div class="row g-5 py-5">
                         <div class="col-12 text-center">
-                            <h1 class="text-white animated slideInDown">Contact</h1>
+                            <h1 class="text-white animated slideInDown">Get a Free Quote</h1>
+                            <p class="text-white-50 mb-3" style="font-size:1.05rem;">No obligation &middot; Same-day response &middot; Free consultation</p>
                             <hr class="bg-white mx-auto mt-0" style="width: 90px;">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb justify-content-center">
@@ -103,44 +97,141 @@
         <!-- Navbar & Hero End -->
 
 
-        <!-- Contact Start -->
+        <!-- Contact Intro Start -->
         <div class="container-xxl py-5">
             <div class="container py-5 px-lg-5">
-                <div class="wow fadeInUp" data-wow-delay="0.1s">
-                    <p class="section-title text-secondary justify-content-center"><span></span>Contact Us<span></span></p>
-                    <h1 class="text-center mb-5"> Contact Us</h1>
+                <div class="wow fadeInUp text-center mb-5" data-wow-delay="0.1s">
+                    <p class="section-title text-secondary justify-content-center"><span></span>Let's Talk<span></span></p>
+                    <h2 class="mb-3">Start Your Project — It's Free &amp; Easy</h2>
+                    <p class="text-muted mx-auto" style="max-width:640px;">Tell us what you need — a website, custom software, automation, or just an idea. We'll send a clear plan and free quote, usually the same day. No pressure, no obligation.</p>
+                    <!-- Trust strip -->
+                    <div class="d-flex flex-wrap justify-content-center gap-4 mt-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa fa-clock text-primary"></i>
+                            <span class="small fw-semibold">Same-day response</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa fa-lock text-primary"></i>
+                            <span class="small fw-semibold">100% free consultation</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa fa-handshake text-primary"></i>
+                            <span class="small fw-semibold">No obligation, ever</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa fa-star text-warning"></i>
+                            <span class="small fw-semibold">5-Star rated agency</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="row justify-content-center">
-                    <div class="col-lg-7">
-                        <div class="wow fadeInUp" data-wow-delay="0.3s">
-                            <form method="post" action="sendEmail.php">
+
+                <div class="row g-5">
+                    <!-- Contact Info Column -->
+                    <div class="col-lg-4 wow fadeInLeft" data-wow-delay="0.1s">
+                        <div class="contact-info-card p-4 p-lg-5 rounded h-100">
+                            <h4 class="mb-4">Reach Us Directly</h4>
+
+                            <div class="contact-info-item d-flex align-items-start gap-3 mb-4">
+                                <div class="contact-info-icon flex-shrink-0">
+                                    <i class="fa fa-phone-alt text-secondary"></i>
+                                </div>
+                                <div>
+                                    <p class="fw-semibold mb-1 small text-muted text-uppercase" style="letter-spacing:.05em;">Call or Text</p>
+                                    <a href="tel:251-406-2292" class="fw-bold text-dark text-decoration-none" style="font-size:1.05rem;">251-406-2292</a>
+                                </div>
+                            </div>
+
+                            <div class="contact-info-item d-flex align-items-start gap-3 mb-4">
+                                <div class="contact-info-icon flex-shrink-0">
+                                    <i class="fa fa-envelope text-secondary"></i>
+                                </div>
+                                <div>
+                                    <p class="fw-semibold mb-1 small text-muted text-uppercase" style="letter-spacing:.05em;">Email Us</p>
+                                    <a href="mailto:dbellcreations@gmail.com" class="fw-bold text-dark text-decoration-none" style="font-size:1rem;">dbellcreations@gmail.com</a>
+                                </div>
+                            </div>
+
+                            <div class="contact-info-item d-flex align-items-start gap-3 mb-4">
+                                <div class="contact-info-icon flex-shrink-0">
+                                    <i class="fa fa-map-marker-alt text-secondary"></i>
+                                </div>
+                                <div>
+                                    <p class="fw-semibold mb-1 small text-muted text-uppercase" style="letter-spacing:.05em;">Location</p>
+                                    <p class="fw-bold text-dark mb-0">Fairhope, AL</p>
+                                    <p class="text-muted small mb-0">Serving businesses nationwide</p>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" style="border-color: rgba(98,34,204,0.12);">
+
+                            <h6 class="mb-3">Follow Us</h6>
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-outline-primary btn-social" href="https://www.facebook.com/profile.php?id=100090989871594&mibextid=LQQJ4d" target="_blank" rel="noopener" aria-label="Facebook" style="color:var(--primary);border-color:var(--primary);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a class="btn btn-outline-primary btn-social" href="https://www.instagram.com/dbellcreations/" target="_blank" rel="noopener" aria-label="Instagram" style="color:var(--primary);border-color:var(--primary);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </div>
+
+                            <div class="mt-4 p-3 rounded" style="background:var(--primary-light); border-left:3px solid var(--primary);">
+                                <p class="mb-1 small fw-semibold" style="color:var(--primary);">Office Hours</p>
+                                <p class="small text-muted mb-0">Mon – Fri: 8am – 6pm CST<br>Sat: 9am – 2pm CST</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form Column -->
+                    <div class="col-lg-8 wow fadeInRight" data-wow-delay="0.2s">
+                        <div class="contact-form-card p-4 p-lg-5 rounded">
+                            <h4 class="mb-1">Send Us a Message</h4>
+                            <p class="text-muted small mb-4">Fill in your details and describe what you need — we'll reply within <strong>24 hours</strong> (usually same day).</p>
+                            <form method="post" action="sendEmail.php" novalidate>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text" name="contactName" class="form-control" id="name" placeholder="Your Name" required>
-                                            <label for="name">Your Name</label>
+                                            <input type="text" name="contactName" class="form-control" id="name" placeholder="Your Name" required autocomplete="name">
+                                            <label for="name">Your Name *</label>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="email" name="contactEmail" class="form-control" id="email" placeholder="Your Email" required>
-                                            <label for="email">Your Email</label>
+                                            <input type="email" name="contactEmail" class="form-control" id="email" placeholder="Your Email" required autocomplete="email">
+                                            <label for="email">Your Email *</label>
                                         </div>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="tel" name="contactPhone" class="form-control" id="phone" placeholder="Your Phone">
+                                            <input type="tel" name="contactPhone" class="form-control" id="phone" placeholder="Your Phone" autocomplete="tel">
                                             <label for="phone">Your Phone (optional)</label>
                                         </div>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-md-6">
                                         <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Leave a message here" id="message" name="contactMessage" style="height: 150px" required></textarea>
-                                            <label for="message">Message</label>
+                                            <select name="contactService" class="form-select" id="service">
+                                                <option value="">Select a service</option>
+                                                <option value="Web Design">Web Design &amp; Development</option>
+                                                <option value="Custom Software">Custom Software / Business System</option>
+                                                <option value="Business Automation">Business Automation &amp; AI</option>
+                                                <option value="Digital Marketing">Digital Marketing &amp; SEO</option>
+                                                <option value="Not Sure">Not Sure — Need Advice</option>
+                                            </select>
+                                            <label for="service">Service Interested In</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <button class="btn btn-primary w-100 py-3" type="submit">Send Message</button>
+                                        <div class="form-floating">
+                                            <textarea class="form-control" placeholder="Tell us about your project..." id="message" name="contactMessage" style="height: 160px" required></textarea>
+                                            <label for="message">Tell Us About Your Project *</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn btn-primary w-100 py-3 rounded-pill fw-bold" type="submit" style="font-size:1.05rem;">
+                                            Send My Message &rarr;
+                                        </button>
+                                        <p class="text-center text-muted small mt-3 mb-0">
+                                            <i class="fa fa-lock me-1 text-primary"></i>Your information is private &amp; never shared. &nbsp;|&nbsp; <i class="fa fa-clock me-1 text-primary"></i>We reply within 24 hours.
+                                        </p>
                                     </div>
                                 </div>
                             </form>
@@ -150,6 +241,25 @@
             </div>
         </div>
         <!-- Contact End -->
+
+
+        <!-- Contact Mini-CTA Start -->
+        <div class="container-xxl bg-primary newsletter py-5 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="container py-5 px-lg-5">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-8 text-center text-lg-start">
+                        <h3 class="text-white mb-2">Prefer to Talk First?</h3>
+                        <p class="text-white mb-0" style="opacity:0.85;">Give us a call or send a text — we'll answer your questions, discuss your project, and tell you exactly how we can help. No pitch, no pressure.</p>
+                    </div>
+                    <div class="col-lg-4 text-center text-lg-end">
+                        <a href="tel:251-406-2292" class="btn btn-secondary py-sm-3 px-sm-5 rounded-pill fw-bold">
+                            <i class="fa fa-phone me-2"></i>251-406-2292
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Contact Mini-CTA End -->
         
 
         <!-- Footer Start -->
