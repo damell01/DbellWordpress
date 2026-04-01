@@ -1221,128 +1221,153 @@ textarea.form-control {
 .accordion-body {
     color: #6b6380;
     line-height: 1.75;
+    background: #faf9fc;
+}
 
+/*** Booking / Consultation Calendar ***/
+.booking-card {
+    border: 1.5px solid #ebe6f5;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-md);
+}
 
-    /*** Booking / Consultation Calendar ***/
-    .booking-card {
-        border: 1.5px solid #ebe6f5;
-        border-radius: var(--radius-lg) !important;
-        box-shadow: var(--shadow-md);
-    }
+#mini-calendar {
+    background: #faf9fc;
+    border: 1.5px solid #e3ddf0;
+    border-radius: var(--radius-md);
+    padding: 20px;
+}
 
-    #mini-calendar {
-        background: #faf9fc;
-        border: 1.5px solid #e3ddf0;
-        border-radius: var(--radius-md);
-        padding: 20px;
-    }
+.cal-day {
+    width: 36px;
+    height: 36px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    cursor: default;
+    user-select: none;
+}
 
-    .cal-day {
-        width: 36px;
-        height: 36px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 500;
-        text-align: center;
-        cursor: default;
-        user-select: none;
-    }
+.cal-available {
+    cursor: pointer;
+    color: var(--dark);
+    transition: background 0.18s, color 0.18s;
+}
 
-    .cal-available {
-        cursor: pointer;
-        color: var(--dark);
-        transition: background 0.18s, color 0.18s;
-    }
+.cal-available:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
 
-    .cal-available:hover {
-        background: var(--primary-light);
-        color: var(--primary);
-    }
+.cal-available:focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: 2px;
+}
 
-    .cal-today {
-        font-weight: 700;
-        color: var(--primary);
-        border: 1.5px dashed var(--primary);
-    }
+.cal-today {
+    font-weight: 700;
+    color: var(--primary);
+    border: 1.5px dashed var(--primary);
+}
 
-    .cal-selected {
-        cursor: pointer;
-        background: var(--primary) !important;
-        color: #fff !important;
-        border: 2px solid #fff;
-        outline: 2px solid var(--primary);
-        box-shadow: 0 8px 20px rgba(98, 34, 204, 0.35);
-    }
+.cal-selected {
+    cursor: pointer;
+    background: var(--primary) !important;
+    color: #fff !important;
+    border: 2px solid #fff;
+    outline: 2px solid var(--primary);
+    box-shadow: 0 8px 20px rgba(98, 34, 204, 0.35);
+}
 
-    .cal-past {
-        opacity: 0.3;
-        cursor: not-allowed;
-    }
+.cal-past {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
 
-    .cal-unavailable {
-        background: #f3eefb;
-        color: #a194bc;
-        opacity: 0.75;
-        cursor: not-allowed;
-        text-decoration: line-through;
-        border: 1px solid #e2d9f5;
-    }
+.cal-unavailable {
+    background: #f3eefb;
+    color: #a194bc;
+    opacity: 0.75;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    border: 1px solid #e2d9f5;
+}
 
-    .cal-empty {
-        visibility: hidden;
-    }
+.cal-empty {
+    visibility: hidden;
+}
 
-    .cal-day-name {
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
+.cal-day-name {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
 
-    .time-slot-btn {
-        position: relative;
-        border: 1.5px solid #d8d1ec;
-        border-radius: 50px;
-        padding: 10px 16px;
-        background: #faf9fc;
-        color: var(--dark);
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-        transition: var(--transition);
-        text-align: center;
-        width: 100%;
-    }
+.time-slot-btn {
+    position: relative;
+    border: 1.5px solid #d8d1ec;
+    border-radius: 50px;
+    padding: 10px 16px;
+    background: #faf9fc;
+    color: var(--dark);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    width: 100%;
+}
 
-    .time-slot-btn:hover,
-    .btn-check:checked + .time-slot-btn {
-        background: var(--primary);
-        border-color: var(--primary);
-        color: #fff;
-        box-shadow: var(--shadow-primary);
-        padding-right: 34px;
-    }
+.time-slot-btn:hover,
+.btn-check:checked + .time-slot-btn {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: var(--shadow-primary);
+    padding-right: 34px;
+}
 
-    .btn-check:checked + .time-slot-btn::after {
-        content: "\f00c";
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.2);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-    }
+.btn-check:focus-visible + .time-slot-btn {
+    outline: 2px solid var(--secondary);
+    outline-offset: 2px;
+}
+
+.btn-check:checked + .time-slot-btn::after {
+    content: "\f00c";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+
+.trust-strip {
+    border: 1px solid #ebe6f5;
+    background: #faf9fc;
+    border-radius: var(--radius-md);
+}
+
+.hp-field {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+}
 
     /* About page stats */
     .stat-box {

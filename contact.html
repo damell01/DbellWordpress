@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Contact Us | Contact Us | DBell Creations</title>
+    <title>Contact DBell Creations | Free Consultation in Fairhope, AL</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta name="keywords" content="contact DBell Creations, free quote web design, free consultation digital agency, Fairhope AL web agency contact">
     <meta name="description" content="Get in touch with DBell Creations for a free consultation on web design, custom software, business automation, SEO, or digital marketing. We're based in Fairhope, AL.">
@@ -31,6 +31,29 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+
+        <!-- Schema.org Structured Data -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": "DBell Creations",
+            "url": "https://www.dbellcreations.com/contact.html",
+            "image": "https://www.dbellcreations.com/img/DBellCreationsLogo.png",
+            "telephone": "+1-251-406-2292",
+            "email": "dbellcreations@gmail.com",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Fairhope",
+                "addressRegion": "AL",
+                "addressCountry": "US"
+            },
+            "sameAs": [
+                "https://www.facebook.com/profile.php?id=100090989871594",
+                "https://www.instagram.com/dbellcreations/"
+            ]
+        }
+        </script>
 </head>
 
 <body>
@@ -122,6 +145,8 @@
                         <div class="booking-card p-4 p-lg-5">
                             <form method="post" action="sendEmail.php">
                                 <div class="row g-3">
+                                    <input type="text" name="websiteUrl" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+                                    <input type="hidden" name="formStartedAt" class="form-started-at" value="">
                                     <div class="col-md-6">
                                         <div class="form-floating">
                                             <input type="text" name="contactName" class="form-control" id="name" placeholder="Your Name" required>
@@ -167,6 +192,8 @@
                                 <input type="hidden" name="contactMessage" id="bookingMessage">
                                 <input type="hidden" name="redirectSuccess" value="contact.html?submitted=1&mode=booking">
                                 <input type="hidden" name="redirectError" value="contact.html?submitted=0&mode=booking">
+                                <input type="text" name="websiteUrl" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+                                <input type="hidden" name="formStartedAt" class="form-started-at" value="">
 
                                 <div class="row g-4">
                                     <!-- Left: personal details + service -->
@@ -222,8 +249,8 @@
                                         <div id="mini-calendar" class="mb-4"></div>
                                         <input type="hidden" id="bookDate">
                                         <div class="bg-light border rounded-3 p-3 mb-3">
-                                            <p id="selected-date-display" class="text-primary fw-semibold mb-1" style="min-height:1.4em;font-size:14px;">Selected date: none yet</p>
-                                            <p id="selected-time-display" class="text-dark mb-0" style="min-height:1.4em;font-size:14px;">Selected time: none yet</p>
+                                            <p id="selected-date-display" class="text-primary fw-semibold mb-1" style="min-height:1.4em;font-size:14px;" aria-live="polite">Selected date: none yet</p>
+                                            <p id="selected-time-display" class="text-dark mb-0" style="min-height:1.4em;font-size:14px;" aria-live="polite">Selected time: none yet</p>
                                         </div>
 
                                         <!-- Time slots -->
@@ -271,6 +298,13 @@
                                             <i class="fa fa-calendar-check me-2"></i>Book My Free Consultation
                                         </button>
                                         <p class="text-muted small mt-3 text-center">We'll reach out within 24 hours to confirm your appointment.</p>
+                                        <div class="trust-strip p-3 mt-3">
+                                            <div class="row g-2 text-center">
+                                                <div class="col-12 col-md-4"><small class="fw-semibold text-dark"><i class="fa fa-clock text-primary me-1"></i>24-hr Response</small></div>
+                                                <div class="col-12 col-md-4"><small class="fw-semibold text-dark"><i class="fa fa-map-marker-alt text-primary me-1"></i>Fairhope, AL</small></div>
+                                                <div class="col-12 col-md-4"><small class="fw-semibold text-dark"><i class="fa fa-shield-alt text-primary me-1"></i>No Obligation</small></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -351,21 +385,25 @@
     </div>
 
     <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/counterup/counterup.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/isotope/isotope.pkgd.min.js"></script>
-    <script src="lib/lightbox/js/lightbox.min.js"></script>
+    <script defer src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="lib/wow/wow.min.js"></script>
+    <script defer src="lib/easing/easing.min.js"></script>
+    <script defer src="lib/waypoints/waypoints.min.js"></script>
+    <script defer src="lib/counterup/counterup.min.js"></script>
+    <script defer src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script defer src="lib/isotope/isotope.pkgd.min.js"></script>
+    <script defer src="lib/lightbox/js/lightbox.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script defer src="js/main.js"></script>
 
     <script>
-    /* ─── Tab switcher ─── */
+    function trackLeadEvent(name, data) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push(Object.assign({ event: name }, data || {}));
+    }
+
     function switchTab(tab) {
         var isContact = (tab === 'contact');
         document.getElementById('panel-contact').style.setProperty('display', isContact ? '' : 'none', 'important');
@@ -375,6 +413,7 @@
         document.getElementById('tab-booking').classList.toggle('active', !isContact);
         document.getElementById('tab-booking').classList.toggle('btn-primary', !isContact);
     }
+
     function showFeedbackFromQuery() {
         var params = new URLSearchParams(window.location.search);
         var submitted = params.get('submitted');
@@ -383,13 +422,8 @@
         var box = document.getElementById('form-feedback-box');
 
         if (submitted === '1' || submitted === '0') {
-            if (mode === 'contact') {
-                switchTab('contact');
-            } else {
-                switchTab('booking');
-            }
+            switchTab(mode === 'contact' ? 'contact' : 'booking');
         } else {
-            // Default view should open the calendar first.
             switchTab('booking');
         }
 
@@ -397,36 +431,44 @@
             wrap.style.display = '';
             box.className = 'alert alert-success mb-0 rounded-3';
             box.innerHTML = '<strong>Thanks for submitting.</strong> We got your request and will follow up shortly.';
+            trackLeadEvent('lead_form_success', { mode: mode || 'booking' });
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else if (submitted === '0') {
             wrap.style.display = '';
             box.className = 'alert alert-danger mb-0 rounded-3';
             box.innerHTML = '<strong>Submission failed.</strong> Please double-check your info and try again.';
+            trackLeadEvent('lead_form_failure', { mode: mode || 'booking' });
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
 
-    /* ─── Mini Calendar ─── */
-
-            var timeRadios = document.querySelectorAll('input[name="bookTime"]');
-            timeRadios.forEach(function(radio) {
-                radio.addEventListener('change', function() {
-                    var timeDisplay = document.getElementById('selected-time-display');
-                    timeDisplay.textContent = 'Selected time: ' + this.value;
-                });
-            });
     (function () {
         showFeedbackFromQuery();
+
+        // Simple anti-bot timestamp used by backend validation.
+        var started = String(Date.now());
+        document.querySelectorAll('.form-started-at').forEach(function(input) {
+            input.value = started;
+        });
+
         var today = new Date();
         today.setHours(0, 0, 0, 0);
         var currentMonth = today.getMonth();
-        var currentYear  = today.getFullYear();
+        var currentYear = today.getFullYear();
         var selectedDate = null;
         var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        var DAYS   = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+        var DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
         function fmt(d) {
             return d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+        }
+
+        function selectDate(ts) {
+            selectedDate = new Date(parseInt(ts, 10));
+            document.getElementById('bookDate').value = fmt(selectedDate);
+            document.getElementById('selected-date-display').textContent = 'Selected date: ' + fmt(selectedDate);
+            trackLeadEvent('booking_date_selected', { date: selectedDate.toISOString().slice(0, 10) });
+            render(currentMonth, currentYear);
         }
 
         function render(month, year) {
@@ -437,9 +479,9 @@
             var totalDays = new Date(year, month + 1, 0).getDate();
 
             var html = '<div class="d-flex align-items-center justify-content-between mb-3">'
-                + '<button class="btn btn-sm btn-outline-primary rounded-circle px-2" id="cal-prev" type="button"><i class="fa fa-chevron-left" style="font-size:11px;"></i></button>'
+                + '<button class="btn btn-sm btn-outline-primary rounded-circle px-2" id="cal-prev" type="button" aria-label="Previous month"><i class="fa fa-chevron-left" style="font-size:11px;"></i></button>'
                 + '<strong>' + MONTHS[month] + ' ' + year + '</strong>'
-                + '<button class="btn btn-sm btn-outline-primary rounded-circle px-2" id="cal-next" type="button"><i class="fa fa-chevron-right" style="font-size:11px;"></i></button>'
+                + '<button class="btn btn-sm btn-outline-primary rounded-circle px-2" id="cal-next" type="button" aria-label="Next month"><i class="fa fa-chevron-right" style="font-size:11px;"></i></button>'
                 + '</div>';
 
             html += '<div class="row g-1 mb-1 text-center">';
@@ -449,36 +491,33 @@
             html += '</div>';
 
             var day = 1;
-            var started = false;
+            var startedRow = false;
             while (day <= totalDays) {
                 html += '<div class="row g-1 mb-1 text-center">';
                 for (var col = 0; col < 7; col++) {
-                    if (!started && col < firstDay) {
+                    if (!startedRow && col < firstDay) {
                         html += '<div class="col cal-day cal-empty"></div>';
                     } else if (day > totalDays) {
                         html += '<div class="col cal-day cal-empty"></div>';
                     } else {
-                        started = true;
+                        startedRow = true;
                         var dt = new Date(year, month, day);
-                        dt.setHours(0,0,0,0);
-                        var isPast     = dt < today;
-                        var isSunday   = dt.getDay() === 0;
-                        var isToday    = dt.getTime() === today.getTime();
+                        dt.setHours(0, 0, 0, 0);
+                        var isPast = dt < today;
+                        var isSunday = dt.getDay() === 0;
+                        var isToday = dt.getTime() === today.getTime();
                         var isSelected = selectedDate && dt.getTime() === selectedDate.getTime();
                         var cls = 'col cal-day ';
+
                         if ((isPast && !isToday) || isSunday) {
-                            if (isSunday) {
-                                cls += 'cal-unavailable';
-                            } else {
-                                cls += 'cal-past';
-                            }
-                            html += '<div class="' + cls + '">' + day + '</div>';
+                            cls += isSunday ? 'cal-unavailable' : 'cal-past';
+                            html += '<div class="' + cls + '" aria-disabled="true">' + day + '</div>';
                         } else if (isSelected) {
                             cls += 'cal-selected cal-available';
-                            html += '<div class="' + cls + '" data-ts="' + dt.getTime() + '">' + day + '</div>';
+                            html += '<div class="' + cls + '" data-ts="' + dt.getTime() + '" role="button" tabindex="0" aria-selected="true" aria-label="' + fmt(dt) + '">' + day + '</div>';
                         } else {
                             cls += 'cal-available' + (isToday ? ' cal-today' : '');
-                            html += '<div class="' + cls + '" data-ts="' + dt.getTime() + '">' + day + '</div>';
+                            html += '<div class="' + cls + '" data-ts="' + dt.getTime() + '" role="button" tabindex="0" aria-selected="false" aria-label="' + fmt(dt) + '">' + day + '</div>';
                         }
                         day++;
                     }
@@ -490,10 +529,13 @@
 
             cal.querySelectorAll('.cal-available').forEach(function(el) {
                 el.addEventListener('click', function() {
-                    selectedDate = new Date(parseInt(this.getAttribute('data-ts')));
-                    document.getElementById('bookDate').value = fmt(selectedDate);
-                    document.getElementById('selected-date-display').textContent = 'Selected date: ' + fmt(selectedDate);
-                    render(currentMonth, currentYear);
+                    selectDate(this.getAttribute('data-ts'));
+                });
+                el.addEventListener('keydown', function(evt) {
+                    if (evt.key === 'Enter' || evt.key === ' ') {
+                        evt.preventDefault();
+                        selectDate(this.getAttribute('data-ts'));
+                    }
                 });
             });
 
@@ -511,16 +553,29 @@
 
         render(currentMonth, currentYear);
 
-        /* ─── Booking form submit: compose message ─── */
+        document.querySelectorAll('input[name="bookTime"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                document.getElementById('selected-time-display').textContent = 'Selected time: ' + this.value;
+                trackLeadEvent('booking_time_selected', { time: this.value });
+            });
+        });
+
+        var contactForm = document.querySelector('#panel-contact form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function() {
+                trackLeadEvent('contact_form_submit');
+            });
+        }
+
         var bookingForm = document.getElementById('bookingForm');
         if (bookingForm) {
             bookingForm.addEventListener('submit', function(e) {
-                var date    = document.getElementById('bookDate').value;
-                var timeEl  = document.querySelector('input[name="bookTime"]:checked');
+                var date = document.getElementById('bookDate').value;
+                var timeEl = document.querySelector('input[name="bookTime"]:checked');
                 var service = document.getElementById('bookService').value;
-                var phone   = document.getElementById('bookPhone').value;
-                var notes   = document.getElementById('bookNotes').value;
-                var email   = document.getElementById('bookEmail').value;
+                var phone = document.getElementById('bookPhone').value;
+                var notes = document.getElementById('bookNotes').value;
+                var email = document.getElementById('bookEmail').value;
 
                 if (!date) {
                     e.preventDefault();
@@ -534,15 +589,20 @@
                 }
 
                 var msg = 'CONSULTATION BOOKING REQUEST\n\n'
-                    + 'Name: '  + document.getElementById('bookName').value + '\n'
+                    + 'Name: ' + document.getElementById('bookName').value + '\n'
                     + 'Email: ' + email + '\n'
-                    + (phone   ? 'Phone: '   + phone   + '\n' : '')
+                    + (phone ? 'Phone: ' + phone + '\n' : '')
                     + (service ? 'Service: ' + service + '\n' : '')
                     + 'Preferred Date: ' + date + '\n'
                     + 'Preferred Time: ' + timeEl.value + '\n'
-                    + (notes   ? '\nProject Notes:\n' + notes : '');
+                    + (notes ? '\nProject Notes:\n' + notes : '');
 
                 document.getElementById('bookingMessage').value = msg;
+                trackLeadEvent('booking_form_submit', {
+                    date: date,
+                    time: timeEl.value,
+                    service: service || 'unspecified'
+                });
             });
         }
     })();
@@ -551,4 +611,5 @@
 </body>
 
 </html>
+
 
