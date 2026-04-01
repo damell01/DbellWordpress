@@ -39,7 +39,22 @@ if (!function_exists('detectAppUrl')) {
         $host = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
         $host = trim(explode(',', (string) $host)[0]);
 
-        return ($isHttps ? 'https' : 'http') . '://' . $host;
+        $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')), '/');
+        if ($scriptDir === '') {
+            $scriptDir = '/';
+        }
+
+        // If app entry point is /something/public/index.php, public URL base is /something
+        if ($scriptDir !== '/' && str_ends_with($scriptDir, '/public')) {
+            $scriptDir = rtrim(dirname($scriptDir), '/');
+            if ($scriptDir === '') {
+                $scriptDir = '/';
+            }
+        }
+
+        $basePath = $scriptDir === '/' ? '' : $scriptDir;
+
+        return ($isHttps ? 'https' : 'http') . '://' . $host . $basePath;
     }
 }
 

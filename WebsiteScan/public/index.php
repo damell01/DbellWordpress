@@ -25,15 +25,25 @@ if ($scriptDir === '') {
     $scriptDir = '/';
 }
 
+$appBaseDir = $scriptDir;
+if ($appBaseDir !== '/' && str_ends_with($appBaseDir, '/public')) {
+    $appBaseDir = rtrim(dirname($appBaseDir), '/');
+    if ($appBaseDir === '') {
+        $appBaseDir = '/';
+    }
+}
+
 if ($scriptDir !== '/' && str_starts_with($requestPath, $scriptDir)) {
     $requestPath = substr($requestPath, strlen($scriptDir)) ?: '/';
+} elseif ($appBaseDir !== '/' && str_starts_with($requestPath, $appBaseDir)) {
+    $requestPath = substr($requestPath, strlen($appBaseDir)) ?: '/';
 }
 $requestPath = '/' . ltrim($requestPath, '/');
 
 $isInstallRoute = str_starts_with($requestPath, '/install');
 
 if (!file_exists(BASE_PATH . '/config/installed.lock') && !$isInstallRoute) {
-    $installUrl = ($scriptDir === '/' ? '' : $scriptDir) . '/install/';
+    $installUrl = ($appBaseDir === '/' ? '' : $appBaseDir) . '/install/';
     header('Location: ' . $installUrl);
     exit;
 }

@@ -29,8 +29,17 @@ class Router {
         $path   = $request->path();
         // Strip script prefix for subdirectory installs
         $script = dirname($request->server['SCRIPT_NAME'] ?? '/index.php');
+        $appBase = $script;
+        if ($appBase !== '/' && str_ends_with($appBase, '/public')) {
+            $appBase = rtrim(dirname($appBase), '/');
+            if ($appBase === '') {
+                $appBase = '/';
+            }
+        }
         if ($script !== '/' && str_starts_with($path, $script)) {
             $path = substr($path, strlen($script)) ?: '/';
+        } elseif ($appBase !== '/' && str_starts_with($path, $appBase)) {
+            $path = substr($path, strlen($appBase)) ?: '/';
         }
         $path = '/' . ltrim($path, '/');
 

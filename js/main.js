@@ -23,7 +23,7 @@
                             '<button class="scanner-modal-close" type="button" aria-label="Close scanner">&times;</button>' +
                         '</div>' +
                     '</div>' +
-                    '<iframe class="scanner-modal-iframe" src="WebsiteScan/public/audit?embed=1" title="DBell Website Scanner"></iframe>' +
+                    '<iframe class="scanner-modal-iframe" src="WebsiteScan/audit?embed=1" title="DBell Website Scanner"></iframe>' +
                 '</div>' +
             '</div>';
 
