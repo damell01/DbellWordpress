@@ -1283,6 +1283,15 @@ textarea.form-control {
         cursor: not-allowed;
     }
 
+    .cal-unavailable {
+        background: #f3eefb;
+        color: #a194bc;
+        opacity: 0.75;
+        cursor: not-allowed;
+        text-decoration: line-through;
+        border: 1px solid #e2d9f5;
+    }
+
     .cal-empty {
         visibility: hidden;
     }

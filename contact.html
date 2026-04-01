@@ -462,11 +462,16 @@
                         var dt = new Date(year, month, day);
                         dt.setHours(0,0,0,0);
                         var isPast     = dt < today;
+                        var isSunday   = dt.getDay() === 0;
                         var isToday    = dt.getTime() === today.getTime();
                         var isSelected = selectedDate && dt.getTime() === selectedDate.getTime();
                         var cls = 'col cal-day ';
-                        if (isPast && !isToday) {
-                            cls += 'cal-past';
+                        if ((isPast && !isToday) || isSunday) {
+                            if (isSunday) {
+                                cls += 'cal-unavailable';
+                            } else {
+                                cls += 'cal-past';
+                            }
                             html += '<div class="' + cls + '">' + day + '</div>';
                         } else if (isSelected) {
                             cls += 'cal-selected cal-available';
