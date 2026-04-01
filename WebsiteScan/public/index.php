@@ -19,12 +19,22 @@ spl_autoload_register(function (string $class): void {
 
 require BASE_PATH . '/app/Core/helpers.php';
 
-$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
-$isInstallRoute = str_starts_with($requestPath, '/install');
-$hasEnvConfig = file_exists(BASE_PATH . '/.env');
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')), '/');
+if ($scriptDir === '') {
+    $scriptDir = '/';
+}
 
-if (!file_exists(BASE_PATH . '/config/installed.lock') && !$hasEnvConfig && !$isInstallRoute) {
-    header('Location: /install/');
+if ($scriptDir !== '/' && str_starts_with($requestPath, $scriptDir)) {
+    $requestPath = substr($requestPath, strlen($scriptDir)) ?: '/';
+}
+$requestPath = '/' . ltrim($requestPath, '/');
+
+$isInstallRoute = str_starts_with($requestPath, '/install');
+
+if (!file_exists(BASE_PATH . '/config/installed.lock') && !$isInstallRoute) {
+    $installUrl = ($scriptDir === '/' ? '' : $scriptDir) . '/install/';
+    header('Location: ' . $installUrl);
     exit;
 }
 
