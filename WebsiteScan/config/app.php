@@ -20,9 +20,38 @@ if (!function_exists('loadEnv')) {
 
 if (!function_exists('detectAppUrl')) {
     function detectAppUrl(): string {
+        $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')), '/');
+        if ($scriptDir === '') {
+            $scriptDir = '/';
+        }
+
+        // If app entry point is /something/public/index.php, public URL base is /something
+        if ($scriptDir !== '/' && str_ends_with($scriptDir, '/public')) {
+            $scriptDir = rtrim(dirname($scriptDir), '/');
+            if ($scriptDir === '') {
+                $scriptDir = '/';
+            }
+        }
+
+        $detectedBasePath = $scriptDir === '/' ? '' : $scriptDir;
+
         $configuredUrl = env('APP_URL');
         if (is_string($configuredUrl) && trim($configuredUrl) !== '') {
-            return rtrim($configuredUrl, '/');
+            $configuredUrl = rtrim(trim($configuredUrl), '/');
+            $configuredPath = parse_url($configuredUrl, PHP_URL_PATH) ?: '';
+
+            // Normalize accidental /public in configured URL.
+            if ($configuredPath !== '' && str_ends_with($configuredPath, '/public')) {
+                $configuredUrl = substr($configuredUrl, 0, -7);
+                $configuredPath = parse_url($configuredUrl, PHP_URL_PATH) ?: '';
+            }
+
+            // If APP_URL has no path but app runs in subfolder, append detected subfolder.
+            if (($configuredPath === '' || $configuredPath === '/') && $detectedBasePath !== '') {
+                return $configuredUrl . $detectedBasePath;
+            }
+
+            return $configuredUrl;
         }
 
         $isHttps = false;
@@ -39,20 +68,7 @@ if (!function_exists('detectAppUrl')) {
         $host = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
         $host = trim(explode(',', (string) $host)[0]);
 
-        $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')), '/');
-        if ($scriptDir === '') {
-            $scriptDir = '/';
-        }
-
-        // If app entry point is /something/public/index.php, public URL base is /something
-        if ($scriptDir !== '/' && str_ends_with($scriptDir, '/public')) {
-            $scriptDir = rtrim(dirname($scriptDir), '/');
-            if ($scriptDir === '') {
-                $scriptDir = '/';
-            }
-        }
-
-        $basePath = $scriptDir === '/' ? '' : $scriptDir;
+        $basePath = $detectedBasePath;
 
         return ($isHttps ? 'https' : 'http') . '://' . $host . $basePath;
     }
