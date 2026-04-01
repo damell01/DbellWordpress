@@ -3,6 +3,26 @@
 // Replace this with your own email address
 $siteOwnersEmail = 'dbellcreations@gmail.com';
 
+function safeRedirectPath($path) {
+    if (!$path) {
+        return null;
+    }
+
+    $path = trim($path);
+
+    // Block full URLs and protocol-relative redirects.
+    if (preg_match('/^https?:\/\//i', $path) || strpos($path, '//') === 0) {
+        return null;
+    }
+
+    // Keep redirects local to HTML pages in this site.
+    if (!preg_match('/^[a-zA-Z0-9_\-\.\/\?=&%]+$/', $path)) {
+        return null;
+    }
+
+    return $path;
+}
+
 
 if($_POST) {
 
@@ -10,6 +30,8 @@ if($_POST) {
     $email = trim(stripslashes($_POST['contactEmail']));
     $subject = trim(stripslashes($_POST['contactSubject']));
     $contact_message = trim(stripslashes($_POST['contactMessage']));
+    $redirectSuccess = safeRedirectPath($_POST['redirectSuccess'] ?? null);
+    $redirectError = safeRedirectPath($_POST['redirectError'] ?? null);
 
     // Check Name
     if (strlen($name) < 2) {
@@ -49,8 +71,20 @@ if($_POST) {
         ini_set("sendmail_from", $siteOwnersEmail); // for windows server
         $mail = mail($siteOwnersEmail, $subject, $message, $headers);
 
-        if ($mail) { echo "OK"; }
-        else { echo "Something went wrong. Please try again."; }
+        if ($mail) {
+            if ($redirectSuccess) {
+                header("Location: " . $redirectSuccess);
+                exit;
+            }
+            echo "OK";
+        }
+        else {
+            if ($redirectError) {
+                header("Location: " . $redirectError);
+                exit;
+            }
+            echo "Something went wrong. Please try again.";
+        }
         
     } # end if - no validation error
 
@@ -59,6 +93,11 @@ if($_POST) {
         $response = (isset($error['name'])) ? $error['name'] . "<br /> \n" : null;
         $response .= (isset($error['email'])) ? $error['email'] . "<br /> \n" : null;
         $response .= (isset($error['message'])) ? $error['message'] . "<br />" : null;
+
+        if ($redirectError) {
+            header("Location: " . $redirectError);
+            exit;
+        }
         
         echo $response;
 

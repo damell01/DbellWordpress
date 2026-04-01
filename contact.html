@@ -31,13 +31,6 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-    <script language="JavaScript">
-        var frmvalidator  = new Validator("contactform");
-        frmvalidator.addValidation("name","req","Please provide your name");
-        frmvalidator.addValidation("email","req","Please provide your email");
-        frmvalidator.addValidation("email","email",
-          "Please enter a valid email address");
-        </script>
 </head>
 
 <body>
@@ -103,58 +96,15 @@
         <!-- Navbar & Hero End -->
 
 
-        <!-- Contact Start -->
-        <div class="container-xxl py-5">
-            <div class="container py-5 px-lg-5">
-                <div class="wow fadeInUp" data-wow-delay="0.1s">
-                    <p class="section-title text-secondary justify-content-center"><span></span>Contact Us<span></span></p>
-                    <h1 class="text-center mb-5"> Contact Us</h1>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-lg-7">
-                        <div class="wow fadeInUp" data-wow-delay="0.3s">
-                            <form method="post" action="sendEmail.php">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="text" name="contactName" class="form-control" id="name" placeholder="Your Name" required>
-                                            <label for="name">Your Name</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="email" name="contactEmail" class="form-control" id="email" placeholder="Your Email" required>
-                                            <label for="email">Your Email</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="tel" name="contactPhone" class="form-control" id="phone" placeholder="Your Phone">
-                                            <label for="phone">Your Phone (optional)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Leave a message here" id="message" name="contactMessage" style="height: 150px" required></textarea>
-                                            <label for="message">Message</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <button class="btn btn-primary w-100 py-3" type="submit">Send Message</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Contact End -->
-
-
         <!-- Contact / Booking Tabs Start -->
         <div class="container-xxl py-5">
             <div class="container py-5 px-lg-5">
+
+                <div id="form-feedback" class="row justify-content-center mb-4" style="display:none;">
+                    <div class="col-lg-9">
+                        <div id="form-feedback-box" class="alert mb-0 rounded-3"></div>
+                    </div>
+                </div>
 
                 <!-- Tab buttons -->
                 <div class="wow fadeInUp text-center mb-5" data-wow-delay="0.1s">
@@ -197,6 +147,8 @@
                                         </div>
                                     </div>
                                     <input type="hidden" name="contactSubject" value="Website Contact Form">
+                                    <input type="hidden" name="redirectSuccess" value="contact.html?submitted=1&mode=contact">
+                                    <input type="hidden" name="redirectError" value="contact.html?submitted=0&mode=contact">
                                     <div class="col-12">
                                         <button class="btn btn-primary w-100 py-3 rounded-pill" type="submit">Send Message</button>
                                     </div>
@@ -213,6 +165,8 @@
                             <form id="bookingForm" method="post" action="sendEmail.php">
                                 <input type="hidden" name="contactSubject" value="Consultation Booking Request">
                                 <input type="hidden" name="contactMessage" id="bookingMessage">
+                                <input type="hidden" name="redirectSuccess" value="contact.html?submitted=1&mode=booking">
+                                <input type="hidden" name="redirectError" value="contact.html?submitted=0&mode=booking">
 
                                 <div class="row g-4">
                                     <!-- Left: personal details + service -->
@@ -386,10 +340,6 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-</body>
-
-</html>
-
 
     <script>
     /* ─── Tab switcher ─── */
@@ -402,12 +352,35 @@
         document.getElementById('tab-booking').classList.toggle('active', !isContact);
         document.getElementById('tab-booking').classList.toggle('btn-primary', !isContact);
     }
-    // init tab styles
-    document.getElementById('tab-contact').classList.add('btn-primary');
-    document.getElementById('tab-booking').style.color = 'var(--dark)';
+    function showFeedbackFromQuery() {
+        var params = new URLSearchParams(window.location.search);
+        var submitted = params.get('submitted');
+        var mode = params.get('mode');
+        var wrap = document.getElementById('form-feedback');
+        var box = document.getElementById('form-feedback-box');
+
+        if (mode === 'booking') {
+            switchTab('booking');
+        } else {
+            switchTab('contact');
+        }
+
+        if (submitted === '1') {
+            wrap.style.display = '';
+            box.className = 'alert alert-success mb-0 rounded-3';
+            box.innerHTML = '<strong>Thanks for submitting.</strong> We got your request and will follow up shortly.';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (submitted === '0') {
+            wrap.style.display = '';
+            box.className = 'alert alert-danger mb-0 rounded-3';
+            box.innerHTML = '<strong>Submission failed.</strong> Please double-check your info and try again.';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
 
     /* ─── Mini Calendar ─── */
     (function () {
+        showFeedbackFromQuery();
         var today = new Date();
         today.setHours(0, 0, 0, 0);
         var currentMonth = today.getMonth();
@@ -528,4 +501,8 @@
         }
     })();
     </script>
+
+</body>
+
+</html>
 
