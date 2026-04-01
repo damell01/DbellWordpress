@@ -91,11 +91,15 @@ class MailService {
         $fromName  = $this->config['from_name'] ?? 'VerityScan';
         $fromEmail = $this->config['from'];
         $boundary  = md5(uniqid());
+        $hostName  = $_SERVER['SERVER_NAME'] ?? 'localhost';
+        $messageId = '<' . md5(uniqid((string) mt_rand(), true)) . '@' . $hostName . '>';
 
         $headers  = "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: multipart/alternative; boundary=\"{$boundary}\"\r\n";
         $headers .= "From: {$fromName} <{$fromEmail}>\r\n";
         $headers .= "Reply-To: {$fromEmail}\r\n";
+        $headers .= "Date: " . date('r') . "\r\n";
+        $headers .= "Message-ID: {$messageId}\r\n";
         $headers .= "X-Mailer: VerityScan\r\n";
 
         $body  = "--{$boundary}\r\n";
@@ -106,7 +110,7 @@ class MailService {
         $body .= $html . "\r\n\r\n";
         $body .= "--{$boundary}--";
 
-        $sent = @mail($to, $subject, $body, $headers);
+        $sent = @mail($to, $subject, $body, $headers, '-f' . $fromEmail);
         if (!$sent) {
             $this->lastError = 'PHP mail() failed to hand off the message.';
         }
@@ -123,6 +127,8 @@ class MailService {
         $from       = $this->config['from'];
         $fromName   = $this->config['from_name'] ?? 'VerityScan';
         $boundary   = md5(uniqid());
+        $hostName   = $_SERVER['SERVER_NAME'] ?? 'localhost';
+        $messageId  = '<' . md5(uniqid((string) mt_rand(), true)) . '@' . $hostName . '>';
 
         try {
             $prefix = ($encryption === 'ssl') ? 'ssl://' : '';
@@ -220,7 +226,10 @@ class MailService {
 
             $message  = "From: {$fromName} <{$from}>\r\n";
             $message .= "To: {$to}\r\n";
+            $message .= "Reply-To: {$from}\r\n";
             $message .= "Subject: {$subject}\r\n";
+            $message .= "Date: " . date('r') . "\r\n";
+            $message .= "Message-ID: {$messageId}\r\n";
             $message .= "MIME-Version: 1.0\r\n";
             $message .= "Content-Type: multipart/alternative; boundary=\"{$boundary}\"\r\n";
             $message .= "\r\n" . $body . "\r\n.\r\n";

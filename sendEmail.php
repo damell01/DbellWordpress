@@ -117,12 +117,21 @@ if($_POST) {
     $message .= $contact_message;
     $message .= "<br /> ----- <br /> This email was sent from your site's contact form. <br />";
 
-    // Set From: header
-    $from =  $name . " <" . $email . ">";
+    // Use a stable authenticated sender to reduce spam-folder placement.
+    $fromName = 'DBell Creations';
+    $fromEmail = $siteOwnersEmail;
+    $replyToEmail = $email;
+
+    if (!filter_var($replyToEmail, FILTER_VALIDATE_EMAIL)) {
+        $replyToEmail = $siteOwnersEmail;
+    }
 
     // Email Headers
-    $headers = "From: " . $from . "\r\n";
-    $headers .= "Reply-To: ". $email . "\r\n";
+    $headers = "From: " . $fromName . " <" . $fromEmail . ">\r\n";
+    $headers .= "Reply-To: " . $replyToEmail . "\r\n";
+    $headers .= "Date: " . date('r') . "\r\n";
+    $headers .= "Message-ID: <" . md5(uniqid((string) mt_rand(), true)) . "@" . ($_SERVER['SERVER_NAME'] ?? 'localhost') . ">\r\n";
+    $headers .= "X-Mailer: DBellContact/1.0\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 
@@ -130,7 +139,7 @@ if($_POST) {
     if (empty($error)) {
 
         ini_set("sendmail_from", $siteOwnersEmail); // for windows server
-        $mail = mail($siteOwnersEmail, $subject, $message, $headers);
+        $mail = mail($siteOwnersEmail, $subject, $message, $headers, "-f" . $siteOwnersEmail);
 
         if ($mail) {
             updateRateLimit($ip);
