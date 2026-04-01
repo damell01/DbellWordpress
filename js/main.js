@@ -89,6 +89,79 @@
 
         portfolioIsotope.isotope({filter: $(this).data('filter')});
     });
+
+
+    // Sticky mobile CTA bar — show after scrolling past hero
+    $(window).on('scroll.stickyCta', function () {
+        if ($(this).scrollTop() > 500) {
+            $('#stickyCta').addClass('visible').attr('aria-hidden', 'false');
+        } else {
+            $('#stickyCta').removeClass('visible').attr('aria-hidden', 'true');
+        }
+    });
+
+
+    // Free Audit form — AJAX submission
+    $('#auditForm').on('submit', function (e) {
+        e.preventDefault();
+
+        var name      = $('#auditName').val().trim();
+        var email     = $('#auditEmail').val().trim();
+        var website   = $('#auditWebsite').val().trim();
+        var challenge = $('#auditChallenge').val();
+        var $errorDiv = $('#auditFormError');
+
+        // Basic client-side validation with email format check
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var errors = [];
+
+        if (!name)  { $('#auditName').addClass('is-invalid');  errors.push('Name is required.'); }
+        if (!email) { $('#auditEmail').addClass('is-invalid'); errors.push('Email is required.'); }
+        else if (!emailRegex.test(email)) { $('#auditEmail').addClass('is-invalid'); errors.push('Please enter a valid email address.'); }
+
+        if (errors.length) {
+            $errorDiv.html(errors.join('<br>')).removeClass('d-none');
+            return;
+        }
+
+        $errorDiv.addClass('d-none');
+
+        var message = 'FREE AUDIT REQUEST\n';
+        if (website)   message += 'Website: ' + website + '\n';
+        if (challenge) message += 'Biggest Challenge: ' + challenge;
+
+        var $btn = $(this).find('[type=submit]');
+        $btn.prop('disabled', true).text('Sending…');
+
+        $.ajax({
+            url: 'contact.php',
+            type: 'POST',
+            data: { name: name, email: email, message: message },
+            dataType: 'json',
+            success: function (data) {
+                if (data && data.type === 'success') {
+                    $('#auditForm').addClass('d-none');
+                    $('#auditFormSuccess').removeClass('d-none');
+                } else {
+                    var msg = (data && data.message) ? data.message : 'Something went wrong. Please try again.';
+                    $errorDiv.html(msg).removeClass('d-none');
+                    $btn.prop('disabled', false).text('Send Me My Free Audit →');
+                }
+            },
+            error: function () {
+                // Graceful fallback — redirect to contact page
+                window.location.href = 'contact.html';
+            }
+        });
+    });
+
+    // Remove invalid class on input
+    $('#auditName, #auditEmail').on('input', function () {
+        $(this).removeClass('is-invalid');
+        if (!$('#auditName').hasClass('is-invalid') && !$('#auditEmail').hasClass('is-invalid')) {
+            $('#auditFormError').addClass('d-none');
+        }
+    });
     
 })(jQuery);
 
