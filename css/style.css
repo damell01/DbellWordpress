@@ -1172,3 +1172,148 @@ textarea.form-control {
 .hero-header .text-warning { color: var(--secondary) !important; }
 .hero-header .text-success { color: #4ade80 !important; }
 .hero-header .text-info    { color: #93c5fd !important; }
+
+
+/*** Pain Points (Problem) Cards ***/
+.pain-card {
+    background: #fff;
+    border: 1.5px solid #ebe6f5;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.pain-card:hover {
+    border-color: var(--secondary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-6px);
+}
+
+.pain-card i {
+    transition: var(--transition);
+}
+
+.pain-card:hover i {
+    transform: scale(1.12) translateY(-3px);
+}
+
+
+/*** Process Steps ***/
+.process-num {
+    width: 76px;
+    height: 76px;
+    background: linear-gradient(135deg, #7a2fe0 0%, var(--primary) 100%);
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 800;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-primary);
+    position: relative;
+    z-index: 1;
+    transition: var(--transition);
+    letter-spacing: -0.03em;
+}
+
+/* Connecting line between steps on desktop
+   Values derived from .process-num dimensions (76px circle):
+   top: 38px = half of 76px (vertically centered)
+   left: calc(50% + 38px) = starts at right edge of centered circle
+   width: calc(100% - 76px) = fills the gap between two circles */
+@media (min-width: 992px) {
+    .process-step {
+        position: relative;
+    }
+    .process-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 38px;            /* half of .process-num height (76px) */
+        left: calc(50% + 38px); /* right edge of .process-num */
+        width: calc(100% - 76px); /* gap between two .process-num circles */
+        height: 2px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        opacity: 0.3;
+        z-index: 0;
+    }
+}
+
+.process-step:hover .process-num {
+    transform: scale(1.1) translateY(-4px);
+    box-shadow: 0 14px 36px rgba(98, 34, 204, 0.38);
+    background: linear-gradient(135deg, var(--secondary) 0%, #ffc030 100%);
+    color: var(--dark);
+}
+
+
+/*** Trust / Why Choose Us Cards ***/
+.trust-card {
+    background: #fff;
+    border: 1.5px solid #ebe6f5;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.trust-card:hover {
+    border-color: rgba(98, 34, 204, 0.22);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-7px);
+}
+
+.trust-card i {
+    transition: var(--transition);
+}
+
+.trust-card:hover i {
+    transform: scale(1.12) translateY(-3px);
+    color: var(--secondary) !important;
+}
+
+
+/*** Free Audit / Lead Capture Form Card ***/
+.audit-form-card {
+    background: #fff;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(98, 34, 204, 0.08);
+}
+
+.audit-form-card .form-control,
+.audit-form-card .form-select {
+    padding: 14px 18px;
+    font-size: 15px;
+}
+
+.audit-form-card .form-select {
+    cursor: pointer;
+}
+
+
+/*** Sticky Mobile CTA Bar ***/
+.sticky-cta-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background: linear-gradient(135deg, #7a2fe0 0%, var(--primary) 100%);
+    box-shadow: 0 -4px 24px rgba(4, 0, 11, 0.18);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+}
+
+.sticky-cta-bar.visible {
+    transform: translateY(0);
+}
+
+/* Ensure back-to-top stays above sticky bar on mobile */
+@media (max-width: 991.98px) {
+    .back-to-top {
+        bottom: 80px !important;
+    }
+}
+
