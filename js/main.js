@@ -1,6 +1,35 @@
 (function ($) {
     "use strict";
 
+    var scannerModalId = 'scannerModalBackdrop';
+
+    function closeScannerModal() {
+        $('#' + scannerModalId).remove();
+        $('body').removeClass('scanner-modal-open');
+    }
+
+    function openScannerModal() {
+        if ($('#' + scannerModalId).length) {
+            return;
+        }
+
+        var modalHtml = '' +
+            '<div id="' + scannerModalId + '" class="scanner-modal-backdrop" role="dialog" aria-modal="true" aria-label="Website Scanner">' +
+                '<div class="scanner-modal-panel">' +
+                    '<div class="scanner-modal-header">' +
+                        '<div class="scanner-modal-title">DBell Free Website Scanner</div>' +
+                        '<div class="scanner-modal-actions">' +
+                            '<a class="btn btn-sm btn-secondary rounded-pill px-3" href="scan.html" target="_blank" rel="noopener">Open Full Page</a>' +
+                            '<button class="scanner-modal-close" type="button" aria-label="Close scanner">&times;</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<iframe class="scanner-modal-iframe" src="WebsiteScan/public/audit?embed=1" title="DBell Website Scanner"></iframe>' +
+                '</div>' +
+            '</div>';
+
+        $('body').append(modalHtml).addClass('scanner-modal-open');
+    }
+
     // Spinner
     var spinner = function () {
         setTimeout(function () {
@@ -97,6 +126,30 @@
             $('#stickyCta').addClass('visible').attr('aria-hidden', 'false');
         } else {
             $('#stickyCta').removeClass('visible').attr('aria-hidden', 'true');
+        }
+    });
+
+    // Open scanner in modal from any scan link unless user wants new tab
+    $(document).on('click', 'a[href="scan.html"]', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.which === 2) {
+            return;
+        }
+        e.preventDefault();
+        openScannerModal();
+    });
+
+    // Close scanner modal events
+    $(document).on('click', '.scanner-modal-close', function () {
+        closeScannerModal();
+    });
+    $(document).on('click', '.scanner-modal-backdrop', function (e) {
+        if ($(e.target).is('.scanner-modal-backdrop')) {
+            closeScannerModal();
+        }
+    });
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeScannerModal();
         }
     });
 

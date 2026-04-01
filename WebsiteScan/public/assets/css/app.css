@@ -114,6 +114,25 @@ button:focus-visible,
     background: rgba(255,255,255,0.06);
 }
 
+.ss-navbar .dropdown-menu {
+    border-radius: 12px;
+    border: 1px solid rgba(98, 34, 204, 0.12);
+    box-shadow: 0 14px 34px rgba(4, 0, 11, 0.16);
+    padding: 8px;
+}
+
+.ss-navbar .dropdown-item {
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #22163c;
+}
+
+.ss-navbar .dropdown-item:hover {
+    background: rgba(98, 34, 204, 0.08);
+    color: var(--ss-primary-dark);
+}
+
 .ss-navbar .btn-primary {
     background: var(--ss-warning);
     border-color: var(--ss-warning);
@@ -129,6 +148,20 @@ button:focus-visible,
 /* ── Footer ───────────────────────────────── */
 .ss-footer {
     background: linear-gradient(180deg, #2a0d56 0%, #1d093c 100%);
+}
+
+/* Embedded scanner mode for modal iframe */
+body.scan-embed {
+    background: #fff;
+}
+
+body.scan-embed #main-content {
+    min-height: auto;
+}
+
+body.scan-embed section.py-5 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
 }
 .footer-link {
     color: rgba(255,255,255,0.45);

@@ -1,3 +1,4 @@
+<?php $isEmbed = (($_GET['embed'] ?? '') === '1'); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +14,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= asset('css/app.css') ?>">
 </head>
-<body>
+<body class="<?= $isEmbed ? 'scan-embed' : '' ?>">
 
+<?php if (!$isEmbed): ?>
 <nav class="navbar navbar-expand-lg navbar-dark ss-navbar sticky-top">
     <div class="container">
         <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="<?= url('/') ?>">
@@ -29,24 +31,35 @@
         </button>
         <div class="collapse navbar-collapse" id="navMain">
             <ul class="navbar-nav ms-auto align-items-center gap-1">
-                <li class="nav-item"><a class="nav-link" href="<?= url('/') ?>">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= url('features') ?>">Features</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= url('fix-my-website') ?>">Services</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= url('about') ?>">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= url('contact') ?>">Contact</a></li>
-                <li class="nav-item"><a class="nav-link" href="/index.html">Main Site</a></li>
+                <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Services</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/webDesign.html">Web Design</a></li>
+                        <li><a class="dropdown-item" href="/software.html">Custom Software</a></li>
+                        <li><a class="dropdown-item" href="/automations.html">Business Automation</a></li>
+                        <li><a class="dropdown-item" href="/marketing.html">Digital Marketing</a></li>
+                        <li><a class="dropdown-item" href="/seo.html">SEO Optimization</a></li>
+                        <li><a class="dropdown-item" href="<?= url('audit') ?>">Free Website Scanner</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="/project.html">Portfolio</a></li>
+                <li class="nav-item"><a class="nav-link" href="/frequentlyaskedquestions.html">FAQ</a></li>
+                <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
                 <li class="nav-item">
-                    <a class="btn btn-primary btn-sm ms-lg-2 px-3 fw-semibold" href="<?= url('audit') ?>">
-                        <i class="bi bi-search me-1"></i>Free Audit
+                    <a class="btn btn-primary btn-sm ms-lg-2 px-3 fw-semibold" href="/contact.html">
+                        Contact Us
                     </a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+<?php endif; ?>
 
 <?php $flashSuccess = get_flash('success'); $flashError = get_flash('error'); ?>
-<?php if ($flashSuccess): ?>
+<?php if (!$isEmbed && $flashSuccess): ?>
 <div class="alert alert-success alert-dismissible fade show mb-0 rounded-0 border-0 border-start border-4 border-success" role="alert" style="border-radius:0!important;">
     <div class="container d-flex align-items-center gap-2">
         <i class="bi bi-check-circle-fill text-success"></i>
@@ -55,7 +68,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
 <?php endif; ?>
-<?php if ($flashError): ?>
+<?php if (!$isEmbed && $flashError): ?>
 <div class="alert alert-danger alert-dismissible fade show mb-0 rounded-0 border-0 border-start border-4 border-danger" role="alert" style="border-radius:0!important;">
     <div class="container d-flex align-items-center gap-2">
         <i class="bi bi-exclamation-circle-fill text-danger"></i>
@@ -69,6 +82,7 @@
     <?= $content ?>
 </main>
 
+<?php if (!$isEmbed): ?>
 <footer class="ss-footer py-5 mt-5">
     <div class="container">
         <div class="row g-4 align-items-start">
@@ -111,11 +125,12 @@
         </div>
         <hr class="footer-divider mt-4 mb-3">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-            <p class="text-muted small mb-0">&copy; <?= date('Y') ?> <?= e($appName ?? 'VerityScan') ?>. All rights reserved.</p>
+            <p class="text-muted small mb-0">&copy; <?= date('Y') ?> <?= e($appName ?? 'DBell Website Scanner') ?>. All rights reserved.</p>
             <p class="text-muted small mb-0">Built to help your business grow online.</p>
         </div>
     </div>
 </footer>
+<?php endif; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 <script src="<?= asset('js/app.js') ?>"></script>
