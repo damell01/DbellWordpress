@@ -99,10 +99,99 @@ class GooglePlacesService {
         return $result;
     }
 
-    private function searchText(string $query): array {
+    public function findCompetitors(string $websiteUrl, string|array $serviceTerms = [], string|array $locationHints = [], int $limit = 3): array {
+        if (!$this->enabled) {
+            return ['success' => false, 'error' => 'Google Places lookup disabled in settings.', 'competitors' => []];
+        }
+
+        if ($this->apiKey === '') {
+            return ['success' => false, 'error' => 'No Google Maps API key configured.', 'competitors' => []];
+        }
+
+        $domain = parse_url($websiteUrl, PHP_URL_HOST) ?? '';
+        $domain = preg_replace('/^www\./i', '', strtolower((string) $domain));
+        $queries = $this->buildCompetitorQueryCandidates($serviceTerms, $locationHints);
+        $cacheKey = md5('competitors|' . $domain . '|' . implode('|', $queries) . '|' . $limit);
+        $cached = $this->readCache($cacheKey);
+        if ($cached !== null) {
+            $cached['cached'] = true;
+            return $cached;
+        }
+
+        if (empty($queries)) {
+            return ['success' => false, 'error' => 'No competitor search query available.', 'competitors' => []];
+        }
+
+        $scored = [];
+        $apiErrors = [];
+
+        foreach ($queries as $query) {
+            $response = $this->searchText($query, 8);
+            if (empty($response['success'])) {
+                $apiErrors[] = $response['error'] ?? 'Unknown API error.';
+                continue;
+            }
+
+            foreach (($response['places'] ?? []) as $place) {
+                $score = $this->scoreCompetitorCandidate($place, $domain, $serviceTerms, $locationHints);
+                if ($score <= 0) {
+                    continue;
+                }
+
+                $website = strtolower((string) ($place['websiteUri'] ?? ''));
+                $websiteHost = parse_url($website, PHP_URL_HOST) ?? '';
+                $websiteHost = preg_replace('/^www\./i', '', strtolower((string) $websiteHost));
+                $mapsUri = trim((string) ($place['googleMapsUri'] ?? ''));
+                $displayName = trim((string) (($place['displayName']['text'] ?? '')));
+                $key = $websiteHost !== '' ? $websiteHost : ($mapsUri !== '' ? $mapsUri : strtolower($displayName));
+
+                if (!isset($scored[$key]) || $score > ($scored[$key]['score'] ?? 0)) {
+                    $scored[$key] = [
+                        'score' => $score,
+                        'query' => $query,
+                        'place' => $place,
+                    ];
+                }
+            }
+        }
+
+        uasort($scored, static fn(array $left, array $right): int => ($right['score'] <=> $left['score']));
+        $competitors = [];
+        foreach (array_slice(array_values($scored), 0, $limit) as $entry) {
+            $place = $entry['place'];
+            $website = trim((string) ($place['websiteUri'] ?? ''));
+            $websiteHost = parse_url($website, PHP_URL_HOST) ?? '';
+            $websiteHost = preg_replace('/^www\./i', '', strtolower((string) $websiteHost));
+            if ($websiteHost === $domain) {
+                continue;
+            }
+
+            $competitors[] = [
+                'name' => trim((string) (($place['displayName']['text'] ?? '') ?: 'Competitor')),
+                'address' => trim((string) ($place['formattedAddress'] ?? '')),
+                'maps_url' => trim((string) ($place['googleMapsUri'] ?? '')),
+                'website_url' => $website,
+                'domain' => $websiteHost,
+                'types' => $place['types'] ?? [],
+                'score' => round((float) ($entry['score'] ?? 0), 3),
+                'query' => (string) ($entry['query'] ?? ''),
+            ];
+        }
+
+        $result = [
+            'success' => !empty($competitors),
+            'queries' => $queries,
+            'competitors' => $competitors,
+            'error' => empty($competitors) ? (!empty($apiErrors) ? implode(' | ', array_unique($apiErrors)) : 'No likely competitor profiles found.') : '',
+        ];
+        $this->writeCache($cacheKey, $result);
+        return $result;
+    }
+
+    private function searchText(string $query, int $pageSize = 5): array {
         $payload = json_encode([
             'textQuery' => $query,
-            'pageSize' => 5,
+            'pageSize' => max(1, min(20, $pageSize)),
         ]);
 
         $ch = curl_init();
@@ -182,6 +271,30 @@ class GooglePlacesService {
         ))));
     }
 
+    private function buildCompetitorQueryCandidates(string|array $serviceTerms, string|array $locationHints = []): array {
+        $services = is_array($serviceTerms) ? $serviceTerms : [$serviceTerms];
+        $locations = is_array($locationHints) ? $locationHints : [$locationHints];
+        $candidates = [];
+
+        foreach ($services as $service) {
+            $service = $this->normalizeBusinessName((string) $service);
+            if ($service === '') {
+                continue;
+            }
+            $candidates[] = $service;
+            foreach ($locations as $location) {
+                $location = $this->normalizeLocationHint((string) $location);
+                if ($location !== '') {
+                    $candidates[] = $service . ' ' . $location;
+                    $candidates[] = $service . ' near ' . $location;
+                    $candidates[] = $service . ' company ' . $location;
+                }
+            }
+        }
+
+        return array_values(array_unique(array_filter($candidates)));
+    }
+
     private function scorePlaceMatch(array $place, string $domain, string|array $businessName, string|array $locationHints = []): float {
         $score = 0.0;
         $website = strtolower((string) ($place['websiteUri'] ?? ''));
@@ -230,6 +343,49 @@ class GooglePlacesService {
             $location = strtolower($this->normalizeLocationHint((string) $location));
             if ($location !== '' && str_contains($address, $location)) {
                 $score += 0.08;
+            }
+        }
+
+        return $score;
+    }
+
+    private function scoreCompetitorCandidate(array $place, string $domain, string|array $serviceTerms = [], string|array $locationHints = []): float {
+        $website = strtolower((string) ($place['websiteUri'] ?? ''));
+        $websiteHost = parse_url($website, PHP_URL_HOST) ?? '';
+        $websiteHost = preg_replace('/^www\./i', '', strtolower((string) $websiteHost));
+        if ($websiteHost !== '' && $websiteHost === $domain) {
+            return 0.0;
+        }
+
+        $score = 0.0;
+        $displayName = $this->normalizeBusinessName((string) (($place['displayName']['text'] ?? '')));
+        $address = strtolower((string) ($place['formattedAddress'] ?? ''));
+        $status = strtolower((string) ($place['businessStatus'] ?? ''));
+        $types = array_map('strtolower', $place['types'] ?? []);
+        $services = is_array($serviceTerms) ? $serviceTerms : [$serviceTerms];
+        $locations = is_array($locationHints) ? $locationHints : [$locationHints];
+
+        if ($websiteHost !== '') {
+            $score += 0.25;
+        }
+        if ($status === 'operational') {
+            $score += 0.08;
+        }
+        if (in_array('point_of_interest', $types, true) || in_array('establishment', $types, true)) {
+            $score += 0.05;
+        }
+
+        foreach ($services as $service) {
+            $service = $this->normalizeBusinessName((string) $service);
+            if ($service !== '' && $displayName !== '' && (str_contains($displayName, $service) || str_contains($service, $displayName))) {
+                $score += 0.18;
+            }
+        }
+
+        foreach ($locations as $location) {
+            $location = strtolower($this->normalizeLocationHint((string) $location));
+            if ($location !== '' && str_contains($address, $location)) {
+                $score += 0.12;
             }
         }
 

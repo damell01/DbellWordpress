@@ -85,7 +85,7 @@ $issueDisplayExplanation = function (array $issue): string {
         'MULTIPLE_H1' => 'The page may be sending mixed signals about its main topic because it uses too many top-level headings.',
         'MISSING_CANONICAL' => 'Search engines may not be getting a clear signal about which page URL should be treated as the preferred version.',
         'INVALID_CANONICAL' => 'The preferred page URL signal appears broken or incomplete.',
-        'CANONICAL_OTHER_DOMAIN' => 'The page appears to be telling search engines that another domain should get the ranking credit.',
+        'CANONICAL_OTHER_DOMAIN' => 'The page appears to be telling search engines that another domain should get the ranking credit. If that domain is your real primary live site, this may be intentional. If not, it can send ranking signals away from this site.',
         'NOINDEX_TAG_FOUND' => 'This page may be telling Google not to include it in search results at all.',
         'ROBOTS_BLOCKS_SITE' => 'The site may be blocking search engines from crawling important pages.',
         'HOMEPAGE_SEARCH_INTENT_WEAK' => 'The homepage may not clearly explain what the business does, which can hurt both rankings and conversions.',
@@ -150,7 +150,7 @@ $issueDisplayFix = function (array $issue): string {
         'MULTIPLE_H1' => 'Keep one main heading, then use subheadings underneath it to organize the rest of the page.',
         'MISSING_CANONICAL' => 'Add a preferred page URL so search engines know which version of the page should rank.',
         'INVALID_CANONICAL' => 'Replace the broken canonical with a full valid page URL.',
-        'CANONICAL_OTHER_DOMAIN' => 'Update the canonical so it points to the correct version of the page on this site, unless the off-site target is truly intentional.',
+        'CANONICAL_OTHER_DOMAIN' => 'If the off-site domain is your real primary domain, you may be fine. If not, update the canonical so it points to the correct version of the page on this site.',
         'NOINDEX_TAG_FOUND' => 'Remove the noindex instruction on pages you want to appear in Google.',
         'ROBOTS_BLOCKS_SITE' => 'Review robots.txt and remove any sitewide blocking rules that are stopping search engines from crawling important pages.',
         'HOMEPAGE_SEARCH_INTENT_WEAK' => 'Make the homepage more direct about what the business does, who it serves, and what action a visitor should take next.',
@@ -264,6 +264,7 @@ $screenshotUrl = $report['screenshot_url'] ?? '';
 $rawIssues     = $issues ?? [];
 $allIssues     = array_values(array_filter($rawIssues, static fn($issue) => ($issue['code'] ?? '') !== 'SEO_PAGE_PROFILE'));
 $comparison    = $comparison ?? null;
+$competitorAnalysis = $competitorAnalysis ?? ['success' => false, 'competitors' => [], 'queries' => []];
 $feedbackSummary = $feedbackSummary ?? [];
 $pageSpeedData = $pageSpeedData ?? ['mobile' => null, 'desktop' => null];
 $pageFlashSuccess = \App\Core\Session::getFlash('success');
@@ -411,6 +412,28 @@ $issueEvidenceSummary = function (array $issue) use ($issueDisplayExplanation): 
 
     $fallback = trim($issueDisplayExplanation($issue));
     return function_exists('mb_strimwidth') ? mb_strimwidth($fallback, 0, 110, '...', 'UTF-8') : substr($fallback, 0, 110);
+};
+$describeIssueEvidence = function (array $issue) use ($extractFirstUrl): string {
+    $code = (string) ($issue['code'] ?? '');
+    $detected = trim((string) ($issue['detected_value'] ?? ''));
+
+    return match ($code) {
+        'CANONICAL_OTHER_DOMAIN' => $detected !== ''
+            ? 'Canonical found: ' . $detected . '. If this is your main live domain, this may be intentional. If not, it can point ranking credit away from the scanned site.'
+            : 'A canonical tag appears to point off-site.',
+        'MULTIPLE_H1' => $detected !== ''
+            ? 'The scan counted ' . $detected . ' H1 headings on the page. Usually 1 main H1 is the cleaner setup.'
+            : 'The page appears to have multiple H1 headings.',
+        'MISSING_SITEMAP' => 'The scanner checked the standard sitemap location (`/sitemap.xml`) and did not find a working sitemap there.',
+        'MISSING_ROBOTS' => 'The scanner checked the standard robots.txt location (`/robots.txt`) and did not find a file there.',
+        'NO_GBP_LINK', 'GBP_FOUND_EXTERNALLY', 'GBP_LINK_PRESENT' => $detected !== ''
+            ? 'GBP evidence: ' . $detected
+            : 'No clear Google Business Profile URL was found in the scan evidence.',
+        'NAP_CONSISTENCY_HINT' => $detected !== ''
+            ? 'Details found: ' . $detected
+            : 'The scan found more than one business contact pattern.',
+        default => ($extractFirstUrl($detected) ? 'URL found: ' . $extractFirstUrl($detected) : $detected),
+    };
 };
 $pageSpeedTabs = array_filter([
     'mobile' => $pageSpeedData['mobile'] ?? null,
@@ -965,6 +988,7 @@ $localCheckpointCards = [
         'detail' => isset($issuesByCode['NAP_CONSISTENCY_HINT'])
             ? $issueDisplayExplanation($issuesByCode['NAP_CONSISTENCY_HINT'])
             : 'The scan did not find strong signs of conflicting phone, email, or address details.',
+        'evidence' => isset($issuesByCode['NAP_CONSISTENCY_HINT']) ? $describeIssueEvidence($issuesByCode['NAP_CONSISTENCY_HINT']) : '',
     ],
     [
         'label' => 'GBP Link Quality',
@@ -976,6 +1000,11 @@ $localCheckpointCards = [
             : (isset($issuesByCode['GBP_FOUND_EXTERNALLY'])
                 ? $issueDisplayExplanation($issuesByCode['GBP_FOUND_EXTERNALLY'])
                 : ($issueDisplayExplanation($issuesByCode['NO_GBP_LINK'] ?? ['explanation' => 'No clear Google Business Profile connection was found on this scan.']))),
+        'evidence' => isset($issuesByCode['GBP_LINK_PRESENT'])
+            ? $describeIssueEvidence($issuesByCode['GBP_LINK_PRESENT'])
+            : (isset($issuesByCode['GBP_FOUND_EXTERNALLY'])
+                ? $describeIssueEvidence($issuesByCode['GBP_FOUND_EXTERNALLY'])
+                : (isset($issuesByCode['NO_GBP_LINK']) ? $describeIssueEvidence($issuesByCode['NO_GBP_LINK']) : '')),
     ],
     [
         'label' => 'Local Landing Pages',
@@ -987,6 +1016,9 @@ $localCheckpointCards = [
             : (isset($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL'])
                 ? $issueDisplayExplanation($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL'])
                 : 'The scan found enough signs that services and target areas are being paired on the site.'),
+        'evidence' => isset($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW'])
+            ? $describeIssueEvidence($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW'])
+            : (isset($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL']) ? $describeIssueEvidence($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL']) : ''),
     ],
     [
         'label' => 'Map + Contact Prominence',
@@ -996,6 +1028,7 @@ $localCheckpointCards = [
         'detail' => isset($issuesByCode['LOCAL_CONTACT_PROMINENCE_WEAK'])
             ? $issueDisplayExplanation($issuesByCode['LOCAL_CONTACT_PROMINENCE_WEAK'])
             : 'Contact and location signals appear visible enough on the pages people are most likely to check.',
+        'evidence' => isset($issuesByCode['LOCAL_CONTACT_PROMINENCE_WEAK']) ? $describeIssueEvidence($issuesByCode['LOCAL_CONTACT_PROMINENCE_WEAK']) : '',
     ],
 ];
 $competitorBenchmarks = [
@@ -1005,6 +1038,9 @@ $competitorBenchmarks = [
         'you' => isset($issuesByCode['MISSING_TITLE']) || isset($issuesByCode['WEAK_TITLE']) || isset($issuesByCode['TITLE_TOO_LONG']) ? 'Needs work' : 'Solid',
         'competitor' => 'Usually solid',
         'tone' => isset($issuesByCode['MISSING_TITLE']) || isset($issuesByCode['WEAK_TITLE']) || isset($issuesByCode['TITLE_TOO_LONG']) ? 'warning' : 'success',
+        'difference' => isset($issuesByCode['MISSING_TITLE']) || isset($issuesByCode['WEAK_TITLE']) || isset($issuesByCode['TITLE_TOO_LONG'])
+            ? 'Your title setup looks weaker than what strong local competitors usually publish.'
+            : 'Your title setup is in line with what strong local competitors usually have.',
     ],
     [
         'label' => 'CTA Presence',
@@ -1012,6 +1048,9 @@ $competitorBenchmarks = [
         'you' => isset($issuesByCode['NO_CTA']) || isset($issuesByCode['CTA_NOT_PROMINENT']) || isset($issuesByCode['CTA_PLACEMENT_THIN']) ? 'Behind' : 'Competitive',
         'competitor' => 'Usually repeated',
         'tone' => isset($issuesByCode['NO_CTA']) || isset($issuesByCode['CTA_NOT_PROMINENT']) || isset($issuesByCode['CTA_PLACEMENT_THIN']) ? 'warning' : 'success',
+        'difference' => isset($issuesByCode['NO_CTA']) || isset($issuesByCode['CTA_NOT_PROMINENT']) || isset($issuesByCode['CTA_PLACEMENT_THIN'])
+            ? 'Stronger competitors usually repeat their main CTA in the hero, mid-page, and contact areas more clearly than this site.'
+            : 'Your CTA setup looks close to what strong local competitors usually do.',
     ],
     [
         'label' => 'Speed Baseline',
@@ -1019,6 +1058,11 @@ $competitorBenchmarks = [
         'you' => $pageSpeedPendingIssue ? 'Pending' : (($technical >= 75) ? 'Competitive' : 'Needs work'),
         'competitor' => 'Usually mixed',
         'tone' => $pageSpeedPendingIssue ? 'secondary' : (($technical >= 75) ? 'success' : 'warning'),
+        'difference' => $pageSpeedPendingIssue
+            ? 'This benchmark is incomplete right now because external PageSpeed lab data was still pending during the scan.'
+            : (($technical >= 75)
+                ? 'Your speed baseline is at least competitive with the average local business site.'
+                : 'There is room to improve speed and technical cleanup compared with stronger local competitors.'),
     ],
     [
         'label' => 'Local Trust Signals',
@@ -1026,6 +1070,9 @@ $competitorBenchmarks = [
         'you' => isset($issuesByCode['LOCAL_REVIEW_SIGNAL_MISSING']) || isset($issuesByCode['NO_SCHEMA']) || isset($issuesByCode['NO_GBP_LINK']) ? 'Behind' : 'Competitive',
         'competitor' => 'Usually visible',
         'tone' => isset($issuesByCode['LOCAL_REVIEW_SIGNAL_MISSING']) || isset($issuesByCode['NO_SCHEMA']) || isset($issuesByCode['NO_GBP_LINK']) ? 'warning' : 'success',
+        'difference' => isset($issuesByCode['LOCAL_REVIEW_SIGNAL_MISSING']) || isset($issuesByCode['NO_SCHEMA']) || isset($issuesByCode['NO_GBP_LINK'])
+            ? 'Stronger local competitors usually surface reviews, GBP links, schema, and clearer business proof more visibly than this site.'
+            : 'Your local trust setup looks competitive against a typical local business site.',
     ],
     [
         'label' => 'Service Area Coverage',
@@ -1033,6 +1080,9 @@ $competitorBenchmarks = [
         'you' => isset($issuesByCode['LIMITED_CITY_SERVICE_COVERAGE']) || isset($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW']) || isset($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL']) ? 'Behind' : 'Competitive',
         'competitor' => 'Usually broad',
         'tone' => isset($issuesByCode['LIMITED_CITY_SERVICE_COVERAGE']) || isset($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW']) || isset($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL']) ? 'warning' : 'success',
+        'difference' => isset($issuesByCode['LIMITED_CITY_SERVICE_COVERAGE']) || isset($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW']) || isset($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL'])
+            ? 'Stronger competitors often create more service + city combinations and clearer local landing pages than this site currently shows.'
+            : 'Your service-area coverage looks reasonably competitive based on the pages the scan found.',
     ],
 ];
 $exportSummaryCards = [
@@ -1040,6 +1090,7 @@ $exportSummaryCards = [
     ['label' => 'Top SEO Gap', 'value' => $topSeoIssue ? $issueDisplayTitle($topSeoIssue) : 'No major SEO blocker surfaced'],
     ['label' => 'Top Lead Gap', 'value' => $topBusinessIssue ? $issueDisplayTitle($topBusinessIssue) : 'No major lead blocker surfaced'],
 ];
+$actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['competitors'] ?? []), static fn($item) => is_array($item)));
 ?>
 
 <div id="report-export-content">
@@ -1328,25 +1379,31 @@ $exportSummaryCards = [
                             </div>
                             <span class="badge text-bg-light border"><?= e((string) $competitiveSeoScore) ?>/100</span>
                         </div>
-                        <div class="row g-3">
-                            <?php foreach ($competitorBenchmarks as $benchmark): ?>
-                            <div class="col-md-6 col-xl-4">
-                                <div class="benchmark-card benchmark-card--<?= e($benchmark['tone']) ?>">
+                            <div class="row g-3">
+                                <?php foreach ($competitorBenchmarks as $benchmark): ?>
+                                <div class="col-md-6 col-xl-4">
+                                    <div class="benchmark-card benchmark-card--<?= e($benchmark['tone']) ?>">
                                     <div class="d-flex align-items-center gap-2 mb-2">
                                         <i class="bi <?= e($benchmark['icon']) ?> text-primary"></i>
                                         <div class="fw-semibold small"><?= e($benchmark['label']) ?></div>
                                     </div>
                                     <div class="small text-muted">You</div>
-                                    <div class="fw-semibold mb-2"><?= e($benchmark['you']) ?></div>
-                                    <div class="small text-muted">Typical competitor</div>
-                                    <div class="small"><?= e($benchmark['competitor']) ?></div>
+                                        <div class="fw-semibold mb-2"><?= e($benchmark['you']) ?></div>
+                                        <div class="small text-muted">Typical competitor</div>
+                                        <div class="small"><?= e($benchmark['competitor']) ?></div>
+                                        <?php if (!empty($benchmark['difference'])): ?>
+                                        <div class="small text-muted mt-2 pt-2 border-top"><?= e($benchmark['difference']) ?></div>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
+                                <?php endforeach; ?>
                             </div>
-                            <?php endforeach; ?>
+                            <div class="small text-muted mt-3 pt-3 border-top">
+                                This benchmark is still summarized from the scan data, and the real competitor domains found for this niche appear below when available.
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             <div class="col-lg-5">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body">
@@ -1362,12 +1419,81 @@ $exportSummaryCards = [
                                 <span class="badge text-bg-<?= e($checkpoint['tone']) ?>"><?= e($checkpoint['status']) ?></span>
                             </div>
                             <div class="small text-muted"><?= e($checkpoint['detail']) ?></div>
+                            <?php if (!empty($checkpoint['evidence'])): ?>
+                            <div class="small mt-2 pt-2 border-top text-break"><?= e($checkpoint['evidence']) ?></div>
+                            <?php endif; ?>
                         </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
             </div>
         </div>
+        <?php if (!empty($actualCompetitors)): ?>
+        <div class="card border-0 shadow-sm mt-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                        <div class="summary-kicker">Real Competitors</div>
+                        <h2 class="fw-bold fs-5 mb-1">Actual Competitor Domains Found For This Niche</h2>
+                        <p class="text-muted small mb-0">These came from Google Places competitor lookups based on the scanned site’s likely service niche and location signals.</p>
+                    </div>
+                    <span class="badge text-bg-light border"><?= count($actualCompetitors) ?> domain<?= count($actualCompetitors) !== 1 ? 's' : '' ?></span>
+                </div>
+                <div class="row g-3">
+                    <?php foreach ($actualCompetitors as $competitor): ?>
+                    <div class="col-lg-4">
+                        <div class="benchmark-card h-100">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                <div>
+                                    <div class="fw-semibold"><?= e($competitor['name'] ?? 'Competitor') ?></div>
+                                    <div class="small text-muted text-break"><?= e($competitor['domain'] ?? 'Unknown domain') ?></div>
+                                </div>
+                                <?php if (!empty($competitor['score'])): ?>
+                                <span class="badge text-bg-light border"><?= e((string) $competitor['score']) ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <?php if (!empty($competitor['address'])): ?>
+                            <div class="small text-muted mb-2"><?= e($competitor['address']) ?></div>
+                            <?php endif; ?>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <?php if (!empty($competitor['website_url'])): ?>
+                                <a href="<?= e($competitor['website_url']) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Open Site</a>
+                                <?php endif; ?>
+                                <?php if (!empty($competitor['maps_url'])): ?>
+                                <a href="<?= e($competitor['maps_url']) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary">Open Maps</a>
+                                <?php endif; ?>
+                            </div>
+                            <div class="small text-muted mb-2">What looks different:</div>
+                            <?php if (!empty($competitor['differences'])): ?>
+                            <?php foreach ($competitor['differences'] as $difference): ?>
+                            <div class="small mb-1">- <?= e($difference) ?></div>
+                            <?php endforeach; ?>
+                            <?php else: ?>
+                            <div class="small text-muted">No major difference stood out more than the rest on the quick comparison.</div>
+                            <?php endif; ?>
+                            <?php if (!empty($competitor['query'])): ?>
+                            <div class="small text-muted mt-3 pt-2 border-top">Search used: <?= e($competitor['query']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php if (!empty($competitorAnalysis['queries'])): ?>
+                <div class="small text-muted mt-3 pt-3 border-top">
+                    Lookup queries used: <?= e(implode(' | ', array_slice((array) $competitorAnalysis['queries'], 0, 4))) ?>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php elseif (!empty($competitorAnalysis['error'])): ?>
+        <div class="card border-0 shadow-sm mt-3">
+            <div class="card-body">
+                <div class="summary-kicker">Real Competitors</div>
+                <h2 class="fw-bold fs-5 mb-2">Actual Competitor Domains</h2>
+                <p class="text-muted small mb-0"><?= e($competitorAnalysis['error']) ?></p>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 </section>
 </div>

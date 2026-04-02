@@ -3,7 +3,7 @@ namespace App\Controllers;
 
 use App\Core\{Request, Session, Database};
 use App\Models\{AuditReport};
-use App\Services\{AuditService, UrlNormalizer, ScoringEngine};
+use App\Services\{AuditService, UrlNormalizer, ScoringEngine, CompetitorAnalysisService};
 
 class AuditController extends BaseController {
     private AuditService $auditService;
@@ -307,6 +307,13 @@ class AuditController extends BaseController {
             'mobile' => $full['pagespeed_mobile'] ?? null,
             'desktop' => $full['pagespeed_desktop'] ?? null,
         ];
+        $competitorAnalysis = null;
+        try {
+            $competitorService = new CompetitorAnalysisService();
+            $competitorAnalysis = $competitorService->analyze((string) ($requestData['website_url'] ?? ''), 3);
+        } catch (\Throwable $e) {
+            $competitorAnalysis = ['success' => false, 'error' => 'Competitor lookup could not be completed.', 'competitors' => []];
+        }
 
         $this->view('report', [
             'title'            => 'Audit Report - ' . ($requestData['website_url'] ?? ''),
@@ -322,6 +329,7 @@ class AuditController extends BaseController {
             'comparison'       => $comparison,
             'feedbackSummary'  => $feedbackSummary,
             'pageSpeedData'    => $pageSpeedData,
+            'competitorAnalysis' => $competitorAnalysis,
         ]);
     }
 
