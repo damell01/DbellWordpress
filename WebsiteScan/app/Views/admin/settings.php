@@ -239,7 +239,7 @@
                         <div class="col-12">
                             <label class="form-label">Report Email Subject</label>
                             <input type="text" name="report_email_subject" class="form-control"
-                                   value="<?= e($all['report_email_subject'] ?? 'Your Website Audit Report from {{site_name}}') ?>">
+                                   value="<?= e($all['report_email_subject'] ?? 'Your requested website audit report from {{site_name}}') ?>">
                         </div>
                         <div class="col-12">
                             <div class="d-flex flex-wrap gap-2 mb-2">
@@ -247,8 +247,8 @@
                                 <button type="button" class="btn btn-sm btn-outline-secondary template-preset" data-target="report_email_html" data-preset="sales">Load Sales Template</button>
                             </div>
                             <label class="form-label">HTML / Styled Template</label>
-                            <textarea name="report_email_html" class="form-control" rows="12"><?= e($all['report_email_html'] ?? "Hi {{recipient_name}},\n\nYour free website audit from {{site_name}} is ready.\n\n[View My Report]({{report_url}})\n\nIf you'd like help fixing the issues in your report, reply to this email or contact us using the details below.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}") ?></textarea>
-                            <div class="form-text">Use plain text with blank lines, or Markdown-style links like <code>[View My Report]({{report_url}})</code>.</div>
+                            <textarea name="report_email_html" class="form-control" rows="12"><?= e($all['report_email_html'] ?? "Hi {{recipient_name}},\n\nYour requested website audit from {{site_name}} is ready.\n\n[Open Your Audit Report]({{report_url}})\n\nThis email contains the report link you requested. If you want help improving the issues found, reply to this email and we can walk you through the next best steps.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}") ?></textarea>
+                            <div class="form-text">Use plain text with blank lines, or Markdown-style links like <code>[Open Your Audit Report]({{report_url}})</code>.</div>
                         </div>
                         <div class="col-12">
                             <div class="d-flex flex-wrap gap-2 mb-2">
@@ -256,7 +256,7 @@
                                 <button type="button" class="btn btn-sm btn-outline-secondary template-preset" data-target="report_email_text" data-preset="sales">Load Sales Plain Text</button>
                             </div>
                             <label class="form-label">Plain Text Fallback</label>
-                            <textarea name="report_email_text" class="form-control" rows="10"><?= e($all['report_email_text'] ?? "Hi {{recipient_name}},\n\nYour free website audit from {{site_name}} is ready.\n\nView your report:\n{{report_url}}\n\nIf you'd like help fixing the issues in your report, reply to this email or contact us using the details below.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}") ?></textarea>
+                            <textarea name="report_email_text" class="form-control" rows="10"><?= e($all['report_email_text'] ?? "Hi {{recipient_name}},\n\nYour requested website audit from {{site_name}} is ready.\n\nOpen your report:\n{{report_url}}\n\nThis email contains the report link you requested. If you want help improving the issues found, reply to this email and we can walk you through the next best steps.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}") ?></textarea>
                         </div>
                         <div class="col-12">
                             <div class="small text-muted">
@@ -330,12 +330,12 @@ GOOGLE_PAGESPEED_API_KEY=your_pagespeed_key</code></pre>
     var customRow = document.getElementById('customApiUrlRow');
     var presets = {
         "default": {
-            report_email_html: "Hi {{recipient_name}},\n\nYour free website audit from {{site_name}} is ready.\n\n[View My Report]({{report_url}})\n\nIf you'd like help fixing the issues in your report, reply to this email or contact us using the details below.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}",
-            report_email_text: "Hi {{recipient_name}},\n\nYour free website audit from {{site_name}} is ready.\n\nView your report:\n{{report_url}}\n\nIf you'd like help fixing the issues in your report, reply to this email or contact us using the details below.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}"
+            report_email_html: "Hi {{recipient_name}},\n\nYour requested website audit from {{site_name}} is ready.\n\n[Open Your Audit Report]({{report_url}})\n\nThis email contains the report link you requested. If you want help improving the issues found, reply to this email and we can walk you through the next best steps.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}",
+            report_email_text: "Hi {{recipient_name}},\n\nYour requested website audit from {{site_name}} is ready.\n\nOpen your report:\n{{report_url}}\n\nThis email contains the report link you requested. If you want help improving the issues found, reply to this email and we can walk you through the next best steps.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}"
         },
         "sales": {
-            report_email_html: "Hi {{recipient_name}},\n\nThanks for requesting a free audit from {{site_name}}.\n\nI reviewed your scan and your report is ready here:\n[Open My Audit Report]({{report_url}})\n\nIf you want help improving SEO, conversions, accessibility, or speed, just reply to this email and I'll walk you through the next best steps.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}",
-            report_email_text: "Hi {{recipient_name}},\n\nThanks for requesting a free audit from {{site_name}}.\n\nYour report is ready here:\n{{report_url}}\n\nIf you want help improving SEO, conversions, accessibility, or speed, reply to this email and I'll walk you through the next best steps.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}"
+            report_email_html: "Hi {{recipient_name}},\n\nThanks for requesting a website audit from {{site_name}}.\n\nYour report is ready here:\n[Open Your Audit Report]({{report_url}})\n\nIf you want help improving SEO, conversions, accessibility, or speed, reply to this email and I'll walk you through the next best steps.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}",
+            report_email_text: "Hi {{recipient_name}},\n\nThanks for requesting a website audit from {{site_name}}.\n\nYour report is ready here:\n{{report_url}}\n\nIf you want help improving SEO, conversions, accessibility, or speed, reply to this email and I'll walk you through the next best steps.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}"
         }
     };
 

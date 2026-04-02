@@ -44,7 +44,7 @@ class MailService {
     public function send(string $to, string $subject, string $htmlBody, string $textBody = '', ?string $replyToEmail = null, string $replyToName = ''): bool {
         $this->lastError = '';
 
-        $fromEmail = $this->normalizeAddress((string) ($this->config['from'] ?? ''));
+        $fromEmail = $this->effectiveFromEmail();
         if ($fromEmail === '') {
             $this->lastError = 'Mail sender address is missing. Set From Email first.';
             return false;
@@ -97,18 +97,21 @@ class MailService {
 
     private function sendNative(string $to, string $subject, string $html, string $text, ?string $replyToEmail, string $replyToName): bool {
         $fromName = $this->safeHeaderName((string) ($this->config['from_name'] ?? 'VerityScan'));
-        $fromEmail = $this->normalizeAddress((string) ($this->config['from'] ?? ''));
+        $fromEmail = $this->effectiveFromEmail();
         $replyTo = $this->normalizeAddress((string) ($replyToEmail ?: $fromEmail));
         $boundary = 'b1_' . md5(uniqid((string) mt_rand(), true));
         $messageId = '<' . md5(uniqid((string) mt_rand(), true)) . '@' . $this->messageHostName() . '>';
 
         $headers = [];
         $headers[] = 'From: ' . $this->formatAddressHeader($fromEmail, $fromName);
+        $headers[] = 'Sender: <' . $fromEmail . '>';
         $headers[] = 'Reply-To: ' . $this->formatAddressHeader($replyTo, $replyToName);
         $headers[] = 'Date: ' . date('r');
         $headers[] = 'Message-ID: ' . $messageId;
         $headers[] = 'MIME-Version: 1.0';
-        $headers[] = 'X-Mailer: VerityScan Mailer';
+        $headers[] = 'X-Mailer: VerityScan Transactional Mailer';
+        $headers[] = 'X-Auto-Response-Suppress: All';
+        $headers[] = 'Auto-Submitted: auto-generated';
         $headers[] = 'Content-Type: multipart/alternative; boundary="' . $boundary . '"';
 
         $body = $this->buildMultipartBody($html, $text, $boundary);
@@ -127,7 +130,7 @@ class MailService {
         $user = (string) ($this->config['smtp_user'] ?? '');
         $pass = (string) ($this->config['smtp_pass'] ?? '');
         $encryption = strtolower((string) ($this->config['encryption'] ?? 'tls'));
-        $from = $this->normalizeAddress((string) ($this->config['from'] ?? ''));
+        $from = $this->effectiveFromEmail();
         $fromName = $this->safeHeaderName((string) ($this->config['from_name'] ?? 'VerityScan'));
         $replyTo = $this->normalizeAddress((string) ($replyToEmail ?: $from));
         $boundary = 'b1_' . md5(uniqid((string) mt_rand(), true));
@@ -202,7 +205,8 @@ class MailService {
                 }
             }
 
-            $mailFrom = $this->smtpCommand($sock, "MAIL FROM: <{$from}>");
+            $envelopeFrom = $this->normalizeAddress($user) !== '' ? $this->normalizeAddress($user) : $from;
+            $mailFrom = $this->smtpCommand($sock, "MAIL FROM: <{$envelopeFrom}>");
             if (!$this->smtpResponseOk($mailFrom, ['250'])) {
                 $this->lastError = 'SMTP MAIL FROM was rejected.';
                 fclose($sock);
@@ -225,13 +229,16 @@ class MailService {
 
             $headers = [];
             $headers[] = 'From: ' . $this->formatAddressHeader($from, $fromName);
+            $headers[] = 'Sender: <' . $from . '>';
             $headers[] = 'To: <' . $this->normalizeHeaderText($to) . '>';
             $headers[] = 'Reply-To: ' . $this->formatAddressHeader($replyTo, $replyToName);
             $headers[] = 'Subject: ' . $this->encodeHeaderValue($subject);
             $headers[] = 'Date: ' . date('r');
             $headers[] = 'Message-ID: ' . $messageId;
             $headers[] = 'MIME-Version: 1.0';
-            $headers[] = 'X-Mailer: VerityScan Mailer';
+            $headers[] = 'X-Mailer: VerityScan Transactional Mailer';
+            $headers[] = 'X-Auto-Response-Suppress: All';
+            $headers[] = 'Auto-Submitted: auto-generated';
             $headers[] = 'Content-Type: multipart/alternative; boundary="' . $boundary . '"';
 
             $body = $this->buildMultipartBody($html, $text, $boundary);
@@ -447,11 +454,11 @@ HTML;
         return <<<HTML
 Hi {{recipient_name}},
 
-Your free website audit from {{site_name}} is ready.
+Your requested website audit from {{site_name}} is ready.
 
-[View My Report]({{report_url}})
+[Open Your Audit Report]({{report_url}})
 
-If you'd like help fixing the issues in your report, reply to this email or contact us using the details below.
+This email contains the report link you requested. If you want help improving the issues found, reply to this email and we can walk you through the next best steps.
 
 {{contact_name}}
 {{contact_email}}
@@ -463,17 +470,29 @@ HTML;
         return <<<TEXT
 Hi {{recipient_name}},
 
-Your free website audit from {{site_name}} is ready.
+Your requested website audit from {{site_name}} is ready.
 
-View your report:
+Open your report:
 {{report_url}}
 
-If you'd like help fixing the issues in your report, reply to this email or contact us using the details below.
+This email contains the report link you requested. If you want help improving the issues found, reply to this email and we can walk you through the next best steps.
 
 {{contact_name}}
 {{contact_email}}
 {{contact_phone}}
 TEXT;
+    }
+
+    private function effectiveFromEmail(): string {
+        $configuredFrom = $this->normalizeAddress((string) ($this->config['from'] ?? ''));
+        $smtpUser = $this->normalizeAddress((string) ($this->config['smtp_user'] ?? ''));
+        $driver = strtolower((string) ($this->config['driver'] ?? 'mail'));
+
+        if ($driver === 'smtp' && $smtpUser !== '') {
+            return $smtpUser;
+        }
+
+        return $configuredFrom;
     }
 
     private function adminEmail(): string {
