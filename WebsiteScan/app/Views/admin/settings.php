@@ -220,6 +220,61 @@
                 </div>
             </div>
 
+            <div class="admin-card mb-4">
+                <div class="admin-card-header"><h6 class="fw-semibold mb-0"><i class="bi bi-envelope-paper me-2"></i>Report Email Templates</h6></div>
+                <div class="admin-card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Name in Emails</label>
+                            <input type="text" name="report_email_contact_name" class="form-control"
+                                   value="<?= e($all['report_email_contact_name'] ?? ($all['mail_from_name'] ?? $all['site_name'] ?? 'VerityScan')) ?>"
+                                   placeholder="DBell Creations">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Phone in Emails</label>
+                            <input type="text" name="report_email_contact_phone" class="form-control"
+                                   value="<?= e($all['report_email_contact_phone'] ?? '') ?>"
+                                   placeholder="(251) 555-1234">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Report Email Subject</label>
+                            <input type="text" name="report_email_subject" class="form-control"
+                                   value="<?= e($all['report_email_subject'] ?? 'Your Website Audit Report from {{site_name}}') ?>">
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary template-preset" data-target="report_email_html" data-preset="default">Load Default Template</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary template-preset" data-target="report_email_html" data-preset="sales">Load Sales Template</button>
+                            </div>
+                            <label class="form-label">HTML / Styled Template</label>
+                            <textarea name="report_email_html" class="form-control" rows="12"><?= e($all['report_email_html'] ?? "Hi {{recipient_name}},\n\nYour free website audit from {{site_name}} is ready.\n\n[View My Report]({{report_url}})\n\nIf you'd like help fixing the issues in your report, reply to this email or contact us using the details below.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}") ?></textarea>
+                            <div class="form-text">Use plain text with blank lines, or Markdown-style links like <code>[View My Report]({{report_url}})</code>.</div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary template-preset" data-target="report_email_text" data-preset="default">Load Default Plain Text</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary template-preset" data-target="report_email_text" data-preset="sales">Load Sales Plain Text</button>
+                            </div>
+                            <label class="form-label">Plain Text Fallback</label>
+                            <textarea name="report_email_text" class="form-control" rows="10"><?= e($all['report_email_text'] ?? "Hi {{recipient_name}},\n\nYour free website audit from {{site_name}} is ready.\n\nView your report:\n{{report_url}}\n\nIf you'd like help fixing the issues in your report, reply to this email or contact us using the details below.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}") ?></textarea>
+                        </div>
+                        <div class="col-12">
+                            <div class="small text-muted">
+                                Available placeholders:
+                                <code>{{site_name}}</code>,
+                                <code>{{app_name}}</code>,
+                                <code>{{recipient_name}}</code>,
+                                <code>{{recipient_email}}</code>,
+                                <code>{{report_url}}</code>,
+                                <code>{{contact_name}}</code>,
+                                <code>{{contact_email}}</code>,
+                                <code>{{contact_phone}}</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-primary px-5">
                 <i class="bi bi-check-circle me-2"></i>Save Settings
             </button>
@@ -273,10 +328,34 @@ GOOGLE_PAGESPEED_API_KEY=your_pagespeed_key</code></pre>
 (function () {
     var providerSelect = document.querySelector('select[name="screenshot_provider"]');
     var customRow = document.getElementById('customApiUrlRow');
+    var presets = {
+        "default": {
+            report_email_html: "Hi {{recipient_name}},\n\nYour free website audit from {{site_name}} is ready.\n\n[View My Report]({{report_url}})\n\nIf you'd like help fixing the issues in your report, reply to this email or contact us using the details below.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}",
+            report_email_text: "Hi {{recipient_name}},\n\nYour free website audit from {{site_name}} is ready.\n\nView your report:\n{{report_url}}\n\nIf you'd like help fixing the issues in your report, reply to this email or contact us using the details below.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}"
+        },
+        "sales": {
+            report_email_html: "Hi {{recipient_name}},\n\nThanks for requesting a free audit from {{site_name}}.\n\nI reviewed your scan and your report is ready here:\n[Open My Audit Report]({{report_url}})\n\nIf you want help improving SEO, conversions, accessibility, or speed, just reply to this email and I'll walk you through the next best steps.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}",
+            report_email_text: "Hi {{recipient_name}},\n\nThanks for requesting a free audit from {{site_name}}.\n\nYour report is ready here:\n{{report_url}}\n\nIf you want help improving SEO, conversions, accessibility, or speed, reply to this email and I'll walk you through the next best steps.\n\n{{contact_name}}\n{{contact_email}}\n{{contact_phone}}"
+        }
+    };
+
     if (providerSelect && customRow) {
         providerSelect.addEventListener('change', function () {
             customRow.style.display = this.value === 'custom' ? 'block' : 'none';
         });
     }
+
+    document.querySelectorAll('.template-preset').forEach(function (button) {
+        button.addEventListener('click', function () {
+            var presetName = this.getAttribute('data-preset');
+            var targetName = this.getAttribute('data-target');
+            var preset = presets[presetName];
+            var field = document.querySelector('[name="' + targetName + '"]');
+            if (!preset || !field || !preset[targetName]) {
+                return;
+            }
+            field.value = preset[targetName];
+        });
+    });
 }());
 </script>

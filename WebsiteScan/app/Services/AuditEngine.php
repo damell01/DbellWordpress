@@ -291,11 +291,127 @@ class AuditEngine {
         return implode(' | ', $parts);
     }
 
+    private function countWords(string $text): int {
+        $matches = [];
+        preg_match_all('/\b[\p{L}\p{N}\']+\b/u', $this->normalizeWhitespace($text), $matches);
+        return count($matches[0] ?? []);
+    }
+
+    private function extractSchemaTypesFromHtml(string $html): array {
+        $types = [];
+        if (preg_match_all('/"@type"\s*:\s*"([^"]+)"/i', $html, $matches)) {
+            foreach ($matches[1] as $type) {
+                $types[] = trim((string) $type);
+            }
+        }
+        return array_values(array_unique(array_filter($types)));
+    }
+
+    private function inferPageType(string $path, string $html): string {
+        $haystack = $this->lower($path . ' ' . $html);
+        if ($path === '/' || $path === '') {
+            return 'home';
+        }
+        if (str_contains($haystack, 'contact') || str_contains($haystack, 'book') || str_contains($haystack, 'quote') || str_contains($haystack, 'appointment')) {
+            return 'contact';
+        }
+        if (str_contains($haystack, 'service') || str_contains($haystack, 'seo') || str_contains($haystack, 'webdesign') || str_contains($haystack, 'software') || str_contains($haystack, 'automation') || str_contains($haystack, 'marketing')) {
+            return 'service';
+        }
+        if (str_contains($haystack, 'about')) {
+            return 'about';
+        }
+        return 'general';
+    }
+
+    private function pageTypeLabel(string $type): string {
+        return match ($type) {
+            'home' => 'Homepage',
+            'contact' => 'Contact Page',
+            'service' => 'Service Page',
+            'about' => 'About Page',
+            default => 'Page',
+        };
+    }
+
+    private function isKeySeoPage(array $profile): bool {
+        return in_array((string) ($profile['page_type'] ?? 'general'), ['home', 'contact', 'service'], true);
+    }
+
+    private function pageEvidence(array $profile): string {
+        return 'page=' . ($profile['path'] ?? '/') . ' | type=' . ($profile['page_type'] ?? 'general');
+    }
+
+    private function extractKeywordTerms(string $text): array {
+        $text = $this->lower($text);
+        $text = preg_replace('/[^a-z0-9\s-]/', ' ', $text);
+        $parts = preg_split('/\s+/', (string) $text) ?: [];
+        $stop = ['the','and','for','with','your','from','that','this','have','you','our','are','but','not','all','can','too','use','one','page','home','about','contact','service','services','more','best','into'];
+        $terms = [];
+        foreach ($parts as $part) {
+            $part = trim($part);
+            if ($part === '' || strlen($part) < 4 || in_array($part, $stop, true) || is_numeric($part)) {
+                continue;
+            }
+            $terms[$part] = true;
+            if (count($terms) >= 6) {
+                break;
+            }
+        }
+        return array_keys($terms);
+    }
+
+    private function extractLocationTerms(string $text): array {
+        $terms = [];
+        $patterns = [
+            '/\b(?:in|near|serving|around|throughout)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})(?:,\s*[A-Z]{2})?/u',
+            '/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2},\s*[A-Z]{2})\b/u',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match_all($pattern, $text, $matches)) {
+                foreach ($matches[1] as $match) {
+                    $match = $this->normalizeWhitespace((string) $match);
+                    if ($match !== '' && strlen($match) >= 4) {
+                        $terms[$match] = true;
+                    }
+                }
+            }
+        }
+
+        return array_keys($terms);
+    }
+
+    private function profileLocationTerms(array $profile): array {
+        $source = implode(' ', array_filter([
+            $profile['title'] ?? '',
+            $profile['description'] ?? '',
+            $profile['h1_text'] ?? '',
+        ]));
+
+        return $this->extractLocationTerms($source);
+    }
+
+    private function profileServiceTerms(array $profile): array {
+        $source = implode(' ', array_filter([
+            $profile['title'] ?? '',
+            $profile['description'] ?? '',
+            $profile['h1_text'] ?? '',
+            $profile['path'] ?? '',
+        ]));
+
+        return $this->extractKeywordTerms($source);
+    }
+
+    private function isLikelyLocalLandingPage(array $profile): bool {
+        return !empty($this->profileLocationTerms($profile)) && !empty($this->profileServiceTerms($profile));
+    }
+
     private function buildPageProfiles(): array {
         $profiles = [];
         $pages = array_merge(
             [$this->url],
-            $this->findInternalLinks(['contact', 'about', 'service', 'services', 'location', 'locations', 'book', 'appointment', 'quote', 'estimate'], 2)
+            $this->findInternalLinks(['contact', 'about', 'service', 'services', 'location', 'locations', 'book', 'appointment', 'quote', 'estimate', 'seo', 'marketing', 'software', 'automation', 'webdesign'], 6)
         );
 
         $pages = array_values(array_unique($pages));
@@ -314,6 +430,37 @@ class AuditEngine {
             $xpath = new \DOMXPath($dom);
             $html = (string) $fetch['html'];
             $bodyText = $this->lower($html);
+            $visibleText = $this->normalizeWhitespace($dom->textContent ?? '');
+            $title = trim((string) ($xpath->query('//title')?->item(0)?->textContent ?? ''));
+            $description = '';
+            $descNode = $xpath->query('//meta[@name="description"]')?->item(0);
+            if ($descNode instanceof \DOMElement) {
+                $description = trim($descNode->getAttribute('content'));
+            }
+            $h1Nodes = $xpath->query('//h1');
+            $h1Text = trim((string) ($h1Nodes?->item(0)?->textContent ?? ''));
+            $canonical = '';
+            $canonicalNode = $xpath->query('//link[@rel="canonical"]')?->item(0);
+            if ($canonicalNode instanceof \DOMElement) {
+                $canonical = trim($canonicalNode->getAttribute('href'));
+            }
+            $robotsMeta = '';
+            $robotsNode = $xpath->query('//meta[@name="robots"]')?->item(0);
+            if ($robotsNode instanceof \DOMElement) {
+                $robotsMeta = trim($robotsNode->getAttribute('content'));
+            }
+            $internalLinks = [];
+            foreach (($xpath->query('//a[@href]') ?: []) as $linkNode) {
+                if (!$linkNode instanceof \DOMElement) {
+                    continue;
+                }
+                $resolved = $this->urlNormalizer->resolveLink($fetch['final_url'] ?? $pageUrl, trim($linkNode->getAttribute('href')));
+                if ($resolved && $this->urlNormalizer->isSameDomain($this->url, $resolved)) {
+                    $internalLinks[$resolved] = true;
+                }
+            }
+            $pagePath = parse_url($pageUrl, PHP_URL_PATH) ?: '/';
+            $pageType = $this->inferPageType($pagePath, $html);
 
             $ctaSelectors = [
                 '//a[contains(@class,"btn")]',
@@ -331,8 +478,20 @@ class AuditEngine {
 
             $profiles[] = [
                 'url' => $pageUrl,
-                'path' => parse_url($pageUrl, PHP_URL_PATH) ?: '/',
+                'path' => $pagePath,
+                'page_type' => $pageType,
                 'html' => $html,
+                'title' => $title,
+                'description' => $description,
+                'h1_text' => $h1Text,
+                'h1_count' => (int) ($h1Nodes?->length ?? 0),
+                'canonical' => $canonical,
+                'robots_meta' => $robotsMeta,
+                'word_count' => $this->countWords($visibleText),
+                'internal_link_count' => count($internalLinks),
+                'schema_types' => $this->extractSchemaTypesFromHtml($html),
+                'location_terms' => $this->extractLocationTerms(implode(' ', array_filter([$title, $description, $h1Text]))),
+                'service_terms' => $this->extractKeywordTerms(implode(' ', array_filter([$title, $description, $h1Text, $pagePath]))),
                 'forms' => (int) ($xpath->query('//form')?->length ?? 0),
                 'widgets' => $this->detectFormWidgets($html),
                 'contact_inputs' => (int) ($xpath->query('//input[@type="email" or @type="tel" or contains(translate(@name,"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"email") or contains(translate(@name,"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"phone")]')?->length ?? 0),
@@ -588,6 +747,18 @@ class AuditEngine {
             );
         }
 
+        $h1Text = $this->getText('//h1');
+        if ($title !== '' && $h1Text !== '' && $this->lower($this->normalizeWhitespace($title)) === $this->lower($this->normalizeWhitespace($h1Text))) {
+            $this->addIssue('seo', 'low', 'TITLE_MATCHES_H1_EXACTLY',
+                'Title Tag Matches H1 Exactly',
+                'Your page title and H1 are identical.',
+                'Using the exact same phrasing in both places can make search snippets feel repetitive and miss a chance to broaden keyword coverage.',
+                'Keep the topic aligned, but vary the title tag slightly by adding a location, service qualifier, or brand name.',
+                '',
+                $title
+            );
+        }
+
         // Meta description
         $desc = $this->getAttribute('//meta[@name="description"]', 'content');
         if (empty($desc)) {
@@ -604,6 +775,15 @@ class AuditEngine {
                 "Your meta description is only " . strlen($desc) . " characters.",
                 'Short descriptions don\'t give search engines enough context.',
                 'Expand to 150-160 characters with compelling, keyword-rich copy.',
+                '',
+                $desc
+            );
+        } elseif (strlen($desc) > 165) {
+            $this->addIssue('seo', 'low', 'META_DESC_TOO_LONG',
+                'Meta Description Is Too Long',
+                "Your meta description is " . strlen($desc) . " characters, so search engines may truncate it.",
+                'Descriptions that are too long can be cut off in search results and lose key messaging.',
+                'Trim the description to around 150-160 characters while keeping the value proposition clear.',
                 '',
                 $desc
             );
@@ -640,14 +820,51 @@ class AuditEngine {
                 'Add <link rel="canonical" href="https://yoursite.com/page-url/"> in your <head>.',
                 ''
             );
+        } else {
+            $resolvedCanonical = $this->urlNormalizer->resolveLink($this->fetchResult['final_url'] ?? $this->url, $canonical);
+            if (!$resolvedCanonical) {
+                $this->addIssue('seo', 'medium', 'INVALID_CANONICAL',
+                    'Canonical Tag Could Not Be Resolved',
+                    'A canonical tag exists, but its URL appears invalid or incomplete.',
+                    'Broken canonical URLs can confuse search engines about which page should rank.',
+                    'Use a valid absolute canonical URL that points to the preferred version of this page.',
+                    '',
+                    $canonical
+                );
+            } elseif (!$this->urlNormalizer->isSameDomain($this->url, $resolvedCanonical)) {
+                $this->addIssue('seo', 'high', 'CANONICAL_OTHER_DOMAIN',
+                    'Canonical Points To Another Domain',
+                    'Your canonical tag points to a different domain.',
+                    'Cross-domain canonicals can remove this page from search visibility if used incorrectly.',
+                    'Verify that the canonical URL should point off-site. If not, update it to the correct page on this domain.',
+                    '',
+                    $resolvedCanonical
+                );
+            }
+        }
+
+        // Indexability
+        $robotsMeta = $this->getAttribute('//meta[@name="robots"]', 'content');
+        if ($robotsMeta !== '' && str_contains($this->lower($robotsMeta), 'noindex')) {
+            $this->addIssue('seo', 'critical', 'NOINDEX_TAG_FOUND',
+                'Page Marked Noindex',
+                'Your page includes a meta robots tag with noindex.',
+                'A noindex instruction tells search engines not to include this page in search results.',
+                'Remove noindex if this page should rank in Google, or keep it only on pages meant to stay private.',
+                'Search engines may exclude this page entirely from search.',
+                $robotsMeta
+            );
         }
 
         // Open Graph
         $ogTitle = $this->getAttribute('//meta[@property="og:title"]', 'content');
-        if (empty($ogTitle)) {
+        $ogDescription = $this->getAttribute('//meta[@property="og:description"]', 'content');
+        $ogImage = $this->getAttribute('//meta[@property="og:image"]', 'content');
+        $ogUrl = $this->getAttribute('//meta[@property="og:url"]', 'content');
+        if (empty($ogTitle) || empty($ogDescription) || empty($ogImage) || empty($ogUrl)) {
             $this->addIssue('seo', 'medium', 'MISSING_OG_TAGS',
-                'Missing Open Graph Tags',
-                'No Open Graph meta tags found. These control how your site looks when shared on social media.',
+                'Open Graph Tags Are Incomplete',
+                'Your Open Graph metadata is missing one or more of the core tags: og:title, og:description, og:image, or og:url.',
                 'When someone shares your site on Facebook or LinkedIn, Open Graph tags control the title, description, and image.',
                 'Add og:title, og:description, og:image, and og:url meta tags.',
                 ''
@@ -689,6 +906,45 @@ class AuditEngine {
             );
         }
 
+        // Content depth
+        $bodyText = $this->normalizeWhitespace($this->getText('//body'));
+        $wordCount = preg_match_all('/\b[\p{L}\p{N}\']+\b/u', $bodyText, $matches);
+        if ($wordCount > 0 && $wordCount < 250) {
+            $this->addIssue('seo', 'medium', 'THIN_CONTENT',
+                'Page Content Is Thin',
+                "This page only contains about {$wordCount} words of visible text.",
+                'Thin pages often struggle to rank because they provide limited context and topical depth.',
+                'Add more useful, original copy that clearly explains the service, topic, or offer on the page.',
+                '',
+                (string) $wordCount . ' visible words'
+            );
+        }
+
+        // Internal linking
+        $internalLinks = [];
+        foreach ($this->xpathQuery('//a[@href]') as $link) {
+            if (!$link instanceof \DOMElement) {
+                continue;
+            }
+
+            $href = trim($link->getAttribute('href'));
+            $resolved = $this->urlNormalizer->resolveLink($this->fetchResult['final_url'] ?? $this->url, $href);
+            if ($resolved && $this->urlNormalizer->isSameDomain($this->url, $resolved)) {
+                $internalLinks[$resolved] = true;
+            }
+        }
+        $internalLinkCount = count($internalLinks);
+        if ($internalLinkCount < 3) {
+            $this->addIssue('seo', 'low', 'LOW_INTERNAL_LINKS',
+                'Very Few Internal Links',
+                "Only {$internalLinkCount} internal link(s) were found on this page.",
+                'Internal links help search engines discover more pages and understand site structure.',
+                'Add links to related services, supporting pages, blog posts, or contact pages from this page.',
+                '',
+                (string) $internalLinkCount . ' internal links'
+            );
+        }
+
         // Sitemap check (HEAD request)
         $sitemapUrl  = $this->urlNormalizer->getDomain($this->url);
         $scheme      = parse_url($this->url, PHP_URL_SCHEME) ?? 'https';
@@ -716,6 +972,209 @@ class AuditEngine {
                 'robots.txt controls how search engine bots crawl your site.',
                 'Create a robots.txt file and specify crawling rules.',
                 ''
+            );
+        } else {
+            $robotsFetch = $this->fetchCached("{$scheme}://{$sitemapUrl}/robots.txt");
+            $robotsBody = $this->lower((string) ($robotsFetch['html'] ?? ''));
+
+            if ($robotsBody !== '' && str_contains($robotsBody, 'disallow: /')) {
+                $this->addIssue('seo', 'critical', 'ROBOTS_BLOCKS_SITE',
+                    'robots.txt May Block Search Engines',
+                    'Your robots.txt contains a Disallow: / rule.',
+                    'A sitewide disallow can prevent search engines from crawling important pages.',
+                    'Review robots.txt and remove broad blocking rules unless the site is intentionally private.',
+                    'Search engines may stop crawling large parts of the website.',
+                    $this->limit(trim((string) ($robotsFetch['html'] ?? '')), 220)
+                );
+            }
+
+            if ($sitemapCheck['success'] && !str_contains($robotsBody, 'sitemap:')) {
+                $this->addIssue('seo', 'low', 'ROBOTS_MISSING_SITEMAP_REFERENCE',
+                    'robots.txt Does Not Reference Sitemap',
+                    'robots.txt exists, but it does not appear to list your sitemap URL.',
+                    'Including the sitemap in robots.txt helps crawlers discover it faster.',
+                    'Add a Sitemap: line pointing to your sitemap.xml file in robots.txt.',
+                    '',
+                    'robots.txt found without a Sitemap directive'
+                );
+            }
+        }
+
+        $schemaTypes = $this->extractSchemaTypes();
+        if (empty($schemaTypes)) {
+            $this->addIssue('seo', 'medium', 'MISSING_STRUCTURED_DATA',
+                'No Structured Data Detected',
+                'No Schema.org structured data was found on the page.',
+                'Structured data helps search engines understand your business, content, and potential rich result eligibility.',
+                'Add relevant schema markup such as Organization, LocalBusiness, Service, FAQPage, Product, or Article depending on the page.',
+                '',
+                ''
+            );
+        }
+
+        foreach ($this->pageProfiles as $profile) {
+            if (!$this->isKeySeoPage($profile)) {
+                continue;
+            }
+
+            $pageLabel = $this->pageTypeLabel((string) ($profile['page_type'] ?? 'general'));
+            $evidence = $this->pageEvidence($profile)
+                . ' | words=' . (int) ($profile['word_count'] ?? 0)
+                . ' | internal_links=' . (int) ($profile['internal_link_count'] ?? 0)
+                . ' | title=' . (($profile['title'] ?? '') !== '' ? 'yes' : 'no')
+                . ' | description=' . (($profile['description'] ?? '') !== '' ? 'yes' : 'no')
+                . ' | h1=' . (int) ($profile['h1_count'] ?? 0);
+
+            $this->addIssue('seo', 'info', 'SEO_PAGE_PROFILE',
+                'SEO Snapshot: ' . $pageLabel,
+                $pageLabel . ' was included in the page-by-page SEO sweep.',
+                'Scanning your important pages individually gives a more realistic SEO picture than checking only one URL.',
+                'Use the page-by-page SEO section in the report to compare important pages side by side.',
+                '',
+                $evidence
+            );
+
+            if (($profile['path'] ?? '/') !== '/') {
+                if (empty($profile['title'])) {
+                    $this->addIssue('seo', 'high', 'KEY_PAGE_MISSING_TITLE',
+                        $pageLabel . ' Is Missing A Title Tag',
+                        'A key page is missing its title tag.',
+                        'Important pages like contact and service pages need their own optimized titles to rank well.',
+                        'Add a descriptive unique title tag for this page.',
+                        '',
+                        $evidence
+                    );
+                }
+                if (empty($profile['description'])) {
+                    $this->addIssue('seo', 'medium', 'KEY_PAGE_MISSING_META_DESC',
+                        $pageLabel . ' Is Missing A Meta Description',
+                        'A key page is missing a meta description.',
+                        'Key pages should have a custom search snippet to improve click-through rate.',
+                        'Write a custom 150-160 character meta description for this page.',
+                        '',
+                        $evidence
+                    );
+                }
+                if ((int) ($profile['h1_count'] ?? 0) === 0) {
+                    $this->addIssue('seo', 'medium', 'KEY_PAGE_MISSING_H1',
+                        $pageLabel . ' Is Missing An H1',
+                        'A key page has no H1 heading.',
+                        'Search engines and visitors both rely on clear page-level headings.',
+                        'Add one clear H1 heading to this page.',
+                        '',
+                        $evidence
+                    );
+                }
+            }
+
+            if ((int) ($profile['word_count'] ?? 0) < 150 && ($profile['page_type'] ?? '') !== 'contact') {
+                $this->addIssue('seo', 'medium', 'KEY_PAGE_THIN_CONTENT',
+                    $pageLabel . ' Has Thin Content',
+                    'A key page has very little visible text.',
+                    'Important pages often need enough copy to explain the offer and support keyword relevance.',
+                    'Add more useful explanatory copy to this page.',
+                    '',
+                    $evidence
+                );
+            }
+
+            if ((int) ($profile['internal_link_count'] ?? 0) < 2) {
+                $this->addIssue('seo', 'low', 'KEY_PAGE_LOW_INTERNAL_LINKS',
+                    $pageLabel . ' Has Few Internal Links',
+                    'A key page has very few internal links pointing to other pages on the site.',
+                    'Internal links help spread authority and clarify the site structure for search engines.',
+                    'Add links to related pages, services, FAQs, or contact actions from this page.',
+                    '',
+                    $evidence
+                );
+            }
+
+            $focusTerms = $this->extractKeywordTerms(($profile['title'] ?? '') . ' ' . ($profile['h1_text'] ?? ''));
+            if (!empty($focusTerms)) {
+                $body = $this->lower((string) ($profile['html'] ?? ''));
+                $matchedTerms = 0;
+                foreach ($focusTerms as $term) {
+                    if (substr_count($body, $term) >= 2) {
+                        $matchedTerms++;
+                    }
+                }
+
+                if ($matchedTerms < min(2, count($focusTerms))) {
+                    $this->addIssue('seo', 'medium', 'WEAK_TOPIC_RELEVANCE',
+                        $pageLabel . ' Has Weak Topic Reinforcement',
+                        'The page title/H1 suggests target topics, but those terms do not appear strongly in the page content.',
+                        'Pages tend to rank better when the title, heading, and body copy reinforce the same topic naturally.',
+                        'Make sure the service/topic mentioned in the title and H1 is clearly explained in the body content.',
+                        '',
+                        $evidence . ' | focus_terms=' . implode(',', array_slice($focusTerms, 0, 4))
+                    );
+                }
+            }
+        }
+
+        $homeProfile = null;
+        foreach ($this->pageProfiles as $profile) {
+            if (($profile['path'] ?? '') === '/') {
+                $homeProfile = $profile;
+                break;
+            }
+        }
+
+        if ($homeProfile) {
+            $homeEvidence = $this->pageEvidence($homeProfile)
+                . ' | service_terms=' . implode(',', array_slice((array) ($homeProfile['service_terms'] ?? []), 0, 4))
+                . ' | location_terms=' . implode(',', array_slice((array) ($homeProfile['location_terms'] ?? []), 0, 3));
+
+            if (count((array) ($homeProfile['service_terms'] ?? [])) < 2) {
+                $this->addIssue('seo', 'medium', 'HOMEPAGE_SEARCH_INTENT_WEAK',
+                    'Homepage Search Intent Is Weak',
+                    'The homepage does not clearly reinforce the services or topics the business wants to rank for.',
+                    'The homepage is usually the strongest authority page on a small business website, so it should clearly state what the business does.',
+                    'Strengthen the homepage title, H1, hero copy, and supporting text around your main services and offers.',
+                    '',
+                    $homeEvidence
+                );
+            }
+
+            if (!empty($this->matchingPagePaths(fn(array $profile): bool => !empty($profile['has_address']) || !empty($profile['has_map']) || !empty($profile['has_hours'])))) {
+                if (empty((array) ($homeProfile['location_terms'] ?? []))) {
+                    $this->addIssue('seo', 'low', 'HOMEPAGE_LOCATION_SIGNAL_WEAK',
+                        'Homepage Location Signal Is Weak',
+                        'The homepage does not clearly mention a city or service area.',
+                        'For local businesses, the homepage often needs at least one clear geographic signal to support local relevance.',
+                        'Mention your core service area naturally in the homepage title, H1, hero copy, or trust section.',
+                        '',
+                        $homeEvidence
+                    );
+                }
+            }
+        }
+
+        $serviceProfiles = array_values(array_filter($this->pageProfiles, fn(array $profile): bool => ($profile['page_type'] ?? '') === 'service'));
+        $serviceWithLocation = array_values(array_filter($serviceProfiles, fn(array $profile): bool => !empty($profile['location_terms'] ?? [])));
+        $localLandingProfiles = array_values(array_filter($this->pageProfiles, fn(array $profile): bool => $this->isLikelyLocalLandingPage($profile)));
+
+        if (!empty($serviceProfiles) && empty($serviceWithLocation)) {
+            $servicePaths = array_map(fn(array $profile): string => $profile['path'] ?? '/', array_slice($serviceProfiles, 0, 4));
+            $this->addIssue('seo', 'medium', 'LIMITED_CITY_SERVICE_COVERAGE',
+                'Service Pages Lack City or Area Coverage',
+                'Service pages were found, but they do not appear to mention cities or service areas clearly.',
+                'Businesses competing in local search often need service pages to reinforce where they operate, not just what they do.',
+                'Add natural city, metro, county, or service-area language where it fits on important service pages.',
+                '',
+                'service_pages=' . implode(',', $servicePaths)
+            );
+        }
+
+        $hasLocalSignals = !empty($this->matchingPagePaths(fn(array $profile): bool => !empty($profile['has_address']) || !empty($profile['has_map']) || !empty($profile['has_hours'])));
+        if ($hasLocalSignals && empty($localLandingProfiles)) {
+            $this->addIssue('seo', 'medium', 'NO_LOCAL_LANDING_PAGE_SIGNAL',
+                'No Strong Local Landing Page Signal Found',
+                'The site shows local business signals, but none of the scanned pages strongly combine service intent with location intent.',
+                'Local landing pages help search engines understand which services are offered in which areas.',
+                'Create or strengthen pages that clearly pair a service with a city or service area, such as "Web Design in Fairhope, AL".',
+                '',
+                'pages_scanned=' . implode(',', array_slice(array_column($this->pageProfiles, 'path'), 0, 6))
             );
         }
     }
@@ -1204,6 +1663,21 @@ class AuditEngine {
             $mobilePageSpeed = $this->pageSpeedResults['mobile'] ?? ['success' => false];
 
             if (!empty($mobilePageSpeed['success'])) {
+                $seoCategory = isset($mobilePageSpeed['categories']['seo']) ? (int) $mobilePageSpeed['categories']['seo'] : null;
+                if ($seoCategory !== null) {
+                    $seoSeverity = $seoCategory < 50 ? 'high' : ($seoCategory < 75 ? 'medium' : 'info');
+                    $seoCode = $seoCategory < 75 ? 'LIGHTHOUSE_SEO_LOW' : 'LIGHTHOUSE_SEO_BASELINE';
+                    $seoTitle = $seoCategory < 75 ? 'Lighthouse SEO Score Needs Work' : 'Lighthouse SEO Score Captured';
+                    $this->addIssue('seo', $seoSeverity, $seoCode,
+                        $seoTitle,
+                        "Google Lighthouse reported a mobile SEO score of {$seoCategory}/100 for this page.",
+                        'Lighthouse checks technical search basics like crawlable links, mobile viewport behavior, and indexing-related page setup.',
+                        'Review the Lighthouse SEO audit details and fix the flagged crawlability, metadata, and mobile-search issues.',
+                        $seoCategory < 75 ? 'A weak technical SEO baseline can limit how well pages are understood and surfaced in search.' : '',
+                        'Mobile Lighthouse SEO ' . $seoCategory . '/100'
+                    );
+                }
+
                 $score = (int) ($mobilePageSpeed['score'] ?? 0);
                 $metrics = $mobilePageSpeed['metrics'] ?? [];
                 $metricSummary = [];

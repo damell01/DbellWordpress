@@ -157,6 +157,8 @@ class AdminController extends BaseController {
                      'screenshot_provider', 'screenshot_api_url', 'screenshot_verify',
                      'mail_driver', 'mail_from', 'mail_from_name', 'smtp_host', 'smtp_port',
                      'smtp_user', 'smtp_pass', 'smtp_encryption', 'admin_email',
+                     'report_email_contact_name', 'report_email_contact_phone',
+                     'report_email_subject', 'report_email_html', 'report_email_text',
                      'google_maps_api_key', 'google_pagespeed_api_key',
                      'enable_google_places_lookup', 'enable_pagespeed_lookup'];
             $saveData = [];

@@ -35,7 +35,8 @@ $local         = (int)($scores['local_score'] ?? 0);
 $gradeInfo     = $grade ?? ['grade'=>'C','label'=>'Fair','color'=>'#f59e0b'];
 $siteUrl       = $requestData['website_url'] ?? '';
 $screenshotUrl = $report['screenshot_url'] ?? '';
-$allIssues     = $issues ?? [];
+$rawIssues     = $issues ?? [];
+$allIssues     = array_values(array_filter($rawIssues, static fn($issue) => ($issue['code'] ?? '') !== 'SEO_PAGE_PROFILE'));
 $comparison    = $comparison ?? null;
 $feedbackSummary = $feedbackSummary ?? [];
 $pageSpeedData = $pageSpeedData ?? ['mobile' => null, 'desktop' => null];
@@ -136,6 +137,10 @@ $issueGroups = [
     'medium' => array_values(array_filter($allIssues, static fn($issue) => ($issue['severity'] ?? 'info') === 'medium')),
     'low' => array_values(array_filter($allIssues, static fn($issue) => in_array($issue['severity'] ?? 'info', ['low', 'info'], true))),
 ];
+$issuesByCode = [];
+$seoIssueCount = 0;
+$seoCriticalCount = 0;
+$seoHighCount = 0;
 $gbpIssue = null;
 $parseLocatorEvidence = function (?string $evidence): array {
     $evidence = trim((string) $evidence);
@@ -193,6 +198,19 @@ $buildScreenshotMarkers = function (array $issues) use ($parseLocatorEvidence): 
     return $markers;
 };
 foreach ($allIssues as $issueItem) {
+    $issueCode = (string) ($issueItem['code'] ?? '');
+    if ($issueCode !== '') {
+        $issuesByCode[$issueCode] = $issueItem;
+    }
+    if (($issueItem['category'] ?? '') === 'seo') {
+        $seoIssueCount++;
+        if (($issueItem['severity'] ?? '') === 'critical') {
+            $seoCriticalCount++;
+        }
+        if (($issueItem['severity'] ?? '') === 'high') {
+            $seoHighCount++;
+        }
+    }
     if (in_array($issueItem['code'] ?? '', ['SLOW_RESPONSE', 'MODERATE_RESPONSE', 'LOAD_TIME_BASELINE'], true) && !$loadMetricIssue) {
         $loadMetricIssue = $issueItem;
     }
@@ -244,6 +262,266 @@ if ($pageWeightIssue) {
 if ($scriptIssue) {
     $performanceDiagnostics[] = $scriptIssue;
 }
+
+$severityPenaltyMap = [
+    'critical' => 20,
+    'high' => 10,
+    'medium' => 5,
+    'low' => 2,
+    'info' => 0,
+];
+$scoreFromIssues = function (array $issues) use ($severityPenaltyMap): int {
+    $penalty = 0;
+    foreach ($issues as $issue) {
+        $penalty += $severityPenaltyMap[$issue['severity'] ?? 'info'] ?? 0;
+    }
+    return max(0, 100 - min(100, $penalty));
+};
+$onPageSeoCodes = [
+    'MISSING_TITLE','WEAK_TITLE','TITLE_TOO_LONG','TITLE_MATCHES_H1_EXACTLY',
+    'MISSING_META_DESC','WEAK_META_DESC','META_DESC_TOO_LONG',
+    'MISSING_H1','MULTIPLE_H1','THIN_CONTENT','LOW_INTERNAL_LINKS',
+    'KEY_PAGE_MISSING_TITLE','KEY_PAGE_MISSING_META_DESC','KEY_PAGE_MISSING_H1',
+    'KEY_PAGE_THIN_CONTENT','KEY_PAGE_LOW_INTERNAL_LINKS','WEAK_TOPIC_RELEVANCE'
+];
+$technicalSeoCodes = [
+    'MISSING_CANONICAL','INVALID_CANONICAL','CANONICAL_OTHER_DOMAIN',
+    'NOINDEX_TAG_FOUND','MISSING_STRUCTURED_DATA','MISSING_SITEMAP','MISSING_ROBOTS',
+    'ROBOTS_BLOCKS_SITE','ROBOTS_MISSING_SITEMAP_REFERENCE',
+    'MISSING_OG_TAGS','MISSING_TWITTER_CARD','MISSING_FAVICON',
+    'NO_HTTPS','LIGHTHOUSE_SEO_LOW','LIGHTHOUSE_SEO_BASELINE'
+];
+$localSeoCodes = ['NO_ADDRESS','NO_MAP','NO_HOURS','NO_SCHEMA','NO_GBP_LINK','GBP_FOUND_EXTERNALLY','GBP_LINK_PRESENT'];
+$onPageSeoIssues = array_values(array_filter($allIssues, static fn($issue) => in_array(($issue['code'] ?? ''), $onPageSeoCodes, true)));
+$technicalSeoIssues = array_values(array_filter($allIssues, static fn($issue) => in_array(($issue['code'] ?? ''), $technicalSeoCodes, true)));
+$localSeoIssues = array_values(array_filter($allIssues, static fn($issue) => in_array(($issue['code'] ?? ''), $localSeoCodes, true)));
+$competitiveSeoCodes = ['HOMEPAGE_SEARCH_INTENT_WEAK','HOMEPAGE_LOCATION_SIGNAL_WEAK','LIMITED_CITY_SERVICE_COVERAGE','NO_LOCAL_LANDING_PAGE_SIGNAL','WEAK_TOPIC_RELEVANCE'];
+$competitiveSeoIssues = array_values(array_filter($allIssues, static fn($issue) => in_array(($issue['code'] ?? ''), $competitiveSeoCodes, true)));
+$onPageSeoScore = $scoreFromIssues($onPageSeoIssues);
+$technicalSeoScore = $scoreFromIssues($technicalSeoIssues);
+$localSeoSignalScore = $scoreFromIssues($localSeoIssues);
+$competitiveSeoScore = $scoreFromIssues($competitiveSeoIssues);
+
+$firstMatchingIssue = function (array $codes) use ($allIssues): ?array {
+    foreach ($codes as $code) {
+        foreach ($allIssues as $issue) {
+            if (($issue['code'] ?? '') === $code) {
+                return $issue;
+            }
+        }
+    }
+    return null;
+};
+
+$seoSalesSummary = null;
+$seoPrimaryIssue = $firstMatchingIssue([
+    'NOINDEX_TAG_FOUND',
+    'ROBOTS_BLOCKS_SITE',
+    'MISSING_TITLE',
+    'MISSING_META_DESC',
+    'HOMEPAGE_SEARCH_INTENT_WEAK',
+    'LIMITED_CITY_SERVICE_COVERAGE',
+    'NO_LOCAL_LANDING_PAGE_SIGNAL',
+    'WEAK_TOPIC_RELEVANCE',
+    'THIN_CONTENT',
+    'LIGHTHOUSE_SEO_LOW',
+]);
+
+if ($seoPrimaryIssue) {
+    $seoSalesSummary = match ($seoPrimaryIssue['code']) {
+        'NOINDEX_TAG_FOUND', 'ROBOTS_BLOCKS_SITE' =>
+            'Your biggest SEO opportunity is visibility: parts of the site may be telling search engines not to crawl or index important pages, which can stop rankings before they even start.',
+        'MISSING_TITLE', 'MISSING_META_DESC' =>
+            'Your biggest SEO opportunity is search snippet quality: key pages are missing core title or meta description signals, which can reduce rankings and click-through rate from Google.',
+        'HOMEPAGE_SEARCH_INTENT_WEAK' =>
+            'Your biggest SEO opportunity is homepage clarity: the homepage is not signaling your main services strongly enough, so search engines and visitors may not quickly understand what you offer.',
+        'LIMITED_CITY_SERVICE_COVERAGE', 'NO_LOCAL_LANDING_PAGE_SIGNAL' =>
+            'Your biggest SEO opportunity is local market coverage: the site needs stronger service-plus-location targeting so it can compete better for nearby searches and city-based intent.',
+        'WEAK_TOPIC_RELEVANCE', 'THIN_CONTENT' =>
+            'Your biggest SEO opportunity is content depth: important pages need stronger topical copy so search engines can connect your services to the searches you want to win.',
+        'LIGHTHOUSE_SEO_LOW' =>
+            'Your biggest SEO opportunity is technical readiness: the site is missing some of the baseline crawlability and mobile-search signals that help pages perform consistently in search.',
+        default =>
+            'Your biggest SEO opportunity is tightening the signals on your most important pages so search engines can better understand what you do, where you operate, and which pages should rank.',
+    };
+} elseif ($seo <= 60) {
+    $seoSalesSummary = 'Your biggest SEO opportunity is strengthening the basics across the site so your main pages send clearer service, location, and technical trust signals to search engines.';
+} elseif ($seo <= 80) {
+    $seoSalesSummary = 'Your SEO foundation is workable, but the fastest gains will likely come from sharpening page intent, local relevance, and a few technical cleanup items.';
+} else {
+    $seoSalesSummary = 'Your SEO foundation looks solid overall. The biggest gains now will likely come from expanding service-area coverage and polishing higher-converting search snippets.';
+}
+
+$seoPageProfiles = [];
+foreach ($rawIssues as $issueItem) {
+    if (($issueItem['code'] ?? '') !== 'SEO_PAGE_PROFILE') {
+        continue;
+    }
+    $evidence = (string) ($issueItem['detected_value'] ?? '');
+    preg_match('/page=([^|]+)/i', $evidence, $pageMatch);
+    preg_match('/type=([^|]+)/i', $evidence, $typeMatch);
+    preg_match('/words=(\d+)/i', $evidence, $wordsMatch);
+    preg_match('/internal_links=(\d+)/i', $evidence, $linksMatch);
+    preg_match('/title=([^|]+)/i', $evidence, $titleMatch);
+    preg_match('/description=([^|]+)/i', $evidence, $descMatch);
+    preg_match('/h1=([^|]+)/i', $evidence, $h1Match);
+    $path = trim((string) ($pageMatch[1] ?? '/'));
+    $seoPageProfiles[$path] = [
+        'path' => $path,
+        'type' => trim((string) ($typeMatch[1] ?? 'page')),
+        'words' => (int) ($wordsMatch[1] ?? 0),
+        'internal_links' => (int) ($linksMatch[1] ?? 0),
+        'has_title' => trim((string) ($titleMatch[1] ?? 'no')) === 'yes',
+        'has_description' => trim((string) ($descMatch[1] ?? 'no')) === 'yes',
+        'h1_count' => (int) ($h1Match[1] ?? 0),
+        'issues' => [],
+    ];
+}
+foreach ($allIssues as $issueItem) {
+    if (($issueItem['category'] ?? '') !== 'seo') {
+        continue;
+    }
+    $evidence = (string) ($issueItem['detected_value'] ?? '');
+    if (!preg_match('/page=([^|]+)/i', $evidence, $pageMatch)) {
+        continue;
+    }
+    $path = trim((string) ($pageMatch[1] ?? '/'));
+    if (!isset($seoPageProfiles[$path])) {
+        continue;
+    }
+    $seoPageProfiles[$path]['issues'][] = $issueItem;
+}
+$seoPageProfiles = array_values($seoPageProfiles);
+
+$seoChecks = [
+    [
+        'label' => 'Title Tag',
+        'ok_codes' => [],
+        'warn_codes' => ['MISSING_TITLE', 'WEAK_TITLE', 'TITLE_TOO_LONG', 'TITLE_MATCHES_H1_EXACTLY'],
+        'good' => 'Title length and wording look search-friendly.',
+        'fix' => 'Tighten the title to around 50-60 characters and make it distinct from the H1.',
+    ],
+    [
+        'label' => 'Meta Description',
+        'ok_codes' => [],
+        'warn_codes' => ['MISSING_META_DESC', 'WEAK_META_DESC', 'META_DESC_TOO_LONG'],
+        'good' => 'Meta description is present and likely usable in search snippets.',
+        'fix' => 'Write a clearer 150-160 character summary with a strong click-through angle.',
+    ],
+    [
+        'label' => 'Heading Structure',
+        'ok_codes' => [],
+        'warn_codes' => ['MISSING_H1', 'MULTIPLE_H1'],
+        'good' => 'Primary heading structure looks clean.',
+        'fix' => 'Use one strong H1 and keep supporting headings nested below it.',
+    ],
+    [
+        'label' => 'Canonical URL',
+        'ok_codes' => [],
+        'warn_codes' => ['MISSING_CANONICAL', 'INVALID_CANONICAL', 'CANONICAL_OTHER_DOMAIN'],
+        'good' => 'Canonical setup looks present and reasonable.',
+        'fix' => 'Use one valid canonical URL that points to the preferred version of this page.',
+    ],
+    [
+        'label' => 'Indexability',
+        'ok_codes' => [],
+        'warn_codes' => ['NOINDEX_TAG_FOUND', 'ROBOTS_BLOCKS_SITE'],
+        'good' => 'Nothing obvious is blocking search indexing.',
+        'fix' => 'Remove noindex or sitewide crawl blocks if this page should rank.',
+    ],
+    [
+        'label' => 'Structured Data',
+        'ok_codes' => [],
+        'warn_codes' => ['MISSING_STRUCTURED_DATA'],
+        'good' => 'Structured data was detected.',
+        'fix' => 'Add Schema.org markup like Organization, LocalBusiness, Service, FAQ, or Article where appropriate.',
+    ],
+    [
+        'label' => 'Sitemap and Robots',
+        'ok_codes' => [],
+        'warn_codes' => ['MISSING_SITEMAP', 'MISSING_ROBOTS', 'ROBOTS_MISSING_SITEMAP_REFERENCE', 'ROBOTS_BLOCKS_SITE'],
+        'good' => 'Crawler discovery files look present.',
+        'fix' => 'Publish sitemap.xml, keep robots.txt accessible, and reference the sitemap inside robots.txt.',
+    ],
+    [
+        'label' => 'Social Search Snippets',
+        'ok_codes' => [],
+        'warn_codes' => ['MISSING_OG_TAGS', 'MISSING_TWITTER_CARD', 'MISSING_FAVICON'],
+        'good' => 'Sharing/snippet metadata is mostly in place.',
+        'fix' => 'Add Open Graph, Twitter Card, and favicon assets so previews are consistent.',
+    ],
+    [
+        'label' => 'Content Depth',
+        'ok_codes' => [],
+        'warn_codes' => ['THIN_CONTENT', 'LOW_INTERNAL_LINKS', 'KEY_PAGE_THIN_CONTENT', 'KEY_PAGE_LOW_INTERNAL_LINKS'],
+        'good' => 'The page has enough content depth and internal linking to support SEO.',
+        'fix' => 'Add more useful copy and link to related internal pages to strengthen topical signals.',
+    ],
+    [
+        'label' => 'Technical SEO Baseline',
+        'ok_codes' => ['LIGHTHOUSE_SEO_BASELINE'],
+        'warn_codes' => ['LIGHTHOUSE_SEO_LOW'],
+        'good' => 'Lighthouse SEO baseline looks healthy.',
+        'fix' => 'Use Lighthouse SEO findings to improve crawlability, mobile search readiness, and metadata hygiene.',
+    ],
+    [
+        'label' => 'Local SEO Signals',
+        'ok_codes' => ['GBP_LINK_PRESENT', 'GBP_FOUND_EXTERNALLY'],
+        'warn_codes' => ['NO_ADDRESS', 'NO_MAP', 'NO_HOURS', 'NO_SCHEMA', 'NO_GBP_LINK'],
+        'good' => 'Core local business trust signals are present or partially connected.',
+        'fix' => 'Add address, hours, map, LocalBusiness schema, and a visible Google Business Profile link.',
+    ],
+    [
+        'label' => 'Homepage Intent',
+        'ok_codes' => [],
+        'warn_codes' => ['HOMEPAGE_SEARCH_INTENT_WEAK', 'HOMEPAGE_LOCATION_SIGNAL_WEAK'],
+        'good' => 'The homepage appears to communicate service intent and local relevance clearly.',
+        'fix' => 'Make the homepage clearer about your main services and where you serve.',
+    ],
+    [
+        'label' => 'Service + City Coverage',
+        'ok_codes' => [],
+        'warn_codes' => ['LIMITED_CITY_SERVICE_COVERAGE', 'NO_LOCAL_LANDING_PAGE_SIGNAL', 'WEAK_TOPIC_RELEVANCE'],
+        'good' => 'The site shows signs of pairing services with topics and local markets.',
+        'fix' => 'Build out stronger service-area pages and reinforce service + location combinations in key content.',
+    ],
+];
+
+$buildSeoStatus = function (array $check) use ($issuesByCode): array {
+    foreach ($check['warn_codes'] as $code) {
+        if (isset($issuesByCode[$code])) {
+            $issue = $issuesByCode[$code];
+            $severity = (string) ($issue['severity'] ?? 'medium');
+            $tone = in_array($severity, ['critical', 'high'], true) ? 'danger' : 'warning';
+            return [
+                'tone' => $tone,
+                'label' => $tone === 'danger' ? 'Needs attention' : 'Needs work',
+                'detail' => (string) ($issue['title'] ?? $check['fix']),
+            ];
+        }
+    }
+
+    foreach ($check['ok_codes'] as $code) {
+        if (isset($issuesByCode[$code])) {
+            return [
+                'tone' => 'success',
+                'label' => 'Good',
+                'detail' => $check['good'],
+            ];
+        }
+    }
+
+    return [
+        'tone' => 'success',
+        'label' => 'Good',
+        'detail' => $check['good'],
+    ];
+};
+
+$seoHighlights = array_values(array_filter(
+    $allIssues,
+    static fn($issue) => ($issue['category'] ?? '') === 'seo' && in_array(($issue['severity'] ?? 'info'), ['critical', 'high', 'medium'], true)
+));
 ?>
 
 <div id="report-export-content">
@@ -265,6 +543,12 @@ if ($scriptIssue) {
                     <i class="bi bi-globe2 me-2"></i><?= e($siteUrl) ?>
                 </p>
                 <p class="text-white-50 mb-4"><?= e($report['summary_text'] ?? '') ?></p>
+                <?php if (!empty($seoSalesSummary)): ?>
+                <div class="alert border-0 mb-4" style="background:rgba(255,255,255,0.10); color:#fff;">
+                    <div class="small text-uppercase fw-semibold mb-1" style="letter-spacing:.08em; opacity:.85;">SEO Opportunity</div>
+                    <div><?= e($seoSalesSummary) ?></div>
+                </div>
+                <?php endif; ?>
                 <div class="d-flex flex-wrap gap-2">
                     <span class="badge bg-white-10 text-white px-3 py-2">
                         <i class="bi bi-calendar3 me-1"></i><?= e(date('M j, Y', strtotime($report['created_at']))) ?>
@@ -332,7 +616,13 @@ if ($scriptIssue) {
                 <div class="col-lg-4">
                     <div class="summary-kicker">Plain-English Summary</div>
                     <h2 class="fw-bold mb-2 fs-4">What To Focus On First</h2>
-                    <p class="text-muted mb-0">These are the main things most likely to affect trust, leads, or speed. You do not need to fix everything at once.</p>
+                    <p class="text-muted mb-0">These are the main things most likely to affect trust, leads, speed, or search visibility. You do not need to fix everything at once.</p>
+                    <?php if (!empty($seoSalesSummary)): ?>
+                    <div class="mt-3 p-3 rounded-3 bg-white border small">
+                        <div class="fw-semibold mb-1">SEO in plain English</div>
+                        <div class="text-muted"><?= e($seoSalesSummary) ?></div>
+                    </div>
+                    <?php endif; ?>
                 </div>
                 <div class="col-lg-8">
                     <div class="row g-3 report-scroll-row">
@@ -389,6 +679,144 @@ if ($scriptIssue) {
             </div>
             <?php endforeach; ?>
         </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white border-top">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1 fs-4">SEO Breakdown</h2>
+                <p class="text-muted mb-0">A more detailed view of what is helping or hurting the SEO score.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge text-bg-light border">SEO Score: <?= $seo ?>/100</span>
+                <span class="badge text-bg-light border"><?= $seoIssueCount ?> SEO finding<?= $seoIssueCount !== 1 ? 's' : '' ?></span>
+                <?php if ($seoCriticalCount > 0 || $seoHighCount > 0): ?>
+                <span class="badge bg-warning-subtle text-warning-emphasis border"><?= $seoCriticalCount ?> critical, <?= $seoHighCount ?> high</span>
+                <?php endif; ?>
+            </div>
+        </div>
+        <div class="row g-3 mb-4">
+            <?php foreach ([
+                ['label' => 'On-Page SEO', 'score' => $onPageSeoScore, 'copy' => 'Titles, descriptions, headings, content depth, internal links, and topical relevance.'],
+                ['label' => 'Technical SEO', 'score' => $technicalSeoScore, 'copy' => 'Indexability, canonical setup, robots/sitemap, structured data, HTTPS, and Lighthouse SEO.'],
+                ['label' => 'Local SEO Signals', 'score' => $localSeoSignalScore, 'copy' => 'Address visibility, map/location signals, local schema, and Google Business Profile support.'],
+                ['label' => 'Competitive Coverage', 'score' => $competitiveSeoScore, 'copy' => 'Homepage intent, city-service combinations, and local landing page strength.'],
+            ] as $seoSplit): ?>
+            <div class="col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h3 class="h6 fw-bold mb-0"><?= e($seoSplit['label']) ?></h3>
+                            <span class="fw-bold" style="color:<?= e($scoreColor((int) $seoSplit['score'])) ?>"><?= e((string) $seoSplit['score']) ?>/100</span>
+                        </div>
+                        <div class="progress mb-2" style="height:8px;">
+                            <div class="progress-bar" style="width:<?= (int) $seoSplit['score'] ?>%; background:<?= e($scoreColor((int) $seoSplit['score'])) ?>;"></div>
+                        </div>
+                        <p class="text-muted small mb-0"><?= e($seoSplit['copy']) ?></p>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="row g-3">
+            <?php foreach ($seoChecks as $seoCheck): ?>
+            <?php $seoStatus = $buildSeoStatus($seoCheck); ?>
+            <div class="col-md-6 col-xl-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                            <h3 class="h6 fw-bold mb-0"><?= e($seoCheck['label']) ?></h3>
+                            <span class="badge text-bg-<?= e($seoStatus['tone']) ?>"><?= e($seoStatus['label']) ?></span>
+                        </div>
+                        <p class="text-muted small mb-0"><?= e($seoStatus['detail']) ?></p>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php if (!empty($seoHighlights)): ?>
+        <div class="mt-4 p-4 rounded-4 bg-light border">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <h3 class="fw-bold fs-5 mb-0">Top SEO Priorities</h3>
+                <span class="small text-muted">Most impactful issues first</span>
+            </div>
+            <div class="row g-3">
+                <?php foreach (array_slice($seoHighlights, 0, 4) as $seoIssue): ?>
+                <div class="col-md-6">
+                    <div class="border rounded-4 bg-white h-100 p-3">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge bg-<?= e($severityBadge($seoIssue['severity'] ?? 'medium')) ?> text-capitalize"><?= e($seoIssue['severity'] ?? 'medium') ?></span>
+                            <span class="fw-semibold"><?= e($seoIssue['title'] ?? 'SEO issue') ?></span>
+                        </div>
+                        <p class="small text-muted mb-0"><?= e($seoIssue['explanation'] ?? '') ?></p>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($seoPageProfiles)): ?>
+        <div class="mt-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <h3 class="fw-bold fs-5 mb-0">Page-By-Page SEO Checks</h3>
+                <span class="small text-muted">Homepage, contact, and service pages scanned individually</span>
+            </div>
+            <div class="row g-3">
+                <?php foreach ($seoPageProfiles as $pageProfile): ?>
+                <?php
+                $pageIssues = $pageProfile['issues'] ?? [];
+                $pageScore = $scoreFromIssues($pageIssues);
+                $pageTypeLabel = match ($pageProfile['type']) {
+                    'home' => 'Homepage',
+                    'contact' => 'Contact Page',
+                    'service' => 'Service Page',
+                    'about' => 'About Page',
+                    default => 'Page',
+                };
+                ?>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                                <div>
+                                    <div class="small text-muted"><?= e($pageTypeLabel) ?></div>
+                                    <h4 class="h6 fw-bold mb-0"><?= e($pageProfile['path']) ?></h4>
+                                </div>
+                                <span class="badge text-bg-light border"><?= e((string) $pageScore) ?>/100</span>
+                            </div>
+                            <div class="progress mb-3" style="height:8px;">
+                                <div class="progress-bar" style="width:<?= (int) $pageScore ?>%; background:<?= e($scoreColor((int) $pageScore)) ?>;"></div>
+                            </div>
+                            <div class="small text-muted mb-3">
+                                <?= (int) ($pageProfile['words'] ?? 0) ?> words
+                                | <?= (int) ($pageProfile['internal_links'] ?? 0) ?> internal links
+                                | H1 count: <?= (int) ($pageProfile['h1_count'] ?? 0) ?>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge <?= !empty($pageProfile['has_title']) ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' ?>">Title</span>
+                                <span class="badge <?= !empty($pageProfile['has_description']) ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' ?>">Meta Description</span>
+                                <span class="badge <?= (int) ($pageProfile['h1_count'] ?? 0) > 0 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' ?>">H1</span>
+                            </div>
+                            <?php if (!empty($pageIssues)): ?>
+                            <div class="small text-muted mb-1">Top issues:</div>
+                            <?php foreach (array_slice($pageIssues, 0, 3) as $pageIssue): ?>
+                            <div class="small mb-1">
+                                <span class="badge bg-<?= e($severityBadge($pageIssue['severity'] ?? 'medium')) ?> me-1 text-capitalize"><?= e($pageIssue['severity'] ?? 'medium') ?></span>
+                                <?= e($pageIssue['title'] ?? 'SEO issue') ?>
+                            </div>
+                            <?php endforeach; ?>
+                            <?php else: ?>
+                            <div class="small text-success">No major SEO issues were flagged on this page during the sweep.</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 </section>
 

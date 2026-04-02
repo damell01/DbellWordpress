@@ -6,7 +6,7 @@
                 <i class="bi bi-lightning-charge-fill me-1"></i>Free Website Audit
             </div>
             <h1 class="display-5 fw-bold">Audit Your Website for Free</h1>
-            <p class="lead text-muted">View the report right away in your browser. Add your email if you also want a copy sent there later.</p>
+            <p class="lead text-muted">View the report right away in your browser. Add your email and we'll send your report there too.</p>
         </div>
 
         <?php $errors = get_flash('errors') ?? []; ?>
@@ -53,7 +53,7 @@
                                         </span>
                                     </button>
                                 </div>
-                                <div class="form-text">If mail is configured later, we can also send the finished report to this address.</div>
+                                <div class="form-text">If you enter your email, the finished report will be sent there automatically after the scan completes.</div>
                             </div>
 
                             <div class="optional-info-toggle mb-3">
