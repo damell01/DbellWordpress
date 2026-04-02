@@ -48,6 +48,17 @@ $priorityIssues = array_slice(array_values(array_filter(
     $allIssues,
     fn($i) => in_array($i['severity'] ?? 'info', ['critical', 'high', 'medium'], true)
 )), 0, 3);
+$severityOrder = ['critical' => 0, 'high' => 1, 'medium' => 2, 'low' => 3, 'info' => 4];
+$sortedIssues = $allIssues;
+usort($sortedIssues, static function (array $left, array $right) use ($severityOrder): int {
+    $leftRank = $severityOrder[$left['severity'] ?? 'info'] ?? 99;
+    $rightRank = $severityOrder[$right['severity'] ?? 'info'] ?? 99;
+    if ($leftRank === $rightRank) {
+        return strcmp((string) ($left['title'] ?? ''), (string) ($right['title'] ?? ''));
+    }
+    return $leftRank <=> $rightRank;
+});
+$topFindingIssues = array_slice($sortedIssues, 0, 5);
 $loadMetricIssue = null;
 $pageWeightIssue = null;
 $scriptIssue = null;
@@ -487,16 +498,77 @@ $seoChecks = [
     ],
 ];
 
-$buildSeoStatus = function (array $check) use ($issuesByCode): array {
+$formatSeoEvidence = function (array $issue, array $check): array {
+    $code = (string) ($issue['code'] ?? '');
+    $detected = trim((string) ($issue['detected_value'] ?? ''));
+    $explanation = trim((string) ($issue['explanation'] ?? ''));
+
+    return match ($code) {
+        'WEAK_TITLE', 'TITLE_TOO_LONG' => [
+            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'detail' => $detected !== ''
+                ? 'Current title: "' . $detected . '" (' . mb_strlen($detected) . ' characters).'
+                : $explanation,
+        ],
+        'TITLE_MATCHES_H1_EXACTLY' => [
+            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'detail' => $detected !== ''
+                ? 'Matching title/H1 text: "' . $detected . '".'
+                : $explanation,
+        ],
+        'WEAK_META_DESC', 'META_DESC_TOO_LONG' => [
+            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'detail' => $detected !== ''
+                ? 'Current description: "' . $detected . '" (' . mb_strlen($detected) . ' characters).'
+                : $explanation,
+        ],
+        'MULTIPLE_H1' => [
+            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'detail' => $detected !== ''
+                ? 'H1 count found: ' . $detected . '. Best practice is 1.'
+                : $explanation,
+        ],
+        'INVALID_CANONICAL', 'CANONICAL_OTHER_DOMAIN' => [
+            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'detail' => $detected !== ''
+                ? 'Canonical URL found: ' . $detected
+                : $explanation,
+        ],
+        'NOINDEX_TAG_FOUND', 'ROBOTS_BLOCKS_SITE' => [
+            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'detail' => $detected !== '' ? 'Blocking signal found: ' . $detected : $explanation,
+        ],
+        'LIGHTHOUSE_SEO_LOW' => [
+            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'detail' => $detected !== '' ? 'Lighthouse SEO data: ' . $detected : $explanation,
+        ],
+        'LIMITED_CITY_SERVICE_COVERAGE', 'NO_LOCAL_LANDING_PAGE_SIGNAL', 'WEAK_TOPIC_RELEVANCE',
+        'HOMEPAGE_SEARCH_INTENT_WEAK', 'HOMEPAGE_LOCATION_SIGNAL_WEAK',
+        'KEY_PAGE_THIN_CONTENT', 'KEY_PAGE_LOW_INTERNAL_LINKS',
+        'KEY_PAGE_MISSING_TITLE', 'KEY_PAGE_MISSING_META_DESC', 'KEY_PAGE_MISSING_H1' => [
+            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'detail' => $detected !== '' ? 'Scan evidence: ' . $detected : $explanation,
+        ],
+        default => [
+            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'detail' => (string) ($detected !== '' ? $detected : ($explanation !== '' ? $explanation : $check['fix'])),
+        ],
+    };
+};
+
+$buildSeoStatus = function (array $check) use ($issuesByCode, $formatSeoEvidence): array {
     foreach ($check['warn_codes'] as $code) {
         if (isset($issuesByCode[$code])) {
             $issue = $issuesByCode[$code];
             $severity = (string) ($issue['severity'] ?? 'medium');
             $tone = in_array($severity, ['critical', 'high'], true) ? 'danger' : 'warning';
+            $evidence = $formatSeoEvidence($issue, $check);
             return [
                 'tone' => $tone,
                 'label' => $tone === 'danger' ? 'Needs attention' : 'Needs work',
-                'detail' => (string) ($issue['title'] ?? $check['fix']),
+                'found_label' => 'What we found',
+                'found' => $evidence['found'],
+                'detail' => $evidence['detail'],
             ];
         }
     }
@@ -506,7 +578,9 @@ $buildSeoStatus = function (array $check) use ($issuesByCode): array {
             return [
                 'tone' => 'success',
                 'label' => 'Good',
-                'detail' => $check['good'],
+                'found_label' => 'What we found',
+                'found' => $check['good'],
+                'detail' => 'No major issue was flagged for this SEO check.',
             ];
         }
     }
@@ -514,7 +588,9 @@ $buildSeoStatus = function (array $check) use ($issuesByCode): array {
     return [
         'tone' => 'success',
         'label' => 'Good',
-        'detail' => $check['good'],
+        'found_label' => 'What we found',
+        'found' => $check['good'],
+        'detail' => 'No major issue was flagged for this SEO check.',
     ];
 };
 
@@ -522,6 +598,46 @@ $seoHighlights = array_values(array_filter(
     $allIssues,
     static fn($issue) => ($issue['category'] ?? '') === 'seo' && in_array(($issue['severity'] ?? 'info'), ['critical', 'high', 'medium'], true)
 ));
+$topSeoIssue = $seoHighlights[0] ?? null;
+$topBusinessIssue = null;
+foreach ($sortedIssues as $issueItem) {
+    if (in_array(($issueItem['category'] ?? ''), ['technical', 'conversion', 'accessibility', 'local'], true)) {
+        $topBusinessIssue = $issueItem;
+        break;
+    }
+}
+$overallSummary = match (true) {
+    $overall >= 85 => 'The site is in strong shape overall, with mostly polish and growth opportunities left.',
+    $overall >= 70 => 'The site has a solid base, but there are still a few meaningful gaps holding it back.',
+    $overall >= 50 => 'The site is workable, but several issues are likely limiting trust, rankings, or conversions.',
+    default => 'The site needs attention in a few core areas before it will perform reliably as a lead generator.',
+};
+$seoSummary = $topSeoIssue
+    ? 'Biggest SEO opportunity: ' . ($topSeoIssue['title'] ?? 'SEO issue') . '.'
+    : 'SEO basics look fairly stable, so the next gains likely come from deeper content and local coverage.';
+$businessSummary = $topBusinessIssue
+    ? 'Biggest business impact issue: ' . ($topBusinessIssue['title'] ?? 'Performance or conversion issue') . '.'
+    : 'No major non-SEO blocker stood out more than the rest in this scan.';
+$fixLaneGroups = [
+    'now' => [
+        'label' => 'Fix Now',
+        'tone' => 'danger',
+        'copy' => 'Critical and high-priority issues that can affect visibility, trust, or lead flow first.',
+        'issues' => array_slice($issueGroups['high'] ?? [], 0, 3),
+    ],
+    'next' => [
+        'label' => 'Fix Next',
+        'tone' => 'warning',
+        'copy' => 'Meaningful improvements that can strengthen performance after the urgent items are handled.',
+        'issues' => array_slice($issueGroups['medium'] ?? [], 0, 3),
+    ],
+    'later' => [
+        'label' => 'Later',
+        'tone' => 'primary',
+        'copy' => 'Lower-priority cleanup items and refinements that still improve the experience over time.',
+        'issues' => array_slice($issueGroups['low'] ?? [], 0, 3),
+    ],
+];
 ?>
 
 <div id="report-export-content">
@@ -608,15 +724,61 @@ $seoHighlights = array_values(array_filter(
     </div>
 </section>
 
+<section class="report-tabs-shell py-3 border-bottom bg-white no-print">
+    <div class="container">
+        <div class="report-tabs-wrap">
+            <ul class="nav report-tabs" id="reportSectionTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#report-tab-overview" type="button" role="tab" aria-controls="report-tab-overview" aria-selected="true">
+                        <i class="bi bi-grid-1x2 me-2"></i>Overview
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#report-tab-seo" type="button" role="tab" aria-controls="report-tab-seo" aria-selected="false">
+                        <i class="bi bi-search me-2"></i>SEO
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="performance-tab" data-bs-toggle="tab" data-bs-target="#report-tab-performance" type="button" role="tab" aria-controls="report-tab-performance" aria-selected="false">
+                        <i class="bi bi-speedometer2 me-2"></i>Performance
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="findings-tab" data-bs-toggle="tab" data-bs-target="#report-tab-findings" type="button" role="tab" aria-controls="report-tab-findings" aria-selected="false">
+                        <i class="bi bi-list-check me-2"></i>Findings
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<div class="tab-content report-tab-content" id="reportSectionTabContent">
+<div class="tab-pane fade show active" id="report-tab-overview" role="tabpanel" aria-labelledby="overview-tab" tabindex="0">
+
 <?php if (!empty($priorityIssues)): ?>
 <section class="py-4 bg-white border-bottom">
     <div class="container">
         <div class="report-summary-panel">
             <div class="row g-4 align-items-start">
                 <div class="col-lg-4">
-                    <div class="summary-kicker">Plain-English Summary</div>
-                    <h2 class="fw-bold mb-2 fs-4">What To Focus On First</h2>
-                    <p class="text-muted mb-0">These are the main things most likely to affect trust, leads, speed, or search visibility. You do not need to fix everything at once.</p>
+                    <div class="summary-kicker">Executive Summary</div>
+                    <h2 class="fw-bold mb-2 fs-4">What This Report Means</h2>
+                    <p class="text-muted mb-0">A quick read on overall condition, the biggest SEO opportunity, and the biggest business-impact issue.</p>
+                    <div class="executive-summary-list mt-3">
+                        <div class="executive-summary-item">
+                            <div class="executive-summary-label">Overall</div>
+                            <div class="text-muted small"><?= e($overallSummary) ?></div>
+                        </div>
+                        <div class="executive-summary-item">
+                            <div class="executive-summary-label">SEO</div>
+                            <div class="text-muted small"><?= e($seoSummary) ?></div>
+                        </div>
+                        <div class="executive-summary-item">
+                            <div class="executive-summary-label">Business Impact</div>
+                            <div class="text-muted small"><?= e($businessSummary) ?></div>
+                        </div>
+                    </div>
                     <?php if (!empty($seoSalesSummary)): ?>
                     <div class="mt-3 p-3 rounded-3 bg-white border small">
                         <div class="fw-semibold mb-1">SEO in plain English</div>
@@ -642,6 +804,42 @@ $seoHighlights = array_values(array_filter(
     </div>
 </section>
 <?php endif; ?>
+
+<section class="py-4 bg-light border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <h2 class="fw-bold mb-1 fs-4">Fix Priority</h2>
+                <p class="text-muted mb-0">A simple order of operations so the report feels more actionable.</p>
+            </div>
+        </div>
+        <div class="row g-3">
+            <?php foreach ($fixLaneGroups as $lane): ?>
+            <div class="col-lg-4">
+                <div class="fix-lane-card fix-lane-card--<?= e($lane['tone']) ?>">
+                    <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+                        <h3 class="h6 fw-bold mb-0"><?= e($lane['label']) ?></h3>
+                        <span class="badge text-bg-<?= e($lane['tone']) ?>"><?= count($lane['issues']) ?> item<?= count($lane['issues']) !== 1 ? 's' : '' ?></span>
+                    </div>
+                    <p class="small text-muted mb-3"><?= e($lane['copy']) ?></p>
+                    <?php if (!empty($lane['issues'])): ?>
+                    <?php foreach ($lane['issues'] as $laneIssue): ?>
+                    <a href="#issue-<?= (int) ($laneIssue['id'] ?? 0) ?>" class="fix-lane-item report-findings-link text-decoration-none d-block">
+                        <div class="small fw-semibold text-dark"><?= e($laneIssue['title'] ?? 'Issue') ?></div>
+                        <div class="small text-muted"><?= e($laneIssue['category'] ?? 'general') ?></div>
+                    </a>
+                    <?php endforeach; ?>
+                    <?php else: ?>
+                    <div class="fix-lane-item">
+                        <div class="small text-muted mb-0">Nothing significant landed in this bucket on this scan.</div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
 
 <!-- Score Breakdown -->
 <section class="py-5 bg-light">
@@ -681,6 +879,9 @@ $seoHighlights = array_values(array_filter(
         </div>
     </div>
 </section>
+</div>
+
+<div class="tab-pane fade" id="report-tab-seo" role="tabpanel" aria-labelledby="seo-tab" tabindex="0">
 
 <section class="py-5 bg-white border-top">
     <div class="container">
@@ -722,15 +923,28 @@ $seoHighlights = array_values(array_filter(
         </div>
         <div class="row g-3">
             <?php foreach ($seoChecks as $seoCheck): ?>
-            <?php $seoStatus = $buildSeoStatus($seoCheck); ?>
+            <?php
+            $seoStatus = $buildSeoStatus($seoCheck);
+            $seoCardCollapseId = 'seo-check-' . substr(md5(($seoCheck['label'] ?? '') . '|' . ($seoStatus['found'] ?? '')), 0, 10);
+            ?>
             <div class="col-md-6 col-xl-4">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card border-0 shadow-sm h-100 seo-status-card seo-status-card--<?= e($seoStatus['tone']) ?>">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
                             <h3 class="h6 fw-bold mb-0"><?= e($seoCheck['label']) ?></h3>
                             <span class="badge text-bg-<?= e($seoStatus['tone']) ?>"><?= e($seoStatus['label']) ?></span>
                         </div>
-                        <p class="text-muted small mb-0"><?= e($seoStatus['detail']) ?></p>
+                        <div class="seo-status-found mb-2"><?= e($seoStatus['found']) ?></div>
+                        <button class="btn btn-link btn-sm seo-status-toggle collapsed p-0 text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#<?= e($seoCardCollapseId) ?>" aria-expanded="false" aria-controls="<?= e($seoCardCollapseId) ?>">
+                            <span class="seo-status-toggle-label">View details</span>
+                            <i class="bi bi-chevron-down seo-status-toggle-icon ms-1"></i>
+                        </button>
+                        <div class="collapse mt-3" id="<?= e($seoCardCollapseId) ?>">
+                            <div class="seo-status-detail-wrap">
+                                <div class="seo-status-label"><?= e($seoStatus['found_label']) ?></div>
+                                <p class="text-muted small mb-0"><?= e($seoStatus['detail']) ?></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -761,8 +975,12 @@ $seoHighlights = array_values(array_filter(
         <div class="mt-4">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                 <h3 class="fw-bold fs-5 mb-0">Page-By-Page SEO Checks</h3>
-                <span class="small text-muted">Homepage, contact, and service pages scanned individually</span>
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#seoPageChecksCollapse" aria-expanded="false" aria-controls="seoPageChecksCollapse">
+                    Show page details
+                </button>
             </div>
+            <p class="small text-muted mb-3">Homepage, contact, and service pages scanned individually.</p>
+            <div class="collapse" id="seoPageChecksCollapse">
             <div class="row g-3">
                 <?php foreach ($seoPageProfiles as $pageProfile): ?>
                 <?php
@@ -815,10 +1033,14 @@ $seoHighlights = array_values(array_filter(
                 </div>
                 <?php endforeach; ?>
             </div>
+            </div>
         </div>
         <?php endif; ?>
     </div>
 </section>
+</div>
+
+<div class="tab-pane fade" id="report-tab-performance" role="tabpanel" aria-labelledby="performance-tab" tabindex="0">
 
 <?php if (!empty($lighthouseMetrics) || !empty($comparison)): ?>
 <section class="py-4 bg-white border-bottom">
@@ -1195,6 +1417,10 @@ $seoHighlights = array_values(array_filter(
 </section>
 <?php endif; ?>
 
+</div>
+
+<div class="tab-pane fade" id="report-tab-findings" role="tabpanel" aria-labelledby="findings-tab" tabindex="0">
+
 <!-- Screenshot Preview -->
 <?php if (!empty($screenshotUrl)):
     // Issue codes that are most likely to manifest as visible problems on the screenshot.
@@ -1347,7 +1573,7 @@ $seoHighlights = array_values(array_filter(
                             No common visual issues flagged.
                         </p>
                         <?php endif; ?>
-                        <a href="#issues-section" class="btn btn-sm btn-outline-primary mt-3 w-100">
+                        <a href="#issues-section" class="btn btn-sm btn-outline-primary mt-3 w-100 report-findings-link">
                             <i class="bi bi-list-check me-1"></i>View All Findings
                         </a>
                     </div>
@@ -1383,6 +1609,37 @@ $seoHighlights = array_values(array_filter(
                 </div>
                 <?php endif; ?>
 
+                <?php if (!empty($topFindingIssues)): ?>
+                <div class="findings-toplist mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                        <div>
+                            <h3 class="fw-bold fs-5 mb-1">Top 5 Issues To Review First</h3>
+                            <p class="text-muted small mb-0">Start here, then open the full findings list if you want every item.</p>
+                        </div>
+                        <?php if (count($allIssues) > count($topFindingIssues)): ?>
+                        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#allFindingsCollapse" aria-expanded="false" aria-controls="allFindingsCollapse">
+                            Show all findings
+                        </button>
+                        <?php endif; ?>
+                    </div>
+                    <div class="row g-3">
+                        <?php foreach ($topFindingIssues as $topIssue): ?>
+                        <div class="col-md-6">
+                            <a href="#issue-<?= (int) ($topIssue['id'] ?? 0) ?>" class="summary-priority-card findings-top-card report-findings-link text-decoration-none d-block">
+                                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                                    <span class="badge bg-<?= e($severityBadge($topIssue['severity'] ?? 'medium')) ?> text-capitalize"><?= e($topIssue['severity'] ?? 'medium') ?></span>
+                                    <span class="small text-muted text-capitalize"><?= e($topIssue['category'] ?? 'general') ?></span>
+                                </div>
+                                <h4 class="summary-priority-title mb-1"><?= e($topIssue['title'] ?? 'Issue') ?></h4>
+                                <p class="summary-priority-copy"><?= e(mb_strimwidth((string) ($topIssue['explanation'] ?? ''), 0, 135, '...')) ?></p>
+                            </a>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <div class="collapse <?= count($allIssues) <= count($topFindingIssues) ? 'show' : '' ?>" id="allFindingsCollapse">
                 <div class="accordion issue-group-accordion" id="issueGroupAccordion">
                 <?php
                 $groupMeta = [
@@ -1513,6 +1770,7 @@ $seoHighlights = array_values(array_filter(
                 </div>
                 <?php $groupIndex++; endforeach; ?>
                 </div>
+                </div>
             </div>
 
             <!-- Sidebar CTA -->
@@ -1619,6 +1877,31 @@ $seoHighlights = array_values(array_filter(
     </div>
 </section>
 </div>
+</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var findingsTabTrigger = document.getElementById('findings-tab');
+    if (!findingsTabTrigger || typeof bootstrap === 'undefined') {
+        return;
+    }
+
+    var activateFindingsTab = function () {
+        bootstrap.Tab.getOrCreateInstance(findingsTabTrigger).show();
+    };
+
+    document.querySelectorAll('.report-findings-link').forEach(function (link) {
+        link.addEventListener('click', function () {
+            activateFindingsTab();
+        });
+    });
+
+    if (window.location.hash === '#issues-section') {
+        activateFindingsTab();
+    }
+});
+</script>
 
 <!-- Request Help Form -->
 <section id="request-help" class="py-5 bg-light">
