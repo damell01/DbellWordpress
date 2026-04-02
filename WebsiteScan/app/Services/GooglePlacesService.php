@@ -23,7 +23,7 @@ class GooglePlacesService {
         }
     }
 
-    public function findBusinessProfile(string $websiteUrl, string|array $businessName = ''): array {
+    public function findBusinessProfile(string $websiteUrl, string|array $businessName = '', string|array $locationHints = []): array {
         if (!$this->enabled) {
             return ['success' => false, 'error' => 'Google Places lookup disabled in settings.'];
         }
@@ -34,7 +34,7 @@ class GooglePlacesService {
 
         $domain = parse_url($websiteUrl, PHP_URL_HOST) ?? '';
         $domain = preg_replace('/^www\./i', '', strtolower($domain));
-        $queries = $this->buildQueryCandidates($domain, $businessName);
+        $queries = $this->buildQueryCandidates($domain, $businessName, $locationHints);
         $cacheKey = md5($domain . '|' . implode('|', $queries));
         $cached = $this->readCache($cacheKey);
         if ($cached !== null) {
@@ -59,7 +59,7 @@ class GooglePlacesService {
 
             $places = $response['places'] ?? [];
             foreach ($places as $place) {
-                $score = $this->scorePlaceMatch($place, $domain, $businessName);
+                $score = $this->scorePlaceMatch($place, $domain, $businessName, $locationHints);
                 if ($score > $bestScore) {
                     $bestScore = $score;
                     $bestMatch = $place;
@@ -140,8 +140,9 @@ class GooglePlacesService {
         return ['success' => true, 'places' => $data['places'] ?? []];
     }
 
-    private function buildQueryCandidates(string $domain, string|array $businessName): array {
+    private function buildQueryCandidates(string $domain, string|array $businessName, string|array $locationHints = []): array {
         $names = is_array($businessName) ? $businessName : [$businessName];
+        $locations = is_array($locationHints) ? $locationHints : [$locationHints];
         $candidates = [];
 
         foreach ($names as $name) {
@@ -151,27 +152,45 @@ class GooglePlacesService {
                 if ($domain !== '') {
                     $candidates[] = $normalized . ' ' . $domain;
                 }
+                foreach ($locations as $location) {
+                    $location = $this->normalizeLocationHint((string) $location);
+                    if ($location !== '') {
+                        $candidates[] = $normalized . ' ' . $location;
+                        $candidates[] = $normalized . ' near ' . $location;
+                    }
+                }
             }
         }
 
         $domainLabel = $this->domainLabel($domain);
         if ($domainLabel !== '') {
             $candidates[] = $domainLabel;
+            foreach ($locations as $location) {
+                $location = $this->normalizeLocationHint((string) $location);
+                if ($location !== '') {
+                    $candidates[] = $domainLabel . ' ' . $location;
+                }
+            }
         }
         if ($domain !== '') {
             $candidates[] = $domain;
         }
 
-        return array_values(array_unique(array_filter($candidates)));
+        return array_values(array_unique(array_filter(array_map(
+            fn($candidate) => trim((string) $candidate),
+            $candidates
+        ))));
     }
 
-    private function scorePlaceMatch(array $place, string $domain, string|array $businessName): float {
+    private function scorePlaceMatch(array $place, string $domain, string|array $businessName, string|array $locationHints = []): float {
         $score = 0.0;
         $website = strtolower((string) ($place['websiteUri'] ?? ''));
         $displayName = $this->normalizeBusinessName((string) (($place['displayName']['text'] ?? '')));
+        $address = strtolower((string) ($place['formattedAddress'] ?? ''));
         $status = strtolower((string) ($place['businessStatus'] ?? ''));
         $types = array_map('strtolower', $place['types'] ?? []);
         $names = is_array($businessName) ? $businessName : [$businessName];
+        $locations = is_array($locationHints) ? $locationHints : [$locationHints];
 
         if ($domain !== '' && $website !== '') {
             $websiteHost = parse_url($website, PHP_URL_HOST) ?? '';
@@ -207,6 +226,13 @@ class GooglePlacesService {
             $score += 0.03;
         }
 
+        foreach ($locations as $location) {
+            $location = strtolower($this->normalizeLocationHint((string) $location));
+            if ($location !== '' && str_contains($address, $location)) {
+                $score += 0.08;
+            }
+        }
+
         return $score;
     }
 
@@ -235,6 +261,16 @@ class GooglePlacesService {
         $root = $labels[0] ?? '';
         $root = preg_replace('/[-_]+/', ' ', $root);
         return trim($root);
+    }
+
+    private function normalizeLocationHint(string $value): string {
+        $value = trim($value);
+        if ($value === '') {
+            return '';
+        }
+        $value = preg_replace('/[^a-z0-9,\s-]/i', ' ', $value);
+        $value = preg_replace('/\s+/', ' ', (string) $value);
+        return trim((string) $value);
     }
 
     private function cacheFile(string $cacheKey): string {

@@ -271,7 +271,7 @@ $pageFlashError = \App\Core\Session::getFlash('error');
 $criticals     = array_filter($allIssues, fn($i) => $i['severity'] === 'critical');
 $highs         = array_filter($allIssues, fn($i) => $i['severity'] === 'high');
 $severityOrder = ['critical' => 0, 'high' => 1, 'medium' => 2, 'low' => 3, 'info' => 4];
-$categoryOrder = ['seo' => 0, 'technical' => 1, 'conversion' => 2, 'local' => 3, 'accessibility' => 5];
+$categoryOrder = ['conversion' => 0, 'seo' => 1, 'local' => 2, 'technical' => 3, 'accessibility' => 9];
 $issueCodeBoostOrder = [
     'NO_CTA' => 0,
     'NO_CONTACT_FORM' => 1,
@@ -317,6 +317,8 @@ $sortedIssues = $sortIssuesByPriority($sortedIssues);
 $priorityIssues = array_slice(array_values(array_filter(
     $sortedIssues,
     fn($i) => in_array($i['severity'] ?? 'info', ['critical', 'high', 'medium'], true)
+        && !(($i['category'] ?? '') === 'accessibility' && ($i['severity'] ?? '') !== 'critical')
+        && !in_array(($i['code'] ?? ''), ['PAGESPEED_LOOKUP_PENDING', 'GBP_LOOKUP_CACHED'], true)
 )), 0, 3);
 $topFindingIssues = array_slice($sortedIssues, 0, 5);
 $loadMetricIssue = null;
@@ -396,6 +398,19 @@ $extractFirstUrl = function (?string $value): ?string {
         return $match[0];
     }
     return null;
+};
+$issueEvidenceSummary = function (array $issue) use ($issueDisplayExplanation): string {
+    $detected = trim((string) ($issue['detected_value'] ?? ''));
+    if ($detected !== '') {
+        $parts = preg_split('/\s*\|\s*/', $detected) ?: [$detected];
+        $first = trim((string) ($parts[0] ?? ''));
+        if ($first !== '') {
+            return function_exists('mb_strimwidth') ? mb_strimwidth($first, 0, 110, '...', 'UTF-8') : substr($first, 0, 110);
+        }
+    }
+
+    $fallback = trim($issueDisplayExplanation($issue));
+    return function_exists('mb_strimwidth') ? mb_strimwidth($fallback, 0, 110, '...', 'UTF-8') : substr($fallback, 0, 110);
 };
 $pageSpeedTabs = array_filter([
     'mobile' => $pageSpeedData['mobile'] ?? null,
@@ -866,7 +881,8 @@ $seoHighlights = array_values(array_filter(
 $topSeoIssue = $seoHighlights[0] ?? null;
 $topBusinessIssue = null;
 foreach ($sortedIssues as $issueItem) {
-    if (in_array(($issueItem['category'] ?? ''), ['technical', 'conversion', 'accessibility', 'local'], true)) {
+    if (in_array(($issueItem['category'] ?? ''), ['technical', 'conversion', 'local'], true)
+        && !in_array(($issueItem['code'] ?? ''), ['PAGESPEED_LOOKUP_PENDING', 'GBP_LOOKUP_CACHED'], true)) {
         $topBusinessIssue = $issueItem;
         break;
     }
@@ -883,24 +899,52 @@ $seoSummary = $topSeoIssue
 $businessSummary = $topBusinessIssue
     ? 'Biggest business impact issue: ' . $issueDisplayTitle($topBusinessIssue) . '.'
     : 'No major non-SEO blocker stood out more than the rest in this scan.';
+$classifyFixLane = function (array $issue): string {
+    $code = (string) ($issue['code'] ?? '');
+    $category = (string) ($issue['category'] ?? '');
+    $severity = (string) ($issue['severity'] ?? 'info');
+
+    if ($category === 'accessibility' && $severity !== 'critical') {
+        return 'later';
+    }
+    if (in_array($code, ['PAGESPEED_LOOKUP_PENDING', 'GBP_LOOKUP_CACHED', 'LOCALBUSINESS_SCHEMA_PRESENT', 'GBP_LINK_PRESENT', 'GBP_FOUND_EXTERNALLY'], true)) {
+        return 'later';
+    }
+    if (in_array($code, [
+        'NO_CTA','NO_CONTACT_FORM','NO_PHONE','CTA_NOT_PROMINENT','WEAK_HERO_MESSAGE',
+        'OFFER_CLARITY_WEAK','CTA_PLACEMENT_THIN','TRUST_SIGNAL_DENSITY_LOW',
+        'HIGH_FORM_FRICTION','NO_TESTIMONIALS','NO_TRUST_BADGES',
+        'LOCAL_CONTACT_PROMINENCE_WEAK','LOCAL_REVIEW_SIGNAL_MISSING'
+    ], true)) {
+        return 'now';
+    }
+    if (in_array($category, ['seo', 'local'], true) || in_array($code, ['LIGHTHOUSE_PERFORMANCE_LOW', 'SLOW_RESPONSE', 'MODERATE_RESPONSE', 'LARGE_PAGE_SIZE'], true)) {
+        return 'next';
+    }
+    return 'later';
+};
+$laneBuckets = ['now' => [], 'next' => [], 'later' => []];
+foreach ($sortedIssues as $issueItem) {
+    $laneBuckets[$classifyFixLane($issueItem)][] = $issueItem;
+}
 $fixLaneGroups = [
     'now' => [
         'label' => 'Losing Leads',
         'tone' => 'danger',
         'copy' => 'These are the most urgent problems likely to cost calls, form submissions, or immediate trust.',
-        'issues' => array_slice($sortIssuesByPriority($issueGroups['high'] ?? []), 0, 3),
+        'issues' => array_slice($laneBuckets['now'], 0, 3),
     ],
     'next' => [
         'label' => 'Hurting Rankings',
         'tone' => 'warning',
         'copy' => 'These issues can weaken search visibility and overall site performance once the urgent blockers are handled.',
-        'issues' => array_slice($sortIssuesByPriority($issueGroups['medium'] ?? []), 0, 3),
+        'issues' => array_slice($laneBuckets['next'], 0, 3),
     ],
     'later' => [
         'label' => 'Polish Opportunities',
         'tone' => 'primary',
         'copy' => 'These are lower-priority improvements that still help the site feel stronger, cleaner, and more complete over time.',
-        'issues' => array_slice($sortIssuesByPriority($issueGroups['low'] ?? []), 0, 3),
+        'issues' => array_slice($laneBuckets['later'], 0, 3),
     ],
 ];
 $pageSpeedPendingIssue = $firstMatchingIssue(['PAGESPEED_LOOKUP_PENDING', 'PAGESPEED_LOOKUP_FAILED']);
@@ -1206,9 +1250,17 @@ $exportSummaryCards = [
                     <p class="small text-muted mb-3"><?= e($lane['copy']) ?></p>
                     <?php if (!empty($lane['issues'])): ?>
                     <?php foreach ($lane['issues'] as $laneIssue): ?>
+                    <?php $laneIssueUrl = $extractFirstUrl($laneIssue['detected_value'] ?? ''); ?>
                     <a href="#issue-<?= (int) ($laneIssue['id'] ?? 0) ?>" class="fix-lane-item report-findings-link text-decoration-none d-block">
                         <div class="small fw-semibold text-dark"><?= e($issueDisplayTitle($laneIssue)) ?></div>
-                        <div class="small text-muted"><?= e($laneIssue['category'] ?? 'general') ?></div>
+                        <div class="small text-muted text-capitalize"><?= e($laneIssue['category'] ?? 'general') ?></div>
+                        <div class="small text-muted mt-1"><?= e($issueEvidenceSummary($laneIssue)) ?></div>
+                        <?php if (!empty($laneIssueUrl)): ?>
+                        <div class="small mt-1">
+                            <span class="text-primary">Link found:</span>
+                            <span class="text-break"><?= e($laneIssueUrl) ?></span>
+                        </div>
+                        <?php endif; ?>
                     </a>
                     <?php endforeach; ?>
                     <?php else: ?>

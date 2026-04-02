@@ -767,8 +767,11 @@ class AuditEngine {
             $isGbp = str_contains($lowerHref, 'g.page/')
                 || str_contains($lowerHref, 'google.com/maps?cid=')
                 || str_contains($lowerHref, 'google.com/maps/place/')
+                || str_contains($lowerHref, 'google.com/maps/search/')
+                || str_contains($lowerHref, 'google.com/localservices/')
                 || str_contains($lowerHref, 'maps.app.goo.gl/')
-                || str_contains($lowerHref, 'google.com/search?');
+                || str_contains($lowerHref, 'google.com/search?')
+                || str_contains($lowerHref, 'goo.gl/maps/');
 
             if ($isGbp) {
                 $text = $this->normalizeWhitespace($link->textContent ?? '');
@@ -850,6 +853,26 @@ class AuditEngine {
             $domainLabel = $this->normalizeWhitespace($domainLabel);
             if ($domainLabel !== '') {
                 $candidates[] = $domainLabel;
+            }
+        }
+
+        return array_values(array_unique(array_filter($candidates)));
+    }
+
+    private function extractBusinessLocationCandidates(): array {
+        $candidates = [];
+
+        foreach ($this->pageProfiles as $profile) {
+            foreach ((array) ($profile['location_terms'] ?? []) as $term) {
+                $term = $this->normalizeWhitespace((string) $term);
+                if ($term !== '' && strlen($term) >= 3) {
+                    $candidates[] = $term;
+                }
+            }
+
+            $addressSnippet = $this->normalizeWhitespace((string) ($profile['address_snippet'] ?? ''));
+            if ($addressSnippet !== '') {
+                $candidates[] = $addressSnippet;
             }
         }
 
@@ -1793,7 +1816,8 @@ class AuditEngine {
             );
         } elseif ($this->googlePlacesService) {
             $businessNames = $this->extractBusinessNameCandidates();
-            $externalGbp = $this->googlePlacesService->findBusinessProfile($this->url, $businessNames);
+            $locationHints = $this->extractBusinessLocationCandidates();
+            $externalGbp = $this->googlePlacesService->findBusinessProfile($this->url, $businessNames, $locationHints);
             if (!empty($externalGbp['success']) && !empty($externalGbp['match'])) {
                 $match = $externalGbp['match'];
                 $label = trim((string) (($match['displayName']['text'] ?? '') ?: 'Business Profile match'));
