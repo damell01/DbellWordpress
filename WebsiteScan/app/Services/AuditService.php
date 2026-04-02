@@ -42,6 +42,15 @@ class AuditService {
         $this->db->update('audit_requests', ['status' => 'processing'], ['id' => $auditRequestId]);
 
         try {
+            $cachedCloneId = $this->cloneRecentReportIfFresh($auditRequestId, $url);
+            if ($cachedCloneId !== null) {
+                $this->db->update('audit_requests', [
+                    'status' => 'completed',
+                    'completed_at' => date('Y-m-d H:i:s'),
+                ], ['id' => $auditRequestId]);
+                return $cachedCloneId;
+            }
+
             $result  = $this->engine->run($url);
             $scores  = $this->scorer->calculate($result['issues']);
             $summary = $this->scorer->getSummaryText($scores['overall'], $result['issues']);
@@ -161,5 +170,77 @@ class AuditService {
         }
 
         return $this->supportsPageSpeedColumns;
+    }
+
+    private function cloneRecentReportIfFresh(int $auditRequestId, string $url): ?int {
+        $recent = $this->db->fetch(
+            "SELECT rep.*, req.id AS source_request_id
+             FROM audit_reports rep
+             JOIN audit_requests req ON req.id = rep.audit_request_id
+             WHERE req.normalized_url = ?
+               AND req.status = 'completed'
+               AND rep.created_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)
+             ORDER BY rep.created_at DESC
+             LIMIT 1",
+            [$url]
+        );
+
+        if (!$recent) {
+            return null;
+        }
+
+        $token = bin2hex(random_bytes(16));
+        $reportData = [
+            'audit_request_id' => $auditRequestId,
+            'report_token' => $token,
+            'overall_score' => $recent['overall_score'] ?? 0,
+            'summary_text' => $recent['summary_text'] ?? '',
+            'screenshot_url' => $recent['screenshot_url'] ?? null,
+            'created_at' => date('Y-m-d H:i:s'),
+        ];
+
+        if ($this->auditReportSupportsPageSpeedColumns()) {
+            $reportData['pagespeed_mobile_json'] = $recent['pagespeed_mobile_json'] ?? null;
+            $reportData['pagespeed_desktop_json'] = $recent['pagespeed_desktop_json'] ?? null;
+        }
+
+        $newReportId = $this->db->insert('audit_reports', $reportData);
+
+        $scoreRow = $this->db->fetch(
+            "SELECT * FROM audit_scores WHERE audit_report_id = ? LIMIT 1",
+            [$recent['id']]
+        );
+        if ($scoreRow) {
+            $this->db->insert('audit_scores', [
+                'audit_report_id' => $newReportId,
+                'seo_score' => $scoreRow['seo_score'] ?? 0,
+                'accessibility_score' => $scoreRow['accessibility_score'] ?? 0,
+                'conversion_score' => $scoreRow['conversion_score'] ?? 0,
+                'technical_score' => $scoreRow['technical_score'] ?? 0,
+                'local_score' => $scoreRow['local_score'] ?? 0,
+            ]);
+        }
+
+        $issues = $this->db->fetchAll(
+            "SELECT * FROM audit_issues WHERE audit_report_id = ?",
+            [$recent['id']]
+        );
+        foreach ($issues as $issue) {
+            $this->db->insert('audit_issues', [
+                'audit_report_id' => $newReportId,
+                'category' => $issue['category'] ?? '',
+                'severity' => $issue['severity'] ?? 'info',
+                'code' => $issue['code'] ?? '',
+                'title' => $issue['title'] ?? '',
+                'explanation' => $issue['explanation'] ?? '',
+                'why_it_matters' => $issue['why_it_matters'] ?? '',
+                'how_to_fix' => $issue['how_to_fix'] ?? '',
+                'business_impact' => $issue['business_impact'] ?? '',
+                'detected_value' => $issue['detected_value'] ?? '',
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+
+        return $newReportId;
     }
 }

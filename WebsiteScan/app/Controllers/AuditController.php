@@ -22,13 +22,20 @@ class AuditController extends BaseController {
     }
 
     public function submit(Request $request): void {
+        $wantsJson = $this->wantsJson($request);
         if (!$request->isPost()) {
+            if ($wantsJson) {
+                $this->json(['success' => false, 'message' => 'Invalid request method.'], 405);
+            }
             $this->redirect('audit');
             return;
         }
 
         $rawUrl = trim($request->post('website_url', ''));
         if ($rawUrl === '') {
+            if ($wantsJson) {
+                $this->json(['success' => false, 'message' => 'Please enter a website URL.'], 422);
+            }
             Session::setFlash('error', 'Please enter a website URL.');
             $this->redirect('audit');
             return;
@@ -45,6 +52,9 @@ class AuditController extends BaseController {
         );
 
         if ($recentCount >= $limit) {
+            if ($wantsJson) {
+                $this->json(['success' => false, 'message' => 'You have reached the audit limit. Please try again later.'], 429);
+            }
             Session::setFlash('error', 'You have reached the audit limit. Please try again later.');
             $this->redirect('audit');
             return;
@@ -53,6 +63,9 @@ class AuditController extends BaseController {
         try {
             $url = $this->urlNorm->normalize($rawUrl);
         } catch (\InvalidArgumentException $e) {
+            if ($wantsJson) {
+                $this->json(['success' => false, 'message' => 'Please enter a valid website URL (e.g., https://example.com).'], 422);
+            }
             Session::setFlash('error', 'Please enter a valid website URL (e.g., https://example.com).');
             $this->redirect('audit');
             return;
@@ -60,6 +73,9 @@ class AuditController extends BaseController {
 
         $email = trim($request->post('email', ''));
         if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if ($wantsJson) {
+                $this->json(['success' => false, 'message' => 'Please enter a valid email address.'], 422);
+            }
             Session::setFlash('error', 'Please enter a valid email address.');
             Session::setFlash('_old', $request->all());
             $this->redirect('audit');
@@ -81,6 +97,9 @@ class AuditController extends BaseController {
         $reportId = $this->auditService->runAndStore($auditRequestId, $url);
 
         if (!$reportId) {
+            if ($wantsJson) {
+                $this->json(['success' => false, 'message' => 'The audit could not be completed. The website may be unreachable.'], 500);
+            }
             Session::setFlash('error', 'The audit could not be completed. The website may be unreachable.');
             $this->redirect('audit');
             return;
@@ -89,6 +108,9 @@ class AuditController extends BaseController {
         $reportModel = new AuditReport();
         $report = $reportModel->find($reportId);
         if (!$report) {
+            if ($wantsJson) {
+                $this->json(['success' => false, 'message' => 'The report could not be loaded after the scan finished.'], 500);
+            }
             $this->redirect('audit');
             return;
         }
@@ -103,29 +125,50 @@ class AuditController extends BaseController {
         }
 
         $reportEmailSent = false;
+        $responseMessage = 'Audit complete. Opening your report now.';
         if ($email !== '' && !empty($report['report_token'])) {
             $reportEmailSent = $mailer->sendReportLink($email, $name, $reportUrl);
         }
 
         if ($email !== '') {
             if ($reportEmailSent) {
-                Session::setFlash('success', 'Audit complete. Your report email was sent to ' . $email . '.');
+                $responseMessage = 'Audit complete. Your report email was sent to ' . $email . '.';
+                Session::setFlash('success', $responseMessage);
             } else {
                 $detail = $mailer->getLastError();
+                $responseMessage = 'Audit complete, but report email delivery failed.' . ($detail !== '' ? ' ' . $detail : '');
                 Session::setFlash(
                     'error',
-                    'Audit complete, but report email delivery failed.' . ($detail !== '' ? ' ' . $detail : '')
+                    $responseMessage
                 );
             }
         } elseif (!$adminNotified && $lead) {
             $detail = $mailer->getLastError();
+            $responseMessage = 'Audit complete, but admin notification email delivery failed.' . ($detail !== '' ? ' ' . $detail : '');
             Session::setFlash(
                 'error',
-                'Audit complete, but admin notification email delivery failed.' . ($detail !== '' ? ' ' . $detail : '')
+                $responseMessage
             );
         }
 
+        if ($wantsJson) {
+            $this->json([
+                'success' => true,
+                'message' => $responseMessage,
+                'redirect_url' => $reportUrl,
+                'report_token' => $report['report_token'] ?? null,
+                'email_sent' => $reportEmailSent,
+            ]);
+        }
+
         $this->redirect("report/{$report['report_token']}");
+    }
+
+    private function wantsJson(Request $request): bool {
+        $accept = strtolower((string) ($request->server['HTTP_ACCEPT'] ?? ''));
+        $requestedWith = strtolower((string) ($request->server['HTTP_X_REQUESTED_WITH'] ?? ''));
+
+        return str_contains($accept, 'application/json') || $requestedWith === 'xmlhttprequest';
     }
 
     public function requestHelp(Request $request, array $params): void {

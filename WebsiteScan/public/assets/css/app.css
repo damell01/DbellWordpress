@@ -904,6 +904,62 @@ body.scan-embed section.py-5 {
     padding: 1.25rem 1.25rem 1.25rem 1rem;
     transition: box-shadow 0.2s;
 }
+.issue-meta-line {
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 0.55rem;
+}
+.issue-impact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 0.7rem;
+}
+.issue-impact-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.28rem 0.62rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+    line-height: 1;
+}
+.issue-impact-chip i {
+    font-size: 0.78rem;
+}
+.issue-impact-chip--primary {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+}
+.issue-impact-chip--warning {
+    background: #fff7ed;
+    border-color: #fed7aa;
+    color: #c2410c;
+}
+.issue-impact-chip--danger {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
+}
+.issue-impact-chip--success {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #047857;
+}
+.issue-impact-chip--info {
+    background: #ecfeff;
+    border-color: #a5f3fc;
+    color: #0f766e;
+}
+.issue-impact-chip--secondary {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #475569;
+}
 .issue-group-accordion .accordion-item {
     border-color: var(--ss-border) !important;
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
@@ -1145,7 +1201,8 @@ body.scan-embed section.py-5 {
         border-radius: 18px !important;
     }
     .report-tabs-shell {
-        top: 64px;
+        position: static;
+        top: auto;
     }
     .report-tabs {
         gap: 0.55rem;
@@ -1267,6 +1324,65 @@ body.scan-embed section.py-5 {
     background: var(--ss-danger);
     display: inline-block;
     flex-shrink: 0;
+}
+
+.report-export-brief {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 1.5rem;
+}
+
+.report-export-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.benchmark-card,
+.local-checkpoint-card,
+.schema-check-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 1rem;
+    background: #fff;
+}
+
+.benchmark-card--success,
+.local-checkpoint-card--success,
+.schema-check-card--present {
+    background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+    border-color: #bbf7d0;
+}
+
+.benchmark-card--warning,
+.local-checkpoint-card--warning {
+    background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+    border-color: #fde68a;
+}
+
+.benchmark-card--danger,
+.local-checkpoint-card--danger,
+.schema-check-card--missing {
+    background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+    border-color: #fed7aa;
+}
+
+.benchmark-card--secondary,
+.local-checkpoint-card--secondary {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border-color: #cbd5e1;
+}
+
+.local-checkpoint-card + .local-checkpoint-card {
+    margin-top: 0.85rem;
+}
+
+.schema-check-card i,
+.benchmark-card i {
+    color: var(--ss-primary);
 }
 
 @media (max-width: 991.98px) {

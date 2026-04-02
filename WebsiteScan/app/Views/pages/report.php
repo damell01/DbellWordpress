@@ -25,6 +25,232 @@ $categoryIcon = function(string $cat): string {
         default         => 'bi-exclamation-circle',
     };
 };
+$issueDisplayTitle = function (array $issue): string {
+    $code = (string) ($issue['code'] ?? '');
+    return match ($code) {
+        'NO_CTA' => 'Visitors Are Not Being Told What To Do Next',
+        'NO_CONTACT_FORM' => 'Visitors Do Not Have An Easy Way To Reach Out',
+        'NO_PHONE' => 'Visitors Cannot Quickly Call The Business',
+        'NO_TESTIMONIALS' => 'The Site Is Missing Social Proof',
+        'NO_TRUST_BADGES' => 'The Site Is Missing Trust Signals',
+        'MISSING_TITLE' => 'Search Engines Are Missing A Clear Page Title',
+        'WEAK_TITLE' => 'The Page Title Is Too Weak To Compete Well',
+        'TITLE_TOO_LONG' => 'The Page Title Is Likely Too Long For Search Results',
+        'MISSING_META_DESC' => 'Search Results Are Missing A Strong Description',
+        'WEAK_META_DESC' => 'The Search Description Is Too Thin',
+        'META_DESC_TOO_LONG' => 'The Search Description Is Too Long',
+        'MISSING_H1' => 'The Page Lacks A Clear Main Heading',
+        'MULTIPLE_H1' => 'The Page Has Too Many Main Headings',
+        'MISSING_CANONICAL' => 'Search Engines Are Missing A Preferred Page URL',
+        'INVALID_CANONICAL' => 'The Preferred Page URL Looks Broken',
+        'CANONICAL_OTHER_DOMAIN' => 'The Preferred Page URL Points To Another Domain',
+        'NOINDEX_TAG_FOUND' => 'This Page May Be Telling Google Not To Index It',
+        'ROBOTS_BLOCKS_SITE' => 'The Site May Be Blocking Search Engines',
+        'HOMEPAGE_SEARCH_INTENT_WEAK' => 'The Homepage Does Not Clearly Explain What The Business Does',
+        'HOMEPAGE_LOCATION_SIGNAL_WEAK' => 'The Homepage Does Not Clearly Show Where The Business Serves',
+        'LIMITED_CITY_SERVICE_COVERAGE' => 'Service Area Coverage Looks Thin',
+        'NO_LOCAL_LANDING_PAGE_SIGNAL' => 'The Site Lacks Strong Local Landing Pages',
+        'CTA_NOT_PROMINENT' => 'The Main Call To Action Is Not Prominent Enough',
+        'WEAK_HERO_MESSAGE' => 'The Hero Section Does Not Clearly Explain The Offer',
+        'OFFER_CLARITY_WEAK' => 'The Offer Is Not Clear Enough',
+        'CTA_PLACEMENT_THIN' => 'Call-To-Action Placement Looks Too Sparse',
+        'TRUST_SIGNAL_DENSITY_LOW' => 'Trust Signals Look Too Thin',
+        'HIGH_FORM_FRICTION' => 'The Contact Form May Be Asking Too Much',
+        'NAP_CONSISTENCY_HINT' => 'Business Contact Details May Not Be Consistent Everywhere',
+        'LOCAL_CONTACT_PROMINENCE_WEAK' => 'Local Contact Details Are Not Prominent Enough',
+        'CITY_SERVICE_PAGE_COUNT_LOW' => 'There Are Not Many Strong City + Service Landing Pages',
+        'LOCAL_REVIEW_SIGNAL_MISSING' => 'Local Review Signals Look Thin',
+        'LOCALBUSINESS_SCHEMA_PRESENT' => 'Local Business Structured Data Was Found',
+        'GBP_LOOKUP_CACHED' => 'Google Business Profile Lookup Used Cached Data',
+        'PAGESPEED_LOOKUP_PENDING' => 'Performance Lab Data Is Still Pending',
+        'PAGESPEED_LOOKUP_FAILED' => 'Performance Lab Data Could Not Be Retrieved',
+        default => (string) ($issue['title'] ?? 'Issue'),
+    };
+};
+$issueDisplayExplanation = function (array $issue): string {
+    $code = (string) ($issue['code'] ?? '');
+    return match ($code) {
+        'NO_CTA' => 'The site does not clearly guide visitors toward calling, booking, requesting a quote, or contacting you.',
+        'NO_CONTACT_FORM' => 'The site does not appear to offer a simple form for visitors to reach out and become a lead.',
+        'NO_PHONE' => 'People may not be able to quickly call the business when they are ready to take action.',
+        'NO_TESTIMONIALS' => 'Visitors are not seeing much proof that other customers trust this business.',
+        'NO_TRUST_BADGES' => 'The site is missing visible trust signals that help reduce hesitation before someone contacts you.',
+        'MISSING_TITLE' => 'Search engines may not get a strong headline for this page in search results.',
+        'WEAK_TITLE' => 'The current page title may be too weak or too short to compete well in search.',
+        'TITLE_TOO_LONG' => 'The page title may be too long and could get cut off in search results.',
+        'MISSING_META_DESC' => 'Search engines may have to guess what description to show under this page in results.',
+        'WEAK_META_DESC' => 'The current search description may not be strong enough to earn clicks.',
+        'META_DESC_TOO_LONG' => 'The search description may be getting cut off before people see the full message.',
+        'MISSING_H1' => 'The page is missing a clear main heading that helps both visitors and search engines understand it.',
+        'MULTIPLE_H1' => 'The page may be sending mixed signals about its main topic because it uses too many top-level headings.',
+        'MISSING_CANONICAL' => 'Search engines may not be getting a clear signal about which page URL should be treated as the preferred version.',
+        'INVALID_CANONICAL' => 'The preferred page URL signal appears broken or incomplete.',
+        'CANONICAL_OTHER_DOMAIN' => 'The page appears to be telling search engines that another domain should get the ranking credit.',
+        'NOINDEX_TAG_FOUND' => 'This page may be telling Google not to include it in search results at all.',
+        'ROBOTS_BLOCKS_SITE' => 'The site may be blocking search engines from crawling important pages.',
+        'HOMEPAGE_SEARCH_INTENT_WEAK' => 'The homepage may not clearly explain what the business does, which can hurt both rankings and conversions.',
+        'HOMEPAGE_LOCATION_SIGNAL_WEAK' => 'The homepage may not clearly show where the business serves, which can weaken local SEO.',
+        'LIMITED_CITY_SERVICE_COVERAGE' => 'The site does not yet show strong coverage of service-and-location combinations that often help local rankings.',
+        'NO_LOCAL_LANDING_PAGE_SIGNAL' => 'The site appears light on dedicated local landing pages that help capture nearby searches.',
+        'CTA_NOT_PROMINENT' => 'Visitors may not be seeing the main next step quickly enough near the top of the page.',
+        'WEAK_HERO_MESSAGE' => 'The top section may not quickly explain what the business does or why someone should care.',
+        'OFFER_CLARITY_WEAK' => 'The site may not be making the offer or customer benefit obvious enough.',
+        'CTA_PLACEMENT_THIN' => 'Calls to action may be too limited across the main selling sections of the site.',
+        'TRUST_SIGNAL_DENSITY_LOW' => 'The site looks light on proof points that help visitors feel safe contacting the business.',
+        'HIGH_FORM_FRICTION' => 'The main form may ask for more information than a first contact really needs.',
+        'NAP_CONSISTENCY_HINT' => 'The site may be showing more than one version of the business phone, email, or address details.',
+        'LOCAL_CONTACT_PROMINENCE_WEAK' => 'Important local contact details may not be obvious enough on the pages people check first.',
+        'CITY_SERVICE_PAGE_COUNT_LOW' => 'The site only shows a small number of pages that strongly connect services to target cities or service areas.',
+        'LOCAL_REVIEW_SIGNAL_MISSING' => 'The site does not show much visible evidence of customer reviews or local proof.',
+        'LOCALBUSINESS_SCHEMA_PRESENT' => 'The site is already using local business structured data, which is a good local SEO signal.',
+        'GBP_LOOKUP_CACHED' => 'This scan reused a recent Google Business Profile lookup to keep the audit fast.',
+        'PAGESPEED_LOOKUP_PENDING' => 'External PageSpeed data was not ready in time for this scan, so the report kept moving instead of waiting.',
+        'PAGESPEED_LOOKUP_FAILED' => 'The scan could not retrieve Google PageSpeed lab data on this run.',
+        default => trim((string) ($issue['explanation'] ?? '')),
+    };
+};
+$issueDisplayWhy = function (array $issue): string {
+    $code = (string) ($issue['code'] ?? '');
+    return match ($code) {
+        'NO_CTA' => 'If people are not clearly shown the next step, many of them leave without contacting the business.',
+        'NO_CONTACT_FORM' => 'A simple form often captures leads who are not ready to call right away.',
+        'NO_PHONE' => 'Many service-business visitors prefer to call as soon as they are ready, so hiding that option can cost leads.',
+        'NO_TESTIMONIALS' => 'People trust businesses faster when they can see proof from past customers.',
+        'NO_TRUST_BADGES' => 'Trust signals help reduce hesitation and make the business feel more established.',
+        'MISSING_TITLE' => 'The page title is one of the strongest signals search engines use to understand and rank a page.',
+        'WEAK_TITLE', 'TITLE_TOO_LONG' => 'A stronger title can improve both rankings and click-through rate from search results.',
+        'MISSING_META_DESC', 'WEAK_META_DESC', 'META_DESC_TOO_LONG' => 'The search description helps influence whether people click your result.',
+        'MISSING_H1', 'MULTIPLE_H1' => 'A clear heading structure helps both visitors and search engines understand the page quickly.',
+        'MISSING_CANONICAL', 'INVALID_CANONICAL', 'CANONICAL_OTHER_DOMAIN' => 'Canonical setup helps search engines understand which version of a page should get credit.',
+        'NOINDEX_TAG_FOUND', 'ROBOTS_BLOCKS_SITE' => 'If Google is blocked from indexing or crawling pages, rankings can drop fast no matter how strong the content is.',
+        'HOMEPAGE_SEARCH_INTENT_WEAK', 'HOMEPAGE_LOCATION_SIGNAL_WEAK' => 'The homepage often does the heaviest lifting for both local SEO and first impressions.',
+        'LIMITED_CITY_SERVICE_COVERAGE', 'NO_LOCAL_LANDING_PAGE_SIGNAL' => 'Local search visibility usually improves when the site clearly connects services to locations.',
+        'CTA_NOT_PROMINENT', 'WEAK_HERO_MESSAGE', 'OFFER_CLARITY_WEAK', 'CTA_PLACEMENT_THIN', 'TRUST_SIGNAL_DENSITY_LOW', 'HIGH_FORM_FRICTION' => 'These issues can quietly lower conversion rate even when traffic is already reaching the site.',
+        'NAP_CONSISTENCY_HINT', 'LOCAL_CONTACT_PROMINENCE_WEAK', 'CITY_SERVICE_PAGE_COUNT_LOW', 'LOCAL_REVIEW_SIGNAL_MISSING' => 'Local buyers and search engines both rely on clear trust, location, and business-identity signals.',
+        'LOCALBUSINESS_SCHEMA_PRESENT' => 'This is a helpful supporting signal for local SEO rather than a problem.',
+        'PAGESPEED_LOOKUP_PENDING', 'PAGESPEED_LOOKUP_FAILED' => 'This does not automatically mean the site is slow, but it does mean lab performance data was not available for this scan.',
+        default => trim((string) ($issue['why_it_matters'] ?? '')),
+    };
+};
+$issueDisplayFix = function (array $issue): string {
+    $code = (string) ($issue['code'] ?? '');
+    return match ($code) {
+        'NO_CTA' => 'Add one or two clear actions in key areas like the hero, service sections, and contact area, such as Get a Quote, Call Now, or Book a Consultation.',
+        'NO_CONTACT_FORM' => 'Add a simple contact form on the contact page and make sure it is easy to find from the homepage.',
+        'NO_PHONE' => 'Place the main phone number in the header, contact section, and footer so it is easy to spot on desktop and mobile.',
+        'NO_TESTIMONIALS' => 'Add real customer reviews, testimonials, or proof of results in visible sections of the site.',
+        'NO_TRUST_BADGES' => 'Show trust signals like years in business, certifications, guarantees, memberships, or partner badges.',
+        'MISSING_TITLE' => 'Add a clear page title that says what the page is about and includes the main service or keyword.',
+        'WEAK_TITLE' => 'Rewrite the title so it is clearer, more specific, and more competitive in search.',
+        'TITLE_TOO_LONG' => 'Shorten the title so the most important wording shows fully in search results.',
+        'MISSING_META_DESC' => 'Write a short description that explains the value of the page and gives people a reason to click.',
+        'WEAK_META_DESC' => 'Strengthen the description with clearer value and more intent-focused wording.',
+        'META_DESC_TOO_LONG' => 'Trim the description so the key message appears before search engines cut it off.',
+        'MISSING_H1' => 'Add one clear main heading near the top of the page.',
+        'MULTIPLE_H1' => 'Keep one main heading, then use subheadings underneath it to organize the rest of the page.',
+        'MISSING_CANONICAL' => 'Add a preferred page URL so search engines know which version of the page should rank.',
+        'INVALID_CANONICAL' => 'Replace the broken canonical with a full valid page URL.',
+        'CANONICAL_OTHER_DOMAIN' => 'Update the canonical so it points to the correct version of the page on this site, unless the off-site target is truly intentional.',
+        'NOINDEX_TAG_FOUND' => 'Remove the noindex instruction on pages you want to appear in Google.',
+        'ROBOTS_BLOCKS_SITE' => 'Review robots.txt and remove any sitewide blocking rules that are stopping search engines from crawling important pages.',
+        'HOMEPAGE_SEARCH_INTENT_WEAK' => 'Make the homepage more direct about what the business does, who it serves, and what action a visitor should take next.',
+        'HOMEPAGE_LOCATION_SIGNAL_WEAK' => 'Add stronger location wording to the homepage so both visitors and search engines can see where the business serves.',
+        'LIMITED_CITY_SERVICE_COVERAGE' => 'Build out stronger service-area coverage by pairing services with the cities or areas you want to rank in.',
+        'NO_LOCAL_LANDING_PAGE_SIGNAL' => 'Create stronger local landing pages for the main services and service areas you want to compete in.',
+        'CTA_NOT_PROMINENT' => 'Move a stronger CTA higher on the page and make it more visually obvious in the hero and header.',
+        'WEAK_HERO_MESSAGE' => 'Rewrite the hero so it says what the business does, who it helps, and what someone should do next within a few seconds.',
+        'OFFER_CLARITY_WEAK' => 'Clarify the offer with more direct wording around pricing, estimate, consultation, quote, or the core service promise.',
+        'CTA_PLACEMENT_THIN' => 'Repeat the main CTA in more than one strategic section so visitors do not need to hunt for the next step.',
+        'TRUST_SIGNAL_DENSITY_LOW' => 'Add testimonials, ratings, guarantees, certifications, years in business, and other proof near key decision points.',
+        'HIGH_FORM_FRICTION' => 'Trim the form down to the essentials and keep longer qualification questions for follow-up.',
+        'NAP_CONSISTENCY_HINT' => 'Standardize the main phone, email, address, and business name everywhere they appear on the site.',
+        'LOCAL_CONTACT_PROMINENCE_WEAK' => 'Make sure the homepage and contact page both show the business phone, location, and core contact details clearly.',
+        'CITY_SERVICE_PAGE_COUNT_LOW' => 'Create more useful pages that pair your key services with the cities or areas you actually want to rank in.',
+        'LOCAL_REVIEW_SIGNAL_MISSING' => 'Add visible review snippets, star-rating language, or links to your Google reviews on key pages.',
+        'LOCALBUSINESS_SCHEMA_PRESENT' => 'Keep the schema updated and aligned with your visible business details.',
+        'GBP_LOOKUP_CACHED' => 'No action is needed unless you recently changed your profile and want a fresh lookup.',
+        'PAGESPEED_LOOKUP_PENDING', 'PAGESPEED_LOOKUP_FAILED' => 'Re-run the scan later for lab speed data, but still use the current report findings to clean up on-page speed issues.',
+        default => trim((string) ($issue['how_to_fix'] ?? '')),
+    };
+};
+$issueDisplayImpact = function (array $issue): string {
+    $code = (string) ($issue['code'] ?? '');
+    return match ($code) {
+        'NO_CTA' => 'This can lower form submissions, calls, and quote requests.',
+        'NO_CONTACT_FORM' => 'This can reduce lead capture from visitors who prefer a quick message over a phone call.',
+        'NO_PHONE' => 'This can cost high-intent leads who are ready to call right now.',
+        'NO_TESTIMONIALS', 'NO_TRUST_BADGES' => 'This can make the business feel less proven and lower trust with new visitors.',
+        'MISSING_TITLE', 'WEAK_TITLE', 'TITLE_TOO_LONG', 'MISSING_META_DESC', 'WEAK_META_DESC', 'META_DESC_TOO_LONG', 'MISSING_H1', 'MULTIPLE_H1' => 'This can weaken rankings and reduce clicks from search results.',
+        'MISSING_CANONICAL', 'INVALID_CANONICAL', 'CANONICAL_OTHER_DOMAIN', 'NOINDEX_TAG_FOUND', 'ROBOTS_BLOCKS_SITE' => 'This can directly hurt organic visibility if search engines crawl or index the wrong pages.',
+        'HOMEPAGE_SEARCH_INTENT_WEAK', 'HOMEPAGE_LOCATION_SIGNAL_WEAK', 'LIMITED_CITY_SERVICE_COVERAGE', 'NO_LOCAL_LANDING_PAGE_SIGNAL' => 'This can make it harder to compete for the searches that matter most locally.',
+        'CTA_NOT_PROMINENT', 'WEAK_HERO_MESSAGE', 'OFFER_CLARITY_WEAK', 'CTA_PLACEMENT_THIN', 'TRUST_SIGNAL_DENSITY_LOW', 'HIGH_FORM_FRICTION' => 'This can lower the percentage of visitors who turn into actual leads.',
+        'NAP_CONSISTENCY_HINT', 'LOCAL_CONTACT_PROMINENCE_WEAK', 'CITY_SERVICE_PAGE_COUNT_LOW', 'LOCAL_REVIEW_SIGNAL_MISSING' => 'This can weaken local trust, map relevance, or the ability to rank in nearby searches.',
+        'PAGESPEED_LOOKUP_PENDING', 'PAGESPEED_LOOKUP_FAILED' => 'This mainly limits how much lab performance detail the report can show right now.',
+        default => trim((string) ($issue['business_impact'] ?? '')),
+    };
+};
+$issueImpactChips = function (array $issue): array {
+    $code = (string) ($issue['code'] ?? '');
+    $category = (string) ($issue['category'] ?? '');
+    $chips = [];
+
+    $addChip = static function (array &$list, string $label, string $icon, string $tone): void {
+        foreach ($list as $existing) {
+            if (($existing['label'] ?? '') === $label) {
+                return;
+            }
+        }
+        $list[] = ['label' => $label, 'icon' => $icon, 'tone' => $tone];
+    };
+
+    if ($category === 'seo') {
+        $addChip($chips, 'Rankings', 'bi-search', 'primary');
+    }
+    if ($category === 'conversion') {
+        $addChip($chips, 'Leads', 'bi-bullseye', 'warning');
+    }
+    if ($category === 'technical') {
+        $addChip($chips, 'Performance', 'bi-speedometer2', 'info');
+    }
+    if ($category === 'local') {
+        $addChip($chips, 'Local SEO', 'bi-geo-alt', 'success');
+    }
+
+    if (in_array($code, ['NO_CTA', 'NO_CONTACT_FORM', 'NO_PHONE'], true)) {
+        $addChip($chips, 'Urgent Lead Flow', 'bi-telephone-outbound', 'danger');
+    }
+    if (in_array($code, ['NO_TESTIMONIALS', 'NO_TRUST_BADGES', 'MISSING_HTTPS'], true)) {
+        $addChip($chips, 'Trust', 'bi-shield-check', 'secondary');
+    }
+    if (in_array($code, ['NOINDEX_TAG_FOUND', 'ROBOTS_BLOCKS_SITE', 'CANONICAL_OTHER_DOMAIN', 'MISSING_TITLE', 'MISSING_META_DESC', 'MISSING_H1'], true)) {
+        $addChip($chips, 'SEO Visibility', 'bi-graph-up-arrow', 'primary');
+    }
+    if (in_array($code, ['SLOW_RESPONSE', 'MODERATE_RESPONSE', 'LARGE_PAGE_SIZE', 'LIGHTHOUSE_PERFORMANCE_LOW', 'PAGESPEED_LOOKUP_PENDING', 'PAGESPEED_LOOKUP_FAILED'], true)) {
+        $addChip($chips, 'Speed', 'bi-lightning-charge', 'info');
+    }
+    if (in_array($code, ['CTA_NOT_PROMINENT', 'WEAK_HERO_MESSAGE', 'OFFER_CLARITY_WEAK', 'CTA_PLACEMENT_THIN', 'HIGH_FORM_FRICTION'], true)) {
+        $addChip($chips, 'Conversions', 'bi-graph-up-arrow', 'warning');
+    }
+    if (in_array($code, ['TRUST_SIGNAL_DENSITY_LOW', 'LOCAL_REVIEW_SIGNAL_MISSING', 'NAP_CONSISTENCY_HINT'], true)) {
+        $addChip($chips, 'Trust', 'bi-shield-check', 'secondary');
+    }
+
+    return array_slice($chips, 0, 3);
+};
+$issueMetaSummary = function (array $issue): string {
+    $parts = [];
+    $category = trim((string) ($issue['category'] ?? ''));
+    $severity = trim((string) ($issue['severity'] ?? ''));
+
+    if ($category !== '') {
+        $parts[] = ucfirst($category);
+    }
+    if ($severity !== '') {
+        $parts[] = ucfirst($severity) . ' priority';
+    }
+
+    return implode(' | ', $parts);
+};
 $overall       = (int)($report['overall_score'] ?? 0);
 $scores        = $scores ?? [];
 $seo           = (int)($scores['seo_score'] ?? 0);
@@ -44,20 +270,54 @@ $pageFlashSuccess = \App\Core\Session::getFlash('success');
 $pageFlashError = \App\Core\Session::getFlash('error');
 $criticals     = array_filter($allIssues, fn($i) => $i['severity'] === 'critical');
 $highs         = array_filter($allIssues, fn($i) => $i['severity'] === 'high');
+$severityOrder = ['critical' => 0, 'high' => 1, 'medium' => 2, 'low' => 3, 'info' => 4];
+$categoryOrder = ['seo' => 0, 'technical' => 1, 'conversion' => 2, 'local' => 3, 'accessibility' => 5];
+$issueCodeBoostOrder = [
+    'NO_CTA' => 0,
+    'NO_CONTACT_FORM' => 1,
+    'NO_PHONE' => 2,
+    'MISSING_TITLE' => 3,
+    'MISSING_H1' => 4,
+    'MISSING_META_DESC' => 5,
+    'NOINDEX_TAG_FOUND' => 6,
+    'ROBOTS_BLOCKS_SITE' => 7,
+    'CANONICAL_OTHER_DOMAIN' => 8,
+    'HOMEPAGE_SEARCH_INTENT_WEAK' => 9,
+    'HOMEPAGE_LOCATION_SIGNAL_WEAK' => 10,
+    'LIMITED_CITY_SERVICE_COVERAGE' => 11,
+];
+$sortIssuesByPriority = static function (array $issues) use ($severityOrder, $categoryOrder, $issueCodeBoostOrder): array {
+    $sorted = array_values($issues);
+    usort($sorted, static function (array $left, array $right) use ($severityOrder, $categoryOrder, $issueCodeBoostOrder): int {
+        $leftRank = $severityOrder[$left['severity'] ?? 'info'] ?? 99;
+        $rightRank = $severityOrder[$right['severity'] ?? 'info'] ?? 99;
+        if ($leftRank !== $rightRank) {
+            return $leftRank <=> $rightRank;
+        }
+
+        $leftBoost = $issueCodeBoostOrder[$left['code'] ?? ''] ?? 99;
+        $rightBoost = $issueCodeBoostOrder[$right['code'] ?? ''] ?? 99;
+        if ($leftBoost !== $rightBoost) {
+            return $leftBoost <=> $rightBoost;
+        }
+
+        $leftCategoryRank = $categoryOrder[$left['category'] ?? ''] ?? 4;
+        $rightCategoryRank = $categoryOrder[$right['category'] ?? ''] ?? 4;
+        if ($leftCategoryRank !== $rightCategoryRank) {
+            return $leftCategoryRank <=> $rightCategoryRank;
+        }
+
+        return strcmp((string) ($left['title'] ?? ''), (string) ($right['title'] ?? ''));
+    });
+
+    return $sorted;
+};
+$sortedIssues = $allIssues;
+$sortedIssues = $sortIssuesByPriority($sortedIssues);
 $priorityIssues = array_slice(array_values(array_filter(
-    $allIssues,
+    $sortedIssues,
     fn($i) => in_array($i['severity'] ?? 'info', ['critical', 'high', 'medium'], true)
 )), 0, 3);
-$severityOrder = ['critical' => 0, 'high' => 1, 'medium' => 2, 'low' => 3, 'info' => 4];
-$sortedIssues = $allIssues;
-usort($sortedIssues, static function (array $left, array $right) use ($severityOrder): int {
-    $leftRank = $severityOrder[$left['severity'] ?? 'info'] ?? 99;
-    $rightRank = $severityOrder[$right['severity'] ?? 'info'] ?? 99;
-    if ($leftRank === $rightRank) {
-        return strcmp((string) ($left['title'] ?? ''), (string) ($right['title'] ?? ''));
-    }
-    return $leftRank <=> $rightRank;
-});
 $topFindingIssues = array_slice($sortedIssues, 0, 5);
 $loadMetricIssue = null;
 $pageWeightIssue = null;
@@ -302,7 +562,11 @@ $technicalSeoCodes = [
     'MISSING_OG_TAGS','MISSING_TWITTER_CARD','MISSING_FAVICON',
     'NO_HTTPS','LIGHTHOUSE_SEO_LOW','LIGHTHOUSE_SEO_BASELINE'
 ];
-$localSeoCodes = ['NO_ADDRESS','NO_MAP','NO_HOURS','NO_SCHEMA','NO_GBP_LINK','GBP_FOUND_EXTERNALLY','GBP_LINK_PRESENT'];
+$localSeoCodes = [
+    'NO_ADDRESS','NO_MAP','NO_HOURS','NO_SCHEMA','NO_GBP_LINK','GBP_FOUND_EXTERNALLY','GBP_LINK_PRESENT',
+    'NAP_CONSISTENCY_HINT','LOCAL_CONTACT_PROMINENCE_WEAK','CITY_SERVICE_PAGE_COUNT_LOW',
+    'LOCAL_REVIEW_SIGNAL_MISSING','LOCALBUSINESS_SCHEMA_PRESENT','GBP_LOOKUP_CACHED'
+];
 $onPageSeoIssues = array_values(array_filter($allIssues, static fn($issue) => in_array(($issue['code'] ?? ''), $onPageSeoCodes, true)));
 $technicalSeoIssues = array_values(array_filter($allIssues, static fn($issue) => in_array(($issue['code'] ?? ''), $technicalSeoCodes, true)));
 $localSeoIssues = array_values(array_filter($allIssues, static fn($issue) => in_array(($issue['code'] ?? ''), $localSeoCodes, true)));
@@ -498,59 +762,60 @@ $seoChecks = [
     ],
 ];
 
-$formatSeoEvidence = function (array $issue, array $check): array {
+$formatSeoEvidence = function (array $issue, array $check) use ($issueDisplayTitle): array {
     $code = (string) ($issue['code'] ?? '');
     $detected = trim((string) ($issue['detected_value'] ?? ''));
     $explanation = trim((string) ($issue['explanation'] ?? ''));
+    $friendlyTitle = $issueDisplayTitle($issue);
 
     return match ($code) {
         'WEAK_TITLE', 'TITLE_TOO_LONG' => [
-            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'found' => $friendlyTitle,
             'detail' => $detected !== ''
                 ? 'Current title: "' . $detected . '" (' . mb_strlen($detected) . ' characters).'
                 : $explanation,
         ],
         'TITLE_MATCHES_H1_EXACTLY' => [
-            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'found' => $friendlyTitle,
             'detail' => $detected !== ''
                 ? 'Matching title/H1 text: "' . $detected . '".'
                 : $explanation,
         ],
         'WEAK_META_DESC', 'META_DESC_TOO_LONG' => [
-            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'found' => $friendlyTitle,
             'detail' => $detected !== ''
                 ? 'Current description: "' . $detected . '" (' . mb_strlen($detected) . ' characters).'
                 : $explanation,
         ],
         'MULTIPLE_H1' => [
-            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'found' => $friendlyTitle,
             'detail' => $detected !== ''
                 ? 'H1 count found: ' . $detected . '. Best practice is 1.'
                 : $explanation,
         ],
         'INVALID_CANONICAL', 'CANONICAL_OTHER_DOMAIN' => [
-            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'found' => $friendlyTitle,
             'detail' => $detected !== ''
                 ? 'Canonical URL found: ' . $detected
                 : $explanation,
         ],
         'NOINDEX_TAG_FOUND', 'ROBOTS_BLOCKS_SITE' => [
-            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'found' => $friendlyTitle,
             'detail' => $detected !== '' ? 'Blocking signal found: ' . $detected : $explanation,
         ],
         'LIGHTHOUSE_SEO_LOW' => [
-            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'found' => $friendlyTitle,
             'detail' => $detected !== '' ? 'Lighthouse SEO data: ' . $detected : $explanation,
         ],
         'LIMITED_CITY_SERVICE_COVERAGE', 'NO_LOCAL_LANDING_PAGE_SIGNAL', 'WEAK_TOPIC_RELEVANCE',
         'HOMEPAGE_SEARCH_INTENT_WEAK', 'HOMEPAGE_LOCATION_SIGNAL_WEAK',
         'KEY_PAGE_THIN_CONTENT', 'KEY_PAGE_LOW_INTERNAL_LINKS',
         'KEY_PAGE_MISSING_TITLE', 'KEY_PAGE_MISSING_META_DESC', 'KEY_PAGE_MISSING_H1' => [
-            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'found' => $friendlyTitle,
             'detail' => $detected !== '' ? 'Scan evidence: ' . $detected : $explanation,
         ],
         default => [
-            'found' => (string) ($issue['title'] ?? $check['fix']),
+            'found' => $friendlyTitle,
             'detail' => (string) ($detected !== '' ? $detected : ($explanation !== '' ? $explanation : $check['fix'])),
         ],
     };
@@ -613,34 +878,151 @@ $overallSummary = match (true) {
     default => 'The site needs attention in a few core areas before it will perform reliably as a lead generator.',
 };
 $seoSummary = $topSeoIssue
-    ? 'Biggest SEO opportunity: ' . ($topSeoIssue['title'] ?? 'SEO issue') . '.'
+    ? 'Biggest SEO opportunity: ' . $issueDisplayTitle($topSeoIssue) . '.'
     : 'SEO basics look fairly stable, so the next gains likely come from deeper content and local coverage.';
 $businessSummary = $topBusinessIssue
-    ? 'Biggest business impact issue: ' . ($topBusinessIssue['title'] ?? 'Performance or conversion issue') . '.'
+    ? 'Biggest business impact issue: ' . $issueDisplayTitle($topBusinessIssue) . '.'
     : 'No major non-SEO blocker stood out more than the rest in this scan.';
 $fixLaneGroups = [
     'now' => [
-        'label' => 'Fix Now',
+        'label' => 'Losing Leads',
         'tone' => 'danger',
-        'copy' => 'Critical and high-priority issues that can affect visibility, trust, or lead flow first.',
-        'issues' => array_slice($issueGroups['high'] ?? [], 0, 3),
+        'copy' => 'These are the most urgent problems likely to cost calls, form submissions, or immediate trust.',
+        'issues' => array_slice($sortIssuesByPriority($issueGroups['high'] ?? []), 0, 3),
     ],
     'next' => [
-        'label' => 'Fix Next',
+        'label' => 'Hurting Rankings',
         'tone' => 'warning',
-        'copy' => 'Meaningful improvements that can strengthen performance after the urgent items are handled.',
-        'issues' => array_slice($issueGroups['medium'] ?? [], 0, 3),
+        'copy' => 'These issues can weaken search visibility and overall site performance once the urgent blockers are handled.',
+        'issues' => array_slice($sortIssuesByPriority($issueGroups['medium'] ?? []), 0, 3),
     ],
     'later' => [
-        'label' => 'Later',
+        'label' => 'Polish Opportunities',
         'tone' => 'primary',
-        'copy' => 'Lower-priority cleanup items and refinements that still improve the experience over time.',
-        'issues' => array_slice($issueGroups['low'] ?? [], 0, 3),
+        'copy' => 'These are lower-priority improvements that still help the site feel stronger, cleaner, and more complete over time.',
+        'issues' => array_slice($sortIssuesByPriority($issueGroups['low'] ?? []), 0, 3),
     ],
+];
+$pageSpeedPendingIssue = $firstMatchingIssue(['PAGESPEED_LOOKUP_PENDING', 'PAGESPEED_LOOKUP_FAILED']);
+$structuredDataSnapshot = [
+    ['label' => 'LocalBusiness', 'icon' => 'bi-shop', 'present' => isset($issuesByCode['LOCALBUSINESS_SCHEMA_PRESENT'])],
+    ['label' => 'Organization', 'icon' => 'bi-building', 'present' => !empty($gbpIssue) || !isset($issuesByCode['NO_SCHEMA'])],
+    ['label' => 'Service', 'icon' => 'bi-briefcase', 'present' => !isset($issuesByCode['NO_SCHEMA']) && !isset($issuesByCode['MISSING_STRUCTURED_DATA'])],
+    ['label' => 'FAQ', 'icon' => 'bi-patch-question', 'present' => !isset($issuesByCode['MISSING_STRUCTURED_DATA'])],
+    ['label' => 'Review', 'icon' => 'bi-star', 'present' => isset($issuesByCode['LOCAL_REVIEW_SIGNAL_MISSING']) === false && (isset($issuesByCode['LOCALBUSINESS_SCHEMA_PRESENT']) || isset($issuesByCode['GBP_LINK_PRESENT']) || isset($issuesByCode['GBP_FOUND_EXTERNALLY']))],
+];
+$schemaErrorIssue = $firstMatchingIssue(['MISSING_STRUCTURED_DATA', 'NO_SCHEMA']);
+$localCheckpointCards = [
+    [
+        'label' => 'NAP Consistency',
+        'icon' => 'bi-journal-check',
+        'status' => isset($issuesByCode['NAP_CONSISTENCY_HINT']) ? 'Needs review' : 'Looks stable',
+        'tone' => isset($issuesByCode['NAP_CONSISTENCY_HINT']) ? 'warning' : 'success',
+        'detail' => isset($issuesByCode['NAP_CONSISTENCY_HINT'])
+            ? $issueDisplayExplanation($issuesByCode['NAP_CONSISTENCY_HINT'])
+            : 'The scan did not find strong signs of conflicting phone, email, or address details.',
+    ],
+    [
+        'label' => 'GBP Link Quality',
+        'icon' => 'bi-geo-alt',
+        'status' => isset($issuesByCode['GBP_LINK_PRESENT']) ? 'Linked on site' : (isset($issuesByCode['GBP_FOUND_EXTERNALLY']) ? 'Found, not linked' : 'Needs attention'),
+        'tone' => isset($issuesByCode['GBP_LINK_PRESENT']) ? 'success' : (isset($issuesByCode['GBP_FOUND_EXTERNALLY']) ? 'warning' : 'danger'),
+        'detail' => isset($issuesByCode['GBP_LINK_PRESENT'])
+            ? $issueDisplayExplanation($issuesByCode['GBP_LINK_PRESENT'])
+            : (isset($issuesByCode['GBP_FOUND_EXTERNALLY'])
+                ? $issueDisplayExplanation($issuesByCode['GBP_FOUND_EXTERNALLY'])
+                : ($issueDisplayExplanation($issuesByCode['NO_GBP_LINK'] ?? ['explanation' => 'No clear Google Business Profile connection was found on this scan.']))),
+    ],
+    [
+        'label' => 'Local Landing Pages',
+        'icon' => 'bi-map',
+        'status' => isset($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW']) || isset($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL']) ? 'Coverage is thin' : 'Coverage found',
+        'tone' => isset($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW']) || isset($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL']) ? 'warning' : 'success',
+        'detail' => isset($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW'])
+            ? $issueDisplayExplanation($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW'])
+            : (isset($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL'])
+                ? $issueDisplayExplanation($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL'])
+                : 'The scan found enough signs that services and target areas are being paired on the site.'),
+    ],
+    [
+        'label' => 'Map + Contact Prominence',
+        'icon' => 'bi-telephone',
+        'status' => isset($issuesByCode['LOCAL_CONTACT_PROMINENCE_WEAK']) ? 'Needs attention' : 'Visible enough',
+        'tone' => isset($issuesByCode['LOCAL_CONTACT_PROMINENCE_WEAK']) ? 'warning' : 'success',
+        'detail' => isset($issuesByCode['LOCAL_CONTACT_PROMINENCE_WEAK'])
+            ? $issueDisplayExplanation($issuesByCode['LOCAL_CONTACT_PROMINENCE_WEAK'])
+            : 'Contact and location signals appear visible enough on the pages people are most likely to check.',
+    ],
+];
+$competitorBenchmarks = [
+    [
+        'label' => 'Title Clarity',
+        'icon' => 'bi-type',
+        'you' => isset($issuesByCode['MISSING_TITLE']) || isset($issuesByCode['WEAK_TITLE']) || isset($issuesByCode['TITLE_TOO_LONG']) ? 'Needs work' : 'Solid',
+        'competitor' => 'Usually solid',
+        'tone' => isset($issuesByCode['MISSING_TITLE']) || isset($issuesByCode['WEAK_TITLE']) || isset($issuesByCode['TITLE_TOO_LONG']) ? 'warning' : 'success',
+    ],
+    [
+        'label' => 'CTA Presence',
+        'icon' => 'bi-cursor',
+        'you' => isset($issuesByCode['NO_CTA']) || isset($issuesByCode['CTA_NOT_PROMINENT']) || isset($issuesByCode['CTA_PLACEMENT_THIN']) ? 'Behind' : 'Competitive',
+        'competitor' => 'Usually repeated',
+        'tone' => isset($issuesByCode['NO_CTA']) || isset($issuesByCode['CTA_NOT_PROMINENT']) || isset($issuesByCode['CTA_PLACEMENT_THIN']) ? 'warning' : 'success',
+    ],
+    [
+        'label' => 'Speed Baseline',
+        'icon' => 'bi-lightning',
+        'you' => $pageSpeedPendingIssue ? 'Pending' : (($technical >= 75) ? 'Competitive' : 'Needs work'),
+        'competitor' => 'Usually mixed',
+        'tone' => $pageSpeedPendingIssue ? 'secondary' : (($technical >= 75) ? 'success' : 'warning'),
+    ],
+    [
+        'label' => 'Local Trust Signals',
+        'icon' => 'bi-shield-check',
+        'you' => isset($issuesByCode['LOCAL_REVIEW_SIGNAL_MISSING']) || isset($issuesByCode['NO_SCHEMA']) || isset($issuesByCode['NO_GBP_LINK']) ? 'Behind' : 'Competitive',
+        'competitor' => 'Usually visible',
+        'tone' => isset($issuesByCode['LOCAL_REVIEW_SIGNAL_MISSING']) || isset($issuesByCode['NO_SCHEMA']) || isset($issuesByCode['NO_GBP_LINK']) ? 'warning' : 'success',
+    ],
+    [
+        'label' => 'Service Area Coverage',
+        'icon' => 'bi-signpost-split',
+        'you' => isset($issuesByCode['LIMITED_CITY_SERVICE_COVERAGE']) || isset($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW']) || isset($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL']) ? 'Behind' : 'Competitive',
+        'competitor' => 'Usually broad',
+        'tone' => isset($issuesByCode['LIMITED_CITY_SERVICE_COVERAGE']) || isset($issuesByCode['CITY_SERVICE_PAGE_COUNT_LOW']) || isset($issuesByCode['NO_LOCAL_LANDING_PAGE_SIGNAL']) ? 'warning' : 'success',
+    ],
+];
+$exportSummaryCards = [
+    ['label' => 'Overall Score', 'value' => $overall . '/100'],
+    ['label' => 'Top SEO Gap', 'value' => $topSeoIssue ? $issueDisplayTitle($topSeoIssue) : 'No major SEO blocker surfaced'],
+    ['label' => 'Top Lead Gap', 'value' => $topBusinessIssue ? $issueDisplayTitle($topBusinessIssue) : 'No major lead blocker surfaced'],
 ];
 ?>
 
 <div id="report-export-content">
+<section class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="report-export-brief">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <div class="summary-kicker">Client Snapshot</div>
+                    <h2 class="fw-bold fs-4 mb-1">Short Version First</h2>
+                    <p class="text-muted mb-0">A summary-first view that also makes the PDF export easier to scan.</p>
+                </div>
+                <span class="badge text-bg-light border">Prepared <?= e(date('M j, Y', strtotime($report['created_at'] ?? 'now'))) ?></span>
+            </div>
+            <div class="row g-3">
+                <?php foreach ($exportSummaryCards as $summaryCard): ?>
+                <div class="col-md-4">
+                    <div class="report-export-card h-100">
+                        <div class="small text-uppercase text-muted fw-semibold mb-2"><?= e($summaryCard['label']) ?></div>
+                        <div class="fw-semibold"><?= e($summaryCard['value']) ?></div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</section>
 <!-- Report Hero -->
 <section class="report-hero py-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);">
     <div class="container">
@@ -792,8 +1174,8 @@ $fixLaneGroups = [
                         <div class="col-md-4">
                             <div class="summary-priority-card">
                                 <span class="badge bg-<?= e($severityBadge($priorityIssue['severity'] ?? 'medium')) ?> mb-2 text-capitalize"><?= e($priorityIssue['severity'] ?? 'medium') ?></span>
-                                <h3 class="summary-priority-title"><?= e($priorityIssue['title'] ?? 'Priority item') ?></h3>
-                                <p class="summary-priority-copy"><?= e(mb_strimwidth((string) ($priorityIssue['explanation'] ?? ''), 0, 115, '...')) ?></p>
+                                <h3 class="summary-priority-title"><?= e($issueDisplayTitle($priorityIssue)) ?></h3>
+                                <p class="summary-priority-copy"><?= e(mb_strimwidth($issueDisplayExplanation($priorityIssue), 0, 115, '...')) ?></p>
                             </div>
                         </div>
                         <?php endforeach; ?>
@@ -825,7 +1207,7 @@ $fixLaneGroups = [
                     <?php if (!empty($lane['issues'])): ?>
                     <?php foreach ($lane['issues'] as $laneIssue): ?>
                     <a href="#issue-<?= (int) ($laneIssue['id'] ?? 0) ?>" class="fix-lane-item report-findings-link text-decoration-none d-block">
-                        <div class="small fw-semibold text-dark"><?= e($laneIssue['title'] ?? 'Issue') ?></div>
+                        <div class="small fw-semibold text-dark"><?= e($issueDisplayTitle($laneIssue)) ?></div>
                         <div class="small text-muted"><?= e($laneIssue['category'] ?? 'general') ?></div>
                     </a>
                     <?php endforeach; ?>
@@ -879,6 +1261,63 @@ $fixLaneGroups = [
         </div>
     </div>
 </section>
+
+<section class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                            <div>
+                                <div class="summary-kicker">Competitive Read</div>
+                                <h2 class="fw-bold fs-5 mb-1">You Vs A Typical Local Competitor</h2>
+                                <p class="text-muted small mb-0">A quick benchmark on the signals local service sites usually get right.</p>
+                            </div>
+                            <span class="badge text-bg-light border"><?= e((string) $competitiveSeoScore) ?>/100</span>
+                        </div>
+                        <div class="row g-3">
+                            <?php foreach ($competitorBenchmarks as $benchmark): ?>
+                            <div class="col-md-6 col-xl-4">
+                                <div class="benchmark-card benchmark-card--<?= e($benchmark['tone']) ?>">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <i class="bi <?= e($benchmark['icon']) ?> text-primary"></i>
+                                        <div class="fw-semibold small"><?= e($benchmark['label']) ?></div>
+                                    </div>
+                                    <div class="small text-muted">You</div>
+                                    <div class="fw-semibold mb-2"><?= e($benchmark['you']) ?></div>
+                                    <div class="small text-muted">Typical competitor</div>
+                                    <div class="small"><?= e($benchmark['competitor']) ?></div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="summary-kicker">Local Snapshot</div>
+                        <h2 class="fw-bold fs-5 mb-3">Local SEO Checkpoints</h2>
+                        <?php foreach ($localCheckpointCards as $checkpoint): ?>
+                        <div class="local-checkpoint-card local-checkpoint-card--<?= e($checkpoint['tone']) ?>">
+                            <div class="d-flex justify-content-between align-items-start gap-3 mb-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi <?= e($checkpoint['icon']) ?> text-primary"></i>
+                                    <span class="fw-semibold"><?= e($checkpoint['label']) ?></span>
+                                </div>
+                                <span class="badge text-bg-<?= e($checkpoint['tone']) ?>"><?= e($checkpoint['status']) ?></span>
+                            </div>
+                            <div class="small text-muted"><?= e($checkpoint['detail']) ?></div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 </div>
 
 <div class="tab-pane fade" id="report-tab-seo" role="tabpanel" aria-labelledby="seo-tab" tabindex="0">
@@ -921,6 +1360,59 @@ $fixLaneGroups = [
             </div>
             <?php endforeach; ?>
         </div>
+        <div class="row g-3 mb-4">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+                            <h3 class="fw-bold fs-5 mb-0">Structured Data Coverage</h3>
+                            <?php if ($schemaErrorIssue): ?>
+                            <span class="badge bg-warning-subtle text-warning-emphasis border">Needs cleanup</span>
+                            <?php else: ?>
+                            <span class="badge bg-success-subtle text-success border">Signals found</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="row g-2">
+                            <?php foreach ($structuredDataSnapshot as $schemaCard): ?>
+                            <div class="col-sm-6">
+                                <div class="schema-check-card <?= !empty($schemaCard['present']) ? 'schema-check-card--present' : 'schema-check-card--missing' ?>">
+                                    <div class="d-flex align-items-center justify-content-between gap-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi <?= e($schemaCard['icon']) ?>"></i>
+                                            <span class="fw-semibold small"><?= e($schemaCard['label']) ?></span>
+                                        </div>
+                                        <span class="badge text-bg-<?= !empty($schemaCard['present']) ? 'success' : 'secondary' ?>"><?= !empty($schemaCard['present']) ? 'Seen' : 'Not clear' ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="small text-muted mt-3">
+                            <?= e($schemaErrorIssue ? $issueDisplayExplanation($schemaErrorIssue) : 'The scan found at least some structured data support on the site.') ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+                            <h3 class="fw-bold fs-5 mb-0">Local SEO Strength</h3>
+                            <span class="badge text-bg-light border"><?= e((string) $localSeoSignalScore) ?>/100</span>
+                        </div>
+                        <?php foreach ($localCheckpointCards as $checkpoint): ?>
+                        <div class="local-checkpoint-card local-checkpoint-card--<?= e($checkpoint['tone']) ?>">
+                            <div class="d-flex justify-content-between align-items-start gap-3 mb-1">
+                                <span class="fw-semibold"><?= e($checkpoint['label']) ?></span>
+                                <span class="badge text-bg-<?= e($checkpoint['tone']) ?>"><?= e($checkpoint['status']) ?></span>
+                            </div>
+                            <div class="small text-muted"><?= e($checkpoint['detail']) ?></div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row g-3">
             <?php foreach ($seoChecks as $seoCheck): ?>
             <?php
@@ -962,9 +1454,9 @@ $fixLaneGroups = [
                     <div class="border rounded-4 bg-white h-100 p-3">
                         <div class="d-flex align-items-center gap-2 mb-2">
                             <span class="badge bg-<?= e($severityBadge($seoIssue['severity'] ?? 'medium')) ?> text-capitalize"><?= e($seoIssue['severity'] ?? 'medium') ?></span>
-                            <span class="fw-semibold"><?= e($seoIssue['title'] ?? 'SEO issue') ?></span>
+                            <span class="fw-semibold"><?= e($issueDisplayTitle($seoIssue)) ?></span>
                         </div>
-                        <p class="small text-muted mb-0"><?= e($seoIssue['explanation'] ?? '') ?></p>
+                        <p class="small text-muted mb-0"><?= e($issueDisplayExplanation($seoIssue)) ?></p>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -1022,7 +1514,7 @@ $fixLaneGroups = [
                             <?php foreach (array_slice($pageIssues, 0, 3) as $pageIssue): ?>
                             <div class="small mb-1">
                                 <span class="badge bg-<?= e($severityBadge($pageIssue['severity'] ?? 'medium')) ?> me-1 text-capitalize"><?= e($pageIssue['severity'] ?? 'medium') ?></span>
-                                <?= e($pageIssue['title'] ?? 'SEO issue') ?>
+                                <?= e($issueDisplayTitle($pageIssue)) ?>
                             </div>
                             <?php endforeach; ?>
                             <?php else: ?>
@@ -1042,9 +1534,18 @@ $fixLaneGroups = [
 
 <div class="tab-pane fade" id="report-tab-performance" role="tabpanel" aria-labelledby="performance-tab" tabindex="0">
 
-<?php if (!empty($lighthouseMetrics) || !empty($comparison)): ?>
+<?php if (!empty($lighthouseMetrics) || !empty($comparison) || !empty($pageSpeedPendingIssue)): ?>
 <section class="py-4 bg-white border-bottom">
     <div class="container">
+        <?php if (!empty($pageSpeedPendingIssue)): ?>
+        <div class="alert alert-secondary border d-flex align-items-start gap-3 mb-4">
+            <i class="bi bi-hourglass-split fs-4"></i>
+            <div>
+                <div class="fw-semibold mb-1"><?= e($issueDisplayTitle($pageSpeedPendingIssue)) ?></div>
+                <div class="small mb-0"><?= e($issueDisplayExplanation($pageSpeedPendingIssue)) ?></div>
+            </div>
+        </div>
+        <?php endif; ?>
         <div class="row g-4">
             <?php if (!empty($lighthouseMetrics)): ?>
             <div class="col-lg-7">
@@ -1129,6 +1630,11 @@ $fixLaneGroups = [
         </div>
 
         <?php if (!empty($primarySpeedData)): ?>
+        <?php if (!empty($primarySpeedData['cached'])): ?>
+        <div class="alert alert-light border small mb-4">
+            This speed snapshot reused a recent cached PageSpeed result to keep the report fast.
+        </div>
+        <?php endif; ?>
         <?php
             $categories = $primarySpeedData['categories'] ?? [];
             $metricsMap = [
@@ -1630,8 +2136,15 @@ $fixLaneGroups = [
                                     <span class="badge bg-<?= e($severityBadge($topIssue['severity'] ?? 'medium')) ?> text-capitalize"><?= e($topIssue['severity'] ?? 'medium') ?></span>
                                     <span class="small text-muted text-capitalize"><?= e($topIssue['category'] ?? 'general') ?></span>
                                 </div>
-                                <h4 class="summary-priority-title mb-1"><?= e($topIssue['title'] ?? 'Issue') ?></h4>
-                                <p class="summary-priority-copy"><?= e(mb_strimwidth((string) ($topIssue['explanation'] ?? ''), 0, 135, '...')) ?></p>
+                                <div class="issue-impact-row mb-2">
+                                    <?php foreach ($issueImpactChips($topIssue) as $chip): ?>
+                                    <span class="issue-impact-chip issue-impact-chip--<?= e($chip['tone']) ?>">
+                                        <i class="bi <?= e($chip['icon']) ?>"></i><?= e($chip['label']) ?>
+                                    </span>
+                                    <?php endforeach; ?>
+                                </div>
+                                <h4 class="summary-priority-title mb-1"><?= e($issueDisplayTitle($topIssue)) ?></h4>
+                                <p class="summary-priority-copy"><?= e(mb_strimwidth($issueDisplayExplanation($topIssue), 0, 135, '...')) ?></p>
                             </a>
                         </div>
                         <?php endforeach; ?>
@@ -1674,6 +2187,7 @@ $fixLaneGroups = [
                     $issueZones = $issueLocator['zones'] ?? [];
                     $issueElements = $issueLocator['elements'] ?? [];
                     $issueFeedback = $feedbackSummary[(int) ($issue['id'] ?? 0)] ?? ['incorrect' => 0, 'helpful' => 0];
+                    $impactChips = $issueImpactChips($issue);
                     ?>
                     <div class="issue-card border-start border-<?= $badgeClass ?> border-3 mb-3" id="issue-<?= (int) ($issue['id'] ?? 0) ?>">
                         <div class="d-flex align-items-start gap-3">
@@ -1682,10 +2196,20 @@ $fixLaneGroups = [
                             </div>
                             <div class="flex-grow-1">
                                 <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                                    <h6 class="fw-bold mb-0"><?= e($issue['title']) ?></h6>
+                                    <h6 class="fw-bold mb-0"><?= e($issueDisplayTitle($issue)) ?></h6>
                                     <span class="badge bg-light text-muted text-capitalize small"><?= e($issue['category']) ?></span>
                                 </div>
-                                <p class="text-muted small mb-2"><?= e($issue['explanation']) ?></p>
+                                <div class="issue-meta-line"><?= e($issueMetaSummary($issue)) ?></div>
+                                <?php if (!empty($impactChips)): ?>
+                                <div class="issue-impact-row">
+                                    <?php foreach ($impactChips as $chip): ?>
+                                    <span class="issue-impact-chip issue-impact-chip--<?= e($chip['tone']) ?>">
+                                        <i class="bi <?= e($chip['icon']) ?>"></i><?= e($chip['label']) ?>
+                                    </span>
+                                    <?php endforeach; ?>
+                                </div>
+                                <?php endif; ?>
+                                <p class="text-muted small mb-2"><?= e($issueDisplayExplanation($issue)) ?></p>
                                 <?php if (!empty($issue['detected_value'])): ?>
                                 <div class="detected-value mb-2">
                                     <small class="text-muted"><strong>What we saw:</strong> <?= e($issue['detected_value']) ?></small>
@@ -1720,14 +2244,14 @@ $fixLaneGroups = [
                                         </button>
                                         <div id="fix-<?= e($issue['code']) ?>-<?= substr(md5(serialize($issue)), 0, 6) ?>" class="collapse">
                                             <div class="pt-2 pb-1 ps-3">
-                                                <?php if (!empty($issue['why_it_matters'])): ?>
-                                                <p class="small mb-2"><strong>Why it matters:</strong> <?= e($issue['why_it_matters']) ?></p>
+                                                <?php if ($issueDisplayWhy($issue) !== ''): ?>
+                                                <p class="small mb-2"><strong>Why it matters:</strong> <?= e($issueDisplayWhy($issue)) ?></p>
                                                 <?php endif; ?>
-                                                <?php if (!empty($issue['how_to_fix'])): ?>
-                                                <p class="small mb-2"><strong>How to fix:</strong> <?= e($issue['how_to_fix']) ?></p>
+                                                <?php if ($issueDisplayFix($issue) !== ''): ?>
+                                                <p class="small mb-2"><strong>How to fix:</strong> <?= e($issueDisplayFix($issue)) ?></p>
                                                 <?php endif; ?>
-                                                <?php if (!empty($issue['business_impact'])): ?>
-                                                <p class="small mb-0 text-warning-emphasis"><i class="bi bi-graph-down me-1"></i><?= e($issue['business_impact']) ?></p>
+                                                <?php if ($issueDisplayImpact($issue) !== ''): ?>
+                                                <p class="small mb-0 text-warning-emphasis"><i class="bi bi-graph-down me-1"></i><?= e($issueDisplayImpact($issue)) ?></p>
                                                 <?php endif; ?>
                                             </div>
                                         </div>

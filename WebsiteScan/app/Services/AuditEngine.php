@@ -297,14 +297,65 @@ class AuditEngine {
         return count($matches[0] ?? []);
     }
 
-    private function extractSchemaTypesFromHtml(string $html): array {
+    private function analyzeSchemaMarkup(string $html): array {
         $types = [];
-        if (preg_match_all('/"@type"\s*:\s*"([^"]+)"/i', $html, $matches)) {
-            foreach ($matches[1] as $type) {
+        $errors = [];
+        $count = 0;
+
+        if (preg_match_all('/<script[^>]+type=["\']application\/ld\+json["\'][^>]*>(.*?)<\/script>/is', $html, $matches)) {
+            foreach ($matches[1] as $rawBlock) {
+                $block = trim((string) $rawBlock);
+                if ($block === '') {
+                    continue;
+                }
+                $count++;
+                $decoded = json_decode($block, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $errors[] = 'Invalid JSON-LD block';
+                    continue;
+                }
+
+                $walk = function ($node) use (&$walk, &$types): void {
+                    if (!is_array($node)) {
+                        return;
+                    }
+
+                    if (isset($node['@type'])) {
+                        $nodeTypes = is_array($node['@type']) ? $node['@type'] : [$node['@type']];
+                        foreach ($nodeTypes as $type) {
+                            $type = trim((string) $type);
+                            if ($type !== '') {
+                                $types[] = $type;
+                            }
+                        }
+                    }
+
+                    foreach ($node as $child) {
+                        if (is_array($child)) {
+                            $walk($child);
+                        }
+                    }
+                };
+
+                $walk($decoded);
+            }
+        }
+
+        if (preg_match_all('/itemtype=["\'][^"\']*schema\.org\/([^"\']+)["\']/i', $html, $microMatches)) {
+            foreach ($microMatches[1] as $type) {
                 $types[] = trim((string) $type);
             }
         }
-        return array_values(array_unique(array_filter($types)));
+
+        return [
+            'types' => array_values(array_unique(array_filter($types))),
+            'errors' => array_values(array_unique(array_filter($errors))),
+            'count' => $count,
+        ];
+    }
+
+    private function extractSchemaTypesFromHtml(string $html): array {
+        return $this->analyzeSchemaMarkup($html)['types'] ?? [];
     }
 
     private function inferPageType(string $path, string $html): string {
@@ -407,6 +458,27 @@ class AuditEngine {
         return !empty($this->profileLocationTerms($profile)) && !empty($this->profileServiceTerms($profile));
     }
 
+    private function extractPrimaryPhone(string $html): string {
+        if (preg_match('/(?:\+?\d[\d\s().-]{7,}\d)/', $html, $match)) {
+            return $this->normalizeWhitespace((string) $match[0]);
+        }
+        return '';
+    }
+
+    private function extractPrimaryEmail(string $html): string {
+        if (preg_match('/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/', $html, $match)) {
+            return strtolower(trim((string) $match[0]));
+        }
+        return '';
+    }
+
+    private function extractAddressSnippet(string $html): string {
+        if (preg_match('/\d+\s+[A-Za-z0-9.\s]+(?:street|st|avenue|ave|road|rd|drive|dr|blvd|boulevard|way|lane|ln)[^<,\n]*/i', $html, $match)) {
+            return $this->limit((string) $match[0], 120);
+        }
+        return '';
+    }
+
     private function buildPageProfiles(): array {
         $profiles = [];
         $pages = array_merge(
@@ -461,20 +533,77 @@ class AuditEngine {
             }
             $pagePath = parse_url($pageUrl, PHP_URL_PATH) ?: '/';
             $pageType = $this->inferPageType($pagePath, $html);
+            $schemaAnalysis = $this->analyzeSchemaMarkup($html);
+            $heroNode = $xpath->query('//header | //section[contains(@class,"hero")] | //div[contains(@class,"hero")] | //main//*[self::h1 or self::h2][1]')?->item(0);
+            $heroText = $heroNode ? $this->normalizeWhitespace($heroNode->textContent ?? '') : '';
+            $heroWordCount = $this->countWords($heroText);
+            $offerKeywords = ['free quote', 'estimate', 'book', 'schedule', 'consultation', 'call now', 'get started', 'request a quote', 'pricing'];
+            $offerSignalCount = 0;
+            foreach ($offerKeywords as $keyword) {
+                if (str_contains($bodyText, $keyword)) {
+                    $offerSignalCount++;
+                }
+            }
+            $reviewSignalCount = 0;
+            foreach (['testimonial', 'review', 'reviews', 'rated', 'stars', 'google reviews', 'customer stories'] as $keyword) {
+                if (str_contains($bodyText, $keyword)) {
+                    $reviewSignalCount++;
+                }
+            }
+            $trustSignalCount = 0;
+            foreach (['certified', 'accredited', 'award', 'guarantee', 'licensed', 'insured', 'trusted', 'years in business'] as $keyword) {
+                if (str_contains($bodyText, $keyword)) {
+                    $trustSignalCount++;
+                }
+            }
+            $aboveFoldCtaCount = 0;
+            foreach ([
+                '//header//a[contains(@class,"btn")]',
+                '//header//button[contains(@class,"btn")]',
+                '//header//a[starts-with(@href,"tel:")]',
+                '//section[contains(@class,"hero")]//a',
+                '//section[contains(@class,"hero")]//button',
+                '//div[contains(@class,"hero")]//a',
+                '//div[contains(@class,"hero")]//button',
+            ] as $selector) {
+                $aboveFoldCtaCount += (int) ($xpath->query($selector)?->length ?? 0);
+            }
+            $formFieldCount = (int) ($xpath->query('//form//input | //form//select | //form//textarea')?->length ?? 0);
+            $requiredFieldCount = (int) ($xpath->query('//form//*[@required]')?->length ?? 0);
 
             $ctaSelectors = [
                 '//a[contains(@class,"btn")]',
                 '//button[contains(@class,"btn")]',
+                '//*[@role="button"]',
+                '//a[starts-with(@href,"tel:")]',
+                '//a[starts-with(@href,"mailto:")]',
+                '//button[@type="submit"]',
+                '//input[@type="submit"]',
                 '//a[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"contact")]',
                 '//a[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"quote")]',
+                '//a[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"estimate")]',
                 '//a[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"book")]',
+                '//a[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"schedule")]',
+                '//a[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"consult")]',
                 '//a[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"call")]',
+                '//a[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"get started")]',
+                '//a[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"learn more")]',
                 '//button[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"submit")]',
+                '//button[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"contact")]',
+                '//button[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"quote")]',
+                '//button[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"book")]',
+                '//button[contains(translate(normalize-space(.),"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"schedule")]',
             ];
-            $ctaCount = 0;
+            $ctaNodes = [];
             foreach ($ctaSelectors as $selector) {
-                $ctaCount += (int) ($xpath->query($selector)?->length ?? 0);
+                foreach (($xpath->query($selector) ?: []) as $ctaNode) {
+                    if (!$ctaNode instanceof \DOMElement) {
+                        continue;
+                    }
+                    $ctaNodes[spl_object_hash($ctaNode)] = $ctaNode;
+                }
             }
+            $ctaCount = count($ctaNodes);
 
             $profiles[] = [
                 'url' => $pageUrl,
@@ -492,12 +621,23 @@ class AuditEngine {
                 'schema_types' => $this->extractSchemaTypesFromHtml($html),
                 'location_terms' => $this->extractLocationTerms(implode(' ', array_filter([$title, $description, $h1Text]))),
                 'service_terms' => $this->extractKeywordTerms(implode(' ', array_filter([$title, $description, $h1Text, $pagePath]))),
+                'hero_text' => $heroText,
+                'hero_word_count' => $heroWordCount,
+                'offer_signal_count' => $offerSignalCount,
+                'review_signal_count' => $reviewSignalCount,
+                'trust_signal_count' => $trustSignalCount,
+                'above_fold_cta_count' => $aboveFoldCtaCount,
                 'forms' => (int) ($xpath->query('//form')?->length ?? 0),
+                'form_field_count' => $formFieldCount,
+                'required_field_count' => $requiredFieldCount,
                 'widgets' => $this->detectFormWidgets($html),
                 'contact_inputs' => (int) ($xpath->query('//input[@type="email" or @type="tel" or contains(translate(@name,"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"email") or contains(translate(@name,"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"phone")]')?->length ?? 0),
                 'message_fields' => (int) ($xpath->query('//textarea | //input[contains(translate(@name,"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz"),"message")]')?->length ?? 0),
                 'has_phone' => (bool) preg_match('/(\+?[\d\s\-().]{7,}\d)/', $html) || (($xpath->query('//a[starts-with(@href, "tel:")]')?->length ?? 0) > 0),
                 'has_email' => (bool) preg_match('/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/', $html) || (($xpath->query('//a[starts-with(@href, "mailto:")]')?->length ?? 0) > 0),
+                'primary_phone' => $this->extractPrimaryPhone($html),
+                'primary_email' => $this->extractPrimaryEmail($html),
+                'address_snippet' => $this->extractAddressSnippet($html),
                 'cta_count' => $ctaCount,
                 'has_address' => (bool) preg_match('/\d+\s+[A-Za-z]+\s+(?:street|st|avenue|ave|road|rd|drive|dr|blvd|boulevard|way|lane|ln)/i', $html)
                     || (bool) preg_match('/p\.?\s*o\.?\s*box\s+\d+/i', $html)
@@ -515,6 +655,8 @@ class AuditEngine {
                     || str_contains($bodyText, 'open:')
                     || str_contains($bodyText, 'hours of operation')
                     || (($xpath->query('//*[contains(@itemprop,"openingHours")]')?->length ?? 0) > 0),
+                'schema_count' => (int) ($schemaAnalysis['count'] ?? 0),
+                'schema_errors' => $schemaAnalysis['errors'] ?? [],
             ];
         }
 
@@ -1314,6 +1456,13 @@ class AuditEngine {
     private function runConversionChecks(): void {
         $bodyText = strtolower($this->html);
         $scannedPaths = array_column($this->pageProfiles, 'path');
+        $homeProfile = null;
+        foreach ($this->pageProfiles as $profile) {
+            if (($profile['page_type'] ?? '') === 'home') {
+                $homeProfile = $profile;
+                break;
+            }
+        }
 
         // Phone number visibility
         $phonePaths = $this->matchingPagePaths(fn(array $profile): bool => !empty($profile['has_phone']));
@@ -1385,6 +1534,52 @@ class AuditEngine {
             );
         }
 
+        if ($homeProfile) {
+            if ((int) ($homeProfile['above_fold_cta_count'] ?? 0) < 1) {
+                $this->addIssue('conversion', 'medium', 'CTA_NOT_PROMINENT',
+                    'Calls-To-Action Are Not Prominent Early On',
+                    'The homepage does not appear to place a strong CTA in the header or hero area.',
+                    'Visitors often decide quickly whether to take action. Weak early CTA placement can lower conversions.',
+                    'Place a clear call-to-action near the top of the homepage so visitors immediately know what to do next.',
+                    'Weak above-the-fold CTA placement can lower lead flow from first-time visitors.',
+                    $this->pageEvidence($homeProfile)
+                );
+            }
+
+            if ((int) ($homeProfile['hero_word_count'] ?? 0) < 6 || empty($homeProfile['service_terms'] ?? [])) {
+                $this->addIssue('conversion', 'medium', 'WEAK_HERO_MESSAGE',
+                    'Homepage Hero Message Is Not Clear Enough',
+                    'The main homepage intro looks light on clear service messaging.',
+                    'If the first message is vague, visitors may not quickly understand what the business does.',
+                    'Make the hero headline and subheadline more direct about the core service, audience, and next step.',
+                    'Unclear first impressions can reduce both trust and lead conversion.',
+                    $this->pageEvidence($homeProfile)
+                );
+            }
+
+            if ((int) ($homeProfile['offer_signal_count'] ?? 0) < 1) {
+                $this->addIssue('conversion', 'medium', 'OFFER_CLARITY_WEAK',
+                    'The Offer Is Not Clear Enough',
+                    'The homepage does not strongly signal an offer such as a quote, consultation, estimate, or booking action.',
+                    'People convert more easily when the offer and next step are obvious.',
+                    'Make the offer more explicit with wording like request a quote, schedule a consultation, or get started.',
+                    'Weak offer clarity can reduce response rate from ready-to-buy visitors.',
+                    $this->pageEvidence($homeProfile)
+                );
+            }
+        }
+
+        if (count($ctaPaths) > 0 && count($ctaPaths) < 2) {
+            $this->addIssue('conversion', 'low', 'CTA_PLACEMENT_THIN',
+                'Calls-To-Action Are Not Repeated Enough',
+                'CTA elements were found, but they only appear on a limited number of scanned pages.',
+                'Repeating clear calls-to-action across the user journey gives visitors more chances to convert.',
+                'Repeat strong CTA buttons on the homepage, service pages, and contact page.',
+                '',
+                $this->formatPageEvidence('Pages with CTA elements', $ctaPaths)
+            );
+        }
+
         // Testimonials / reviews
         $hasReviews = str_contains($bodyText, 'testimonial') || str_contains($bodyText, 'review') ||
                       str_contains($bodyText, 'stars') || str_contains($bodyText, '★') ||
@@ -1396,6 +1591,19 @@ class AuditEngine {
                 'Social proof like reviews and testimonials significantly increase visitor trust and conversions.',
                 'Add a testimonials section with real customer quotes, star ratings, or review widgets.',
                 '72% of consumers say positive reviews make them trust a business more.'
+            );
+        }
+
+        $reviewSignalPages = $this->matchingPagePaths(fn(array $profile): bool => (int) ($profile['review_signal_count'] ?? 0) > 0);
+        $trustSignalPages = $this->matchingPagePaths(fn(array $profile): bool => (int) ($profile['trust_signal_count'] ?? 0) > 0);
+        if (empty($reviewSignalPages) && empty($trustSignalPages)) {
+            $this->addIssue('conversion', 'medium', 'TRUST_SIGNAL_DENSITY_LOW',
+                'Trust Signals Look Thin Across The Site',
+                'The scanned pages show limited signs of reviews, guarantees, credentials, or other confidence-building proof.',
+                'Trust signals help visitors feel safer about contacting a business.',
+                'Add visible proof like reviews, credentials, guarantees, years in business, or before-and-after results.',
+                'Thin trust signals can lower conversion rate from visitors who are comparing options.',
+                $this->formatPageEvidence('Checked pages', $scannedPaths)
             );
         }
 
@@ -1426,6 +1634,18 @@ class AuditEngine {
                 'Trust signals increase visitor confidence and reduce hesitation before contacting you.',
                 'Add trust indicators: years in business, guarantees, certifications, or association memberships.',
                 ''
+            );
+        }
+
+        $highFrictionPaths = $this->matchingPagePaths(fn(array $profile): bool => (int) ($profile['required_field_count'] ?? 0) >= 5 || (int) ($profile['form_field_count'] ?? 0) >= 8);
+        if (!empty($highFrictionPaths)) {
+            $this->addIssue('conversion', 'medium', 'HIGH_FORM_FRICTION',
+                'The Contact Form May Ask For Too Much Up Front',
+                'One or more scanned forms appear to ask for a relatively high number of fields before someone can submit.',
+                'Long forms can discourage leads who only want to ask a quick question.',
+                'Trim the form down to the essentials and leave extra qualification questions for follow-up.',
+                'Higher form friction can reduce submission rate.',
+                $this->formatPageEvidence('Pages with heavier forms', $highFrictionPaths)
             );
         }
     }
@@ -1494,6 +1714,71 @@ class AuditEngine {
                 'Rich results in Google Search require structured data.',
                 $schemaTypes ? 'Other schema types found: ' . implode(', ', array_slice($schemaTypes, 0, 5)) : ''
             );
+        } else {
+            $this->addIssue('local', 'info', 'LOCALBUSINESS_SCHEMA_PRESENT',
+                'Local Business Structured Data Found',
+                'The scan detected LocalBusiness-style structured data on the site.',
+                'This helps search engines understand the business identity, location, and service context more clearly.',
+                'Keep the schema accurate and aligned with your real business details across the site and directory listings.',
+                '',
+                'Schema types found: ' . implode(', ', array_slice($localSchemaTypes, 0, 5))
+            );
+        }
+
+        $phones = array_values(array_unique(array_filter(array_map(fn(array $profile): string => trim((string) ($profile['primary_phone'] ?? '')), $this->pageProfiles))));
+        $emails = array_values(array_unique(array_filter(array_map(fn(array $profile): string => trim((string) ($profile['primary_email'] ?? '')), $this->pageProfiles))));
+        $addresses = array_values(array_unique(array_filter(array_map(fn(array $profile): string => trim((string) ($profile['address_snippet'] ?? '')), $this->pageProfiles))));
+        if (count($phones) > 1 || count($emails) > 1 || count($addresses) > 1) {
+            $this->addIssue('local', 'low', 'NAP_CONSISTENCY_HINT',
+                'Business Contact Details May Not Be Consistent Everywhere',
+                'The scanned pages show more than one phone, email, or address pattern.',
+                'Local SEO usually performs best when your core business details stay consistent across important pages.',
+                'Double-check that the main business name, address, phone, and email stay consistent on key pages.',
+                'Inconsistent contact details can weaken local trust and map relevance.',
+                'phones=' . implode(', ', array_slice($phones, 0, 2))
+                    . ' | emails=' . implode(', ', array_slice($emails, 0, 2))
+                    . ' | addresses=' . implode(' || ', array_slice($addresses, 0, 2))
+            );
+        }
+
+        $prominentLocalPages = $this->matchingPagePaths(fn(array $profile): bool =>
+            in_array(($profile['page_type'] ?? ''), ['home', 'contact'], true)
+            && (!empty($profile['has_phone']) || !empty($profile['has_address']) || !empty($profile['has_map']))
+        );
+        if (empty($prominentLocalPages)) {
+            $this->addIssue('local', 'medium', 'LOCAL_CONTACT_PROMINENCE_WEAK',
+                'Local Contact Signals Are Not Prominent Enough',
+                'Important contact details do not appear strongly on the homepage or contact-focused pages.',
+                'Local visitors often look for visible contact and location details before reaching out.',
+                'Bring your core contact and location details into more prominent positions on the homepage and contact page.',
+                'Weak local contact prominence can lower trust and local conversion rate.',
+                $this->formatPageEvidence('Checked pages', $scannedPaths)
+            );
+        }
+
+        $localLandingProfiles = array_values(array_filter($this->pageProfiles, fn(array $profile): bool => $this->isLikelyLocalLandingPage($profile)));
+        if (count($localLandingProfiles) > 0 && count($localLandingProfiles) < 2) {
+            $landingPaths = array_map(fn(array $profile): string => (string) ($profile['path'] ?? '/'), $localLandingProfiles);
+            $this->addIssue('local', 'medium', 'CITY_SERVICE_PAGE_COUNT_LOW',
+                'There Are Not Many Strong City + Service Landing Pages',
+                'The scan found only a limited number of pages that strongly pair services with locations.',
+                'Dedicated city-and-service pages often help local businesses compete in more nearby searches.',
+                'Build out more strong local landing pages for your main services and target areas.',
+                'Thin local landing page coverage can limit how many nearby searches you can realistically compete for.',
+                $this->formatPageEvidence('Local landing pages found', $landingPaths)
+            );
+        }
+
+        $reviewPages = $this->matchingPagePaths(fn(array $profile): bool => (int) ($profile['review_signal_count'] ?? 0) > 0);
+        if (empty($reviewPages)) {
+            $this->addIssue('local', 'medium', 'LOCAL_REVIEW_SIGNAL_MISSING',
+                'Local Review Signals Look Thin',
+                'The scan did not find strong signs of customer reviews or local social proof on the site.',
+                'Review signals help local visitors trust the business and support stronger local SEO credibility.',
+                'Show real review snippets, star ratings, or a visible Google review path on key pages.',
+                'Thin review signals can make it harder to earn trust from local searchers.',
+                $this->formatPageEvidence('Checked pages', $scannedPaths)
+            );
         }
 
         $gbpLinks = $this->findGoogleBusinessProfileLinks();
@@ -1523,6 +1808,16 @@ class AuditEngine {
                     '',
                     $this->limit($label . ($address !== '' ? ' | ' . $address : '') . ($mapsUrl !== '' ? ' | ' . $mapsUrl : '') . $confidence, 220)
                 );
+                if (!empty($externalGbp['cached'])) {
+                    $this->addIssue('local', 'info', 'GBP_LOOKUP_CACHED',
+                        'Google Business Profile Lookup Used Cached Data',
+                        'The Google Business Profile comparison reused a recent cached lookup result.',
+                        'Caching helps the scanner stay fast while still surfacing likely profile matches.',
+                        'Re-run the audit later if you recently changed your Google Business Profile details and want a fresh check.',
+                        '',
+                        'Cached GBP lookup'
+                    );
+                }
             } else {
                 $queryEvidence = !empty($externalGbp['queries']) ? 'Searches tried: ' . implode(', ', array_slice((array) $externalGbp['queries'], 0, 4)) : '';
                 $this->addIssue('local', 'medium', 'NO_GBP_LINK',
@@ -1696,6 +1991,9 @@ class AuditEngine {
                 if ($metricSummary) {
                     $evidence .= ' | ' . implode(' | ', $metricSummary);
                 }
+                if (!empty($mobilePageSpeed['cached'])) {
+                    $evidence .= ' | cached result';
+                }
 
                 $severity = $score < 50 ? 'high' : ($score < 75 ? 'medium' : 'info');
                 $code = $score < 75 ? 'LIGHTHOUSE_PERFORMANCE_LOW' : 'LIGHTHOUSE_PERFORMANCE_BASELINE';
@@ -1714,6 +2012,24 @@ class AuditEngine {
                     $businessImpact,
                     $evidence
                 );
+            } else {
+                $error = strtolower(trim((string) ($mobilePageSpeed['error'] ?? '')));
+                $isPending = $error === ''
+                    || str_contains($error, 'timed out')
+                    || str_contains($error, 'connection failed')
+                    || str_contains($error, 'could not resolve')
+                    || str_contains($error, 'ssl');
+
+                $this->addIssue('technical', $isPending ? 'low' : 'medium', $isPending ? 'PAGESPEED_LOOKUP_PENDING' : 'PAGESPEED_LOOKUP_FAILED',
+                    $isPending ? 'Performance Lab Data Is Still Pending' : 'Performance Lab Data Could Not Be Retrieved',
+                    $isPending
+                        ? 'The audit did not wait for a slow external PageSpeed response, so Lighthouse data is marked as pending for now.'
+                        : 'The scan could not retrieve Google PageSpeed data for this run.',
+                    'External lab tools can be slow or unavailable, but your audit should still finish quickly without blocking the whole report.',
+                    'Re-run the audit later if you want a fresh Lighthouse lab snapshot, or keep using the on-page speed guidance shown in the report.',
+                    '',
+                    trim((string) ($mobilePageSpeed['error'] ?? ''))
+                );
             }
         }
     }
@@ -1731,6 +2047,7 @@ class AuditEngine {
             'issues'        => $this->issues,
             'meta'          => $this->extractMeta(),
             'page_speed'    => $this->pageSpeedResults,
+            'page_profiles' => $this->pageProfiles,
         ];
     }
 

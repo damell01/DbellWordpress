@@ -6,8 +6,10 @@ use App\Models\Setting;
 class GooglePlacesService {
     private string $apiKey = '';
     private bool $enabled = true;
+    private string $cacheDir;
 
     public function __construct() {
+        $this->cacheDir = storage_path('cache/google_places');
         $this->apiKey = (string) env('GOOGLE_MAPS_API_KEY', '');
 
         try {
@@ -33,6 +35,12 @@ class GooglePlacesService {
         $domain = parse_url($websiteUrl, PHP_URL_HOST) ?? '';
         $domain = preg_replace('/^www\./i', '', strtolower($domain));
         $queries = $this->buildQueryCandidates($domain, $businessName);
+        $cacheKey = md5($domain . '|' . implode('|', $queries));
+        $cached = $this->readCache($cacheKey);
+        if ($cached !== null) {
+            $cached['cached'] = true;
+            return $cached;
+        }
 
         if (empty($queries)) {
             return ['success' => false, 'error' => 'No search query available.'];
@@ -60,29 +68,35 @@ class GooglePlacesService {
         }
 
         if ($bestMatch !== null && $bestScore >= 0.58) {
-            return [
+            $result = [
                 'success' => true,
                 'match' => $bestMatch,
                 'confidence' => round($bestScore, 3),
                 'queries' => $queries,
             ];
+            $this->writeCache($cacheKey, $result);
+            return $result;
         }
 
         if ($bestMatch !== null && $bestScore >= 0.4) {
-            return [
+            $result = [
                 'success' => true,
                 'match' => $bestMatch,
                 'confidence' => round($bestScore, 3),
                 'queries' => $queries,
                 'warning' => 'Low-confidence business profile match.',
             ];
+            $this->writeCache($cacheKey, $result);
+            return $result;
         }
 
-        return [
+        $result = [
             'success' => false,
             'error' => !empty($apiErrors) ? implode(' | ', array_unique($apiErrors)) : 'No matching place found.',
             'queries' => $queries,
         ];
+        $this->writeCache($cacheKey, $result);
+        return $result;
     }
 
     private function searchText(string $query): array {
@@ -97,8 +111,8 @@ class GooglePlacesService {
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => $payload,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 20,
-            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_CONNECTTIMEOUT => 4,
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_HTTPHEADER => [
@@ -221,5 +235,27 @@ class GooglePlacesService {
         $root = $labels[0] ?? '';
         $root = preg_replace('/[-_]+/', ' ', $root);
         return trim($root);
+    }
+
+    private function cacheFile(string $cacheKey): string {
+        return $this->cacheDir . DIRECTORY_SEPARATOR . $cacheKey . '.json';
+    }
+
+    private function readCache(string $cacheKey): ?array {
+        $file = $this->cacheFile($cacheKey);
+        if (!is_file($file) || filemtime($file) < (time() - 43200)) {
+            return null;
+        }
+
+        $decoded = json_decode((string) @file_get_contents($file), true);
+        return is_array($decoded) ? $decoded : null;
+    }
+
+    private function writeCache(string $cacheKey, array $payload): void {
+        if (!is_dir($this->cacheDir)) {
+            @mkdir($this->cacheDir, 0775, true);
+        }
+
+        @file_put_contents($this->cacheFile($cacheKey), json_encode($payload, JSON_UNESCAPED_SLASHES));
     }
 }

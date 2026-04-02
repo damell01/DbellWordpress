@@ -5,8 +5,10 @@ use App\Models\Setting;
 
 class PageSpeedService {
     private string $apiKey = '';
+    private string $cacheDir;
 
     public function __construct() {
+        $this->cacheDir = storage_path('cache/pagespeed');
         $this->apiKey = (string) env('GOOGLE_PAGESPEED_API_KEY', env('GOOGLE_MAPS_API_KEY', ''));
 
         if ($this->apiKey === '') {
@@ -31,13 +33,22 @@ class PageSpeedService {
     }
 
     public function runMany(string $url, array $strategies = ['mobile', 'desktop']): array {
+        $results = [];
+        $pendingStrategies = [];
         $baseUrl = 'https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed';
         $multi = curl_multi_init();
         $handles = [];
         $requests = [];
-        $results = [];
 
         foreach ($strategies as $strategy) {
+            $cached = $this->readCache($url, $strategy);
+            if ($cached !== null) {
+                $cached['cached'] = true;
+                $results[$strategy] = $cached;
+                continue;
+            }
+
+            $pendingStrategies[] = $strategy;
             $endpoint = $this->buildEndpoint($baseUrl, $url, $strategy);
             $requests[$strategy] = $endpoint;
 
@@ -48,12 +59,14 @@ class PageSpeedService {
             curl_multi_add_handle($multi, $ch);
         }
 
-        do {
-            $status = curl_multi_exec($multi, $running);
-            if ($running) {
-                curl_multi_select($multi, 1.0);
-            }
-        } while ($running && $status === CURLM_OK);
+        if (!empty($pendingStrategies)) {
+            do {
+                $status = curl_multi_exec($multi, $running);
+                if ($running) {
+                    curl_multi_select($multi, 1.0);
+                }
+            } while ($running && $status === CURLM_OK);
+        }
 
         foreach ($handles as $strategy => $ch) {
             $body = curl_multi_getcontent($ch);
@@ -62,6 +75,9 @@ class PageSpeedService {
             $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
             $results[$strategy] = $this->parseResponse($body, $error, $errno, $code, $strategy);
+            if (!empty($results[$strategy]['success'])) {
+                $this->writeCache($url, $strategy, $results[$strategy]);
+            }
 
             curl_multi_remove_handle($multi, $ch);
             curl_close($ch);
@@ -76,6 +92,9 @@ class PageSpeedService {
             }
 
             $results[$strategy] = $this->runSequentialRequest($requests[$strategy] ?? $this->buildEndpoint($baseUrl, $url, $strategy), $strategy);
+            if (!empty($results[$strategy]['success'])) {
+                $this->writeCache($url, $strategy, $results[$strategy]);
+            }
         }
 
         return $results;
@@ -104,8 +123,8 @@ class PageSpeedService {
             CURLOPT_URL => $endpoint,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_TIMEOUT => 10,
-            CURLOPT_CONNECTTIMEOUT => 4,
+            CURLOPT_TIMEOUT => 6,
+            CURLOPT_CONNECTTIMEOUT => 3,
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_HTTPHEADER => ['Accept: application/json'],
@@ -274,5 +293,27 @@ class PageSpeedService {
         }
 
         return $items;
+    }
+
+    private function cacheFile(string $url, string $strategy): string {
+        return $this->cacheDir . DIRECTORY_SEPARATOR . md5($strategy . '|' . strtolower(trim($url))) . '.json';
+    }
+
+    private function readCache(string $url, string $strategy): ?array {
+        $file = $this->cacheFile($url, $strategy);
+        if (!is_file($file) || filemtime($file) < (time() - 21600)) {
+            return null;
+        }
+
+        $decoded = json_decode((string) @file_get_contents($file), true);
+        return is_array($decoded) ? $decoded : null;
+    }
+
+    private function writeCache(string $url, string $strategy, array $payload): void {
+        if (!is_dir($this->cacheDir)) {
+            @mkdir($this->cacheDir, 0775, true);
+        }
+
+        @file_put_contents($this->cacheFile($url, $strategy), json_encode($payload, JSON_UNESCAPED_SLASHES));
     }
 }
