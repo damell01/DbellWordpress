@@ -401,8 +401,36 @@ $extractFirstUrl = function (?string $value): ?string {
     return null;
 };
 $issueEvidenceSummary = function (array $issue) use ($issueDisplayExplanation): string {
+    $code = (string) ($issue['code'] ?? '');
     $detected = trim((string) ($issue['detected_value'] ?? ''));
+    if ($code === 'MISSING_H1') {
+        return 'No main H1 heading was detected on the scanned page.';
+    }
+    if ($code === 'MISSING_META_DESC') {
+        return 'No meta description tag was found on the scanned page.';
+    }
+    if ($code === 'CTA_NOT_PROMINENT') {
+        return 'The main CTA does not appear strong enough near the top of the page.';
+    }
+    if ($code === 'HIGH_FORM_FRICTION') {
+        return $detected !== '' ? $detected : 'One or more forms appear longer than they need to be.';
+    }
+    if ($code === 'NO_EMAIL') {
+        return $detected !== '' ? $detected : 'No visible email address was found on the key pages scanned.';
+    }
+    if ($code === 'MANY_SCRIPTS') {
+        return $detected !== '' ? 'The page loaded ' . $detected . '.' : 'The page appears to load a high number of script files.';
+    }
+    if ($code === 'MISSING_ALT') {
+        return 'Some images appear to be missing alt text.';
+    }
     if ($detected !== '') {
+        if ($detected === 'page=/') {
+            return 'Found on the homepage.';
+        }
+        if (str_starts_with($detected, 'page=/')) {
+            return 'Found on: ' . str_replace('page=', '', $detected);
+        }
         $parts = preg_split('/\s*\|\s*/', $detected) ?: [$detected];
         $first = trim((string) ($parts[0] ?? ''));
         if ($first !== '') {
@@ -412,6 +440,21 @@ $issueEvidenceSummary = function (array $issue) use ($issueDisplayExplanation): 
 
     $fallback = trim($issueDisplayExplanation($issue));
     return function_exists('mb_strimwidth') ? mb_strimwidth($fallback, 0, 110, '...', 'UTF-8') : substr($fallback, 0, 110);
+};
+$issueEffort = function (array $issue): array {
+    $code = (string) ($issue['code'] ?? '');
+
+    return match ($code) {
+        'MISSING_H1', 'MISSING_META_DESC', 'WEAK_META_DESC', 'TITLE_TOO_LONG', 'MISSING_ALT', 'MISSING_LANG' => ['label' => 'Fast win', 'tone' => 'success'],
+        'MISSING_SITEMAP', 'MISSING_ROBOTS', 'CTA_NOT_PROMINENT', 'NO_EMAIL', 'MANY_SCRIPTS', 'MULTIPLE_H1', 'WEAK_TITLE' => ['label' => 'Next pass', 'tone' => 'warning'],
+        'ROBOTS_BLOCKS_SITE', 'CANONICAL_OTHER_DOMAIN', 'HIGH_FORM_FRICTION', 'NO_CONTACT_FORM', 'NO_CTA', 'NO_PHONE' => ['label' => 'Heavier fix', 'tone' => 'danger'],
+        default => ['label' => 'Next pass', 'tone' => 'secondary'],
+    };
+};
+$issuePlainLanguage = function (array $issue) use ($issueDisplayTitle, $issueDisplayExplanation, $issueDisplayImpact): string {
+    $explanation = trim($issueDisplayExplanation($issue));
+    $impact = trim($issueDisplayImpact($issue));
+    return trim($explanation . ($impact !== '' ? ' ' . $impact : ''));
 };
 $describeIssueEvidence = function (array $issue) use ($extractFirstUrl): string {
     $code = (string) ($issue['code'] ?? '');
@@ -922,6 +965,69 @@ $seoSummary = $topSeoIssue
 $businessSummary = $topBusinessIssue
     ? 'Biggest business impact issue: ' . $issueDisplayTitle($topBusinessIssue) . '.'
     : 'No major non-SEO blocker stood out more than the rest in this scan.';
+$topAccessibilityIssue = null;
+$topConversionIssue = null;
+$topTechnicalIssue = null;
+$topLocalIssue = null;
+foreach ($sortedIssues as $issueItem) {
+    $category = (string) ($issueItem['category'] ?? '');
+    $code = (string) ($issueItem['code'] ?? '');
+    if ($topAccessibilityIssue === null && $category === 'accessibility') {
+        $topAccessibilityIssue = $issueItem;
+    }
+    if ($topConversionIssue === null && $category === 'conversion') {
+        $topConversionIssue = $issueItem;
+    }
+    if ($topTechnicalIssue === null && $category === 'technical' && !in_array($code, ['PAGESPEED_LOOKUP_PENDING', 'PAGESPEED_LOOKUP_FAILED'], true)) {
+        $topTechnicalIssue = $issueItem;
+    }
+    if ($topLocalIssue === null && $category === 'local' && !in_array($code, ['GBP_LOOKUP_CACHED', 'LOCALBUSINESS_SCHEMA_PRESENT', 'GBP_LINK_PRESENT', 'GBP_FOUND_EXTERNALLY'], true)) {
+        $topLocalIssue = $issueItem;
+    }
+}
+$scoreCardStatus = function (int $score): string {
+    return match (true) {
+        $score >= 85 => 'Strong',
+        $score >= 70 => 'Solid',
+        $score >= 50 => 'Needs work',
+        default => 'Urgent',
+    };
+};
+$scoreCardCopy = function (string $key, int $score) use ($topSeoIssue, $topAccessibilityIssue, $topConversionIssue, $topTechnicalIssue, $topLocalIssue, $issueDisplayTitle): array {
+    return match ($key) {
+        'seo' => [
+            'summary' => $score >= 80
+                ? 'Search basics look stable.'
+                : 'This is the score most likely to hold rankings back right now.',
+            'note' => $topSeoIssue ? 'Main drag: ' . $issueDisplayTitle($topSeoIssue) . '.' : 'No single SEO blocker stood out more than the rest.',
+        ],
+        'ux' => [
+            'summary' => $score >= 80
+                ? 'Usability basics look clean overall.'
+                : 'A few cleanup items could make the site easier to use and read.',
+            'note' => $topAccessibilityIssue ? 'Main drag: ' . $issueDisplayTitle($topAccessibilityIssue) . '.' : 'No major usability blocker stood out in this scan.',
+        ],
+        'conversion' => [
+            'summary' => $score >= 80
+                ? 'The site does a decent job of turning visits into leads.'
+                : 'Lead capture and CTA clarity need attention.',
+            'note' => $topConversionIssue ? 'Main drag: ' . $issueDisplayTitle($topConversionIssue) . '.' : 'No major lead blocker surfaced in this scan.',
+        ],
+        'technical' => [
+            'summary' => $score >= 80
+                ? 'Core site-health signals look stable.'
+                : 'Technical cleanup is holding the site back more than it should.',
+            'note' => $topTechnicalIssue ? 'Main drag: ' . $issueDisplayTitle($topTechnicalIssue) . '.' : 'No major technical blocker stood out in this scan.',
+        ],
+        'local' => [
+            'summary' => $score >= 80
+                ? 'The site shows a solid local foundation.'
+                : 'Local trust and service-area signals need strengthening.',
+            'note' => $topLocalIssue ? 'Main drag: ' . $issueDisplayTitle($topLocalIssue) . '.' : 'No major local SEO blocker stood out in this scan.',
+        ],
+        default => ['summary' => '', 'note' => ''],
+    };
+};
 $classifyFixLane = function (array $issue): string {
     $code = (string) ($issue['code'] ?? '');
     $category = (string) ($issue['category'] ?? '');
@@ -989,22 +1095,6 @@ $localCheckpointCards = [
             ? $issueDisplayExplanation($issuesByCode['NAP_CONSISTENCY_HINT'])
             : 'The scan did not find strong signs of conflicting phone, email, or address details.',
         'evidence' => isset($issuesByCode['NAP_CONSISTENCY_HINT']) ? $describeIssueEvidence($issuesByCode['NAP_CONSISTENCY_HINT']) : '',
-    ],
-    [
-        'label' => 'GBP Link Quality',
-        'icon' => 'bi-geo-alt',
-        'status' => isset($issuesByCode['GBP_LINK_PRESENT']) ? 'Linked on site' : (isset($issuesByCode['GBP_FOUND_EXTERNALLY']) ? 'Found, not linked' : 'Needs attention'),
-        'tone' => isset($issuesByCode['GBP_LINK_PRESENT']) ? 'success' : (isset($issuesByCode['GBP_FOUND_EXTERNALLY']) ? 'warning' : 'danger'),
-        'detail' => isset($issuesByCode['GBP_LINK_PRESENT'])
-            ? $issueDisplayExplanation($issuesByCode['GBP_LINK_PRESENT'])
-            : (isset($issuesByCode['GBP_FOUND_EXTERNALLY'])
-                ? $issueDisplayExplanation($issuesByCode['GBP_FOUND_EXTERNALLY'])
-                : ($issueDisplayExplanation($issuesByCode['NO_GBP_LINK'] ?? ['explanation' => 'No clear Google Business Profile connection was found on this scan.']))),
-        'evidence' => isset($issuesByCode['GBP_LINK_PRESENT'])
-            ? $describeIssueEvidence($issuesByCode['GBP_LINK_PRESENT'])
-            : (isset($issuesByCode['GBP_FOUND_EXTERNALLY'])
-                ? $describeIssueEvidence($issuesByCode['GBP_FOUND_EXTERNALLY'])
-                : (isset($issuesByCode['NO_GBP_LINK']) ? $describeIssueEvidence($issuesByCode['NO_GBP_LINK']) : '')),
     ],
     [
         'label' => 'Local Landing Pages',
@@ -1090,7 +1180,15 @@ $exportSummaryCards = [
     ['label' => 'Top SEO Gap', 'value' => $topSeoIssue ? $issueDisplayTitle($topSeoIssue) : 'No major SEO blocker surfaced'],
     ['label' => 'Top Lead Gap', 'value' => $topBusinessIssue ? $issueDisplayTitle($topBusinessIssue) : 'No major lead blocker surfaced'],
 ];
-$actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['competitors'] ?? []), static fn($item) => is_array($item)));
+$thisWeekActions = [];
+foreach (array_slice($sortedIssues, 0, 3) as $actionIssue) {
+    $thisWeekActions[] = [
+        'title' => $issueDisplayTitle($actionIssue),
+        'what_found' => $issueEvidenceSummary($actionIssue),
+        'fix' => $issueDisplayFix($actionIssue),
+        'effort' => $issueEffort($actionIssue),
+    ];
+}
 ?>
 
 <div id="report-export-content">
@@ -1160,11 +1258,6 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                     <a href="#request-help" class="btn btn-primary no-print">
                         <i class="bi bi-tools me-2"></i>Fix My Website
                     </a>
-                    <?php if (!empty($gbpIssue) && !empty($extractFirstUrl($gbpIssue['detected_value'] ?? ''))): ?>
-                    <a href="<?= e($extractFirstUrl($gbpIssue['detected_value'] ?? '')) ?>" class="btn btn-outline-light no-print" target="_blank" rel="noopener">
-                        <i class="bi bi-geo-alt me-2"></i>Open Google Profile
-                    </a>
-                    <?php endif; ?>
                 </div>
             </div>
             <div class="col-lg-5 text-center">
@@ -1233,16 +1326,19 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
 <div class="tab-content report-tab-content" id="reportSectionTabContent">
 <div class="tab-pane fade show active" id="report-tab-overview" role="tabpanel" aria-labelledby="overview-tab" tabindex="0">
 
-<?php if (!empty($priorityIssues)): ?>
-<section class="py-4 bg-white border-bottom">
+<section class="py-4 bg-light border-bottom">
     <div class="container">
-        <div class="report-summary-panel">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <div class="summary-kicker">Action Plan</div>
+                <h2 class="fw-bold mb-1 fs-4">What To Fix First</h2>
+                <p class="text-muted mb-0">The strongest issues, why the SEO score is low, and the best order to tackle them.</p>
+            </div>
+        </div>
+        <div class="report-summary-panel mb-4">
             <div class="row g-4 align-items-start">
                 <div class="col-lg-4">
-                    <div class="summary-kicker">Executive Summary</div>
-                    <h2 class="fw-bold mb-2 fs-4">What This Report Means</h2>
-                    <p class="text-muted mb-0">A quick read on overall condition, the biggest SEO opportunity, and the biggest business-impact issue.</p>
-                    <div class="executive-summary-list mt-3">
+                    <div class="executive-summary-list">
                         <div class="executive-summary-item">
                             <div class="executive-summary-label">Overall</div>
                             <div class="text-muted small"><?= e($overallSummary) ?></div>
@@ -1262,32 +1358,31 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                         <div class="text-muted"><?= e($seoSalesSummary) ?></div>
                     </div>
                     <?php endif; ?>
+                    <?php if (($seo <= 35) && !empty($topSeoIssue)): ?>
+                    <div class="mt-3 p-3 rounded-3 border border-warning-subtle bg-warning-subtle small">
+                        <div class="fw-semibold mb-1">Why the SEO score is so low</div>
+                        <div class="text-muted">This score is being pulled down mostly by <?= e(strtolower($issueDisplayTitle($topSeoIssue))) ?>. Fixing that first should unlock the biggest jump in SEO health.</div>
+                    </div>
+                    <?php endif; ?>
                 </div>
                 <div class="col-lg-8">
                     <div class="row g-3 report-scroll-row">
                         <?php foreach ($priorityIssues as $priorityIssue): ?>
+                        <?php $priorityEffort = $issueEffort($priorityIssue); ?>
                         <div class="col-md-4">
                             <div class="summary-priority-card">
-                                <span class="badge bg-<?= e($severityBadge($priorityIssue['severity'] ?? 'medium')) ?> mb-2 text-capitalize"><?= e($priorityIssue['severity'] ?? 'medium') ?></span>
+                                <div class="d-flex flex-wrap gap-2 mb-2">
+                                    <span class="badge bg-<?= e($severityBadge($priorityIssue['severity'] ?? 'medium')) ?> text-capitalize"><?= e($priorityIssue['severity'] ?? 'medium') ?></span>
+                                    <span class="badge text-bg-<?= e($priorityEffort['tone']) ?>"><?= e($priorityEffort['label']) ?></span>
+                                </div>
                                 <h3 class="summary-priority-title"><?= e($issueDisplayTitle($priorityIssue)) ?></h3>
-                                <p class="summary-priority-copy"><?= e(mb_strimwidth($issueDisplayExplanation($priorityIssue), 0, 115, '...')) ?></p>
+                                <p class="summary-priority-copy mb-2"><?= e(mb_strimwidth($issuePlainLanguage($priorityIssue), 0, 165, '...')) ?></p>
+                                <div class="small text-muted"><strong>Scan found:</strong> <?= e($issueEvidenceSummary($priorityIssue)) ?></div>
                             </div>
                         </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
-
-<section class="py-4 bg-light border-bottom">
-    <div class="container">
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-            <div>
-                <h2 class="fw-bold mb-1 fs-4">Fix Priority</h2>
-                <p class="text-muted mb-0">A simple order of operations so the report feels more actionable.</p>
             </div>
         </div>
         <div class="row g-3">
@@ -1305,7 +1400,7 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                     <a href="#issue-<?= (int) ($laneIssue['id'] ?? 0) ?>" class="fix-lane-item report-findings-link text-decoration-none d-block">
                         <div class="small fw-semibold text-dark"><?= e($issueDisplayTitle($laneIssue)) ?></div>
                         <div class="small text-muted text-capitalize"><?= e($laneIssue['category'] ?? 'general') ?></div>
-                        <div class="small text-muted mt-1"><?= e($issueEvidenceSummary($laneIssue)) ?></div>
+                        <div class="small text-muted mt-1"><strong>Scan found:</strong> <?= e($issueEvidenceSummary($laneIssue)) ?></div>
                         <?php if (!empty($laneIssueUrl)): ?>
                         <div class="small mt-1">
                             <span class="text-primary">Link found:</span>
@@ -1329,15 +1424,20 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
 <!-- Score Breakdown -->
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="fw-bold mb-4 fs-4">Score Breakdown</h2>
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1 fs-4">Score Breakdown</h2>
+                <p class="text-muted mb-0">The numbers below show where the site is strongest and where the biggest lift will likely come from first.</p>
+            </div>
+        </div>
         <div class="row g-3">
             <?php
             $cats = [
-                ['label'=>'SEO',           'score'=>$seo,        'icon'=>'bi-search',          'color'=>'#2563eb'],
-                ['label'=>'Accessibility',  'score'=>$a11y,       'icon'=>'bi-universal-access', 'color'=>'#7c3aed'],
-                ['label'=>'Conversion',     'score'=>$conversion, 'icon'=>'bi-graph-up-arrow',   'color'=>'#f59e0b'],
-                ['label'=>'Technical',      'score'=>$technical,  'icon'=>'bi-lightning',        'color'=>'#10b981'],
-                ['label'=>'Local Business', 'score'=>$local,      'icon'=>'bi-geo-alt',          'color'=>'#06b6d4'],
+                ['key'=>'seo',        'label'=>'Search Visibility', 'score'=>$seo,        'icon'=>'bi-search',           'color'=>'#2563eb'],
+                ['key'=>'ux',         'label'=>'Usability Basics',  'score'=>$a11y,       'icon'=>'bi-universal-access', 'color'=>'#7c3aed'],
+                ['key'=>'conversion', 'label'=>'Lead Capture',      'score'=>$conversion, 'icon'=>'bi-graph-up-arrow',   'color'=>'#f59e0b'],
+                ['key'=>'technical',  'label'=>'Site Health',       'score'=>$technical,  'icon'=>'bi-lightning',        'color'=>'#10b981'],
+                ['key'=>'local',      'label'=>'Local Reach',       'score'=>$local,      'icon'=>'bi-geo-alt',          'color'=>'#06b6d4'],
             ];
             foreach ($cats as $cat):
                 $catGrade = match(true) {
@@ -1345,25 +1445,59 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                     $cat['score'] >= 60 => '#f59e0b',
                     default             => '#ef4444',
                 };
+                $catCopy = $scoreCardCopy($cat['key'], (int) $cat['score']);
             ?>
             <div class="col-md-6 col-lg">
                 <div class="score-breakdown-card">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi <?= $cat['icon'] ?>" style="color:<?= $cat['color'] ?>;font-size:1.2rem"></i>
                             <span class="fw-semibold small"><?= $cat['label'] ?></span>
                         </div>
-                        <span class="fw-bold" style="color:<?= $catGrade ?>"><?= $cat['score'] ?></span>
+                        <div class="text-end">
+                            <div class="fw-bold" style="color:<?= $catGrade ?>"><?= $cat['score'] ?>/100</div>
+                            <div class="score-breakdown-status"><?= e($scoreCardStatus((int) $cat['score'])) ?></div>
+                        </div>
                     </div>
-                    <div class="progress" style="height:8px;">
+                    <div class="progress mb-3" style="height:8px;">
                         <div class="progress-bar" style="width:<?= $cat['score'] ?>%;background:<?= $cat['color'] ?>;"></div>
                     </div>
+                    <p class="score-breakdown-copy mb-1"><?= e($catCopy['summary']) ?></p>
+                    <p class="score-breakdown-note mb-0"><?= e($catCopy['note']) ?></p>
                 </div>
             </div>
             <?php endforeach; ?>
         </div>
     </div>
 </section>
+
+<?php if (!empty($thisWeekActions)): ?>
+<section class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <div class="summary-kicker">Next 7 Days</div>
+                <h2 class="fw-bold mb-1 fs-4">What To Do This Week</h2>
+                <p class="text-muted mb-0">A simple 3-step plan so the report turns into action instead of sitting in an inbox.</p>
+            </div>
+        </div>
+        <div class="row g-3">
+            <?php foreach ($thisWeekActions as $index => $action): ?>
+            <div class="col-lg-4">
+                <div class="benchmark-card h-100">
+                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                        <div class="fw-semibold">Step <?= $index + 1 ?>: <?= e($action['title']) ?></div>
+                        <span class="badge text-bg-<?= e($action['effort']['tone']) ?>"><?= e($action['effort']['label']) ?></span>
+                    </div>
+                    <div class="small text-muted mb-2"><strong>Scan found:</strong> <?= e($action['what_found']) ?></div>
+                    <div class="small text-muted"><strong>First move:</strong> <?= e($action['fix']) ?></div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
 
 <section class="py-4 bg-white border-bottom">
     <div class="container">
@@ -1399,7 +1533,7 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                                 <?php endforeach; ?>
                             </div>
                             <div class="small text-muted mt-3 pt-3 border-top">
-                                This benchmark is still summarized from the scan data, and the real competitor domains found for this niche appear below when available.
+                                This benchmark is summarized from the scan data and focuses on the main visibility and conversion signals local competitors usually handle well.
                             </div>
                         </div>
                     </div>
@@ -1428,72 +1562,6 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                 </div>
             </div>
         </div>
-        <?php if (!empty($actualCompetitors)): ?>
-        <div class="card border-0 shadow-sm mt-3">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
-                    <div>
-                        <div class="summary-kicker">Real Competitors</div>
-                        <h2 class="fw-bold fs-5 mb-1">Actual Competitor Domains Found For This Niche</h2>
-                        <p class="text-muted small mb-0">These came from Google Places competitor lookups based on the scanned site’s likely service niche and location signals.</p>
-                    </div>
-                    <span class="badge text-bg-light border"><?= count($actualCompetitors) ?> domain<?= count($actualCompetitors) !== 1 ? 's' : '' ?></span>
-                </div>
-                <div class="row g-3">
-                    <?php foreach ($actualCompetitors as $competitor): ?>
-                    <div class="col-lg-4">
-                        <div class="benchmark-card h-100">
-                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                <div>
-                                    <div class="fw-semibold"><?= e($competitor['name'] ?? 'Competitor') ?></div>
-                                    <div class="small text-muted text-break"><?= e($competitor['domain'] ?? 'Unknown domain') ?></div>
-                                </div>
-                                <?php if (!empty($competitor['score'])): ?>
-                                <span class="badge text-bg-light border"><?= e((string) $competitor['score']) ?></span>
-                                <?php endif; ?>
-                            </div>
-                            <?php if (!empty($competitor['address'])): ?>
-                            <div class="small text-muted mb-2"><?= e($competitor['address']) ?></div>
-                            <?php endif; ?>
-                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                <?php if (!empty($competitor['website_url'])): ?>
-                                <a href="<?= e($competitor['website_url']) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Open Site</a>
-                                <?php endif; ?>
-                                <?php if (!empty($competitor['maps_url'])): ?>
-                                <a href="<?= e($competitor['maps_url']) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary">Open Maps</a>
-                                <?php endif; ?>
-                            </div>
-                            <div class="small text-muted mb-2">What looks different:</div>
-                            <?php if (!empty($competitor['differences'])): ?>
-                            <?php foreach ($competitor['differences'] as $difference): ?>
-                            <div class="small mb-1">- <?= e($difference) ?></div>
-                            <?php endforeach; ?>
-                            <?php else: ?>
-                            <div class="small text-muted">No major difference stood out more than the rest on the quick comparison.</div>
-                            <?php endif; ?>
-                            <?php if (!empty($competitor['query'])): ?>
-                            <div class="small text-muted mt-3 pt-2 border-top">Search used: <?= e($competitor['query']) ?></div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-                <?php if (!empty($competitorAnalysis['queries'])): ?>
-                <div class="small text-muted mt-3 pt-3 border-top">
-                    Lookup queries used: <?= e(implode(' | ', array_slice((array) $competitorAnalysis['queries'], 0, 4))) ?>
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
-        <?php elseif (!empty($competitorAnalysis['error'])): ?>
-        <div class="card border-0 shadow-sm mt-3">
-            <div class="card-body">
-                <div class="summary-kicker">Real Competitors</div>
-                <h2 class="fw-bold fs-5 mb-2">Actual Competitor Domains</h2>
-                <p class="text-muted small mb-0"><?= e($competitorAnalysis['error']) ?></p>
-            </div>
-        </div>
-        <?php endif; ?>
     </div>
 </section>
 </div>
@@ -2322,7 +2390,8 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                                     <?php endforeach; ?>
                                 </div>
                                 <h4 class="summary-priority-title mb-1"><?= e($issueDisplayTitle($topIssue)) ?></h4>
-                                <p class="summary-priority-copy"><?= e(mb_strimwidth($issueDisplayExplanation($topIssue), 0, 135, '...')) ?></p>
+                                <p class="summary-priority-copy mb-2"><?= e(mb_strimwidth($issueDisplayExplanation($topIssue), 0, 135, '...')) ?></p>
+                                <div class="small text-muted"><strong>First move:</strong> <?= e(mb_strimwidth($issueDisplayFix($topIssue), 0, 95, '...')) ?></div>
                             </a>
                         </div>
                         <?php endforeach; ?>
@@ -2366,6 +2435,7 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                     $issueElements = $issueLocator['elements'] ?? [];
                     $issueFeedback = $feedbackSummary[(int) ($issue['id'] ?? 0)] ?? ['incorrect' => 0, 'helpful' => 0];
                     $impactChips = $issueImpactChips($issue);
+                    $effortMeta = $issueEffort($issue);
                     ?>
                     <div class="issue-card border-start border-<?= $badgeClass ?> border-3 mb-3" id="issue-<?= (int) ($issue['id'] ?? 0) ?>">
                         <div class="d-flex align-items-start gap-3">
@@ -2376,6 +2446,7 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                                 <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                                     <h6 class="fw-bold mb-0"><?= e($issueDisplayTitle($issue)) ?></h6>
                                     <span class="badge bg-light text-muted text-capitalize small"><?= e($issue['category']) ?></span>
+                                    <span class="badge text-bg-<?= e($effortMeta['tone']) ?>"><?= e($effortMeta['label']) ?></span>
                                 </div>
                                 <div class="issue-meta-line"><?= e($issueMetaSummary($issue)) ?></div>
                                 <?php if (!empty($impactChips)): ?>
@@ -2387,12 +2458,27 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                                     <?php endforeach; ?>
                                 </div>
                                 <?php endif; ?>
-                                <p class="text-muted small mb-2"><?= e($issueDisplayExplanation($issue)) ?></p>
-                                <?php if (!empty($issue['detected_value'])): ?>
-                                <div class="detected-value mb-2">
-                                    <small class="text-muted"><strong>What we saw:</strong> <?= e($issue['detected_value']) ?></small>
+                                <div class="issue-detail-grid mt-3">
+                                    <div class="issue-detail-block">
+                                        <div class="issue-detail-label">Issue</div>
+                                        <div class="small text-muted"><?= e($issueDisplayExplanation($issue)) ?></div>
+                                    </div>
+                                    <div class="issue-detail-block">
+                                        <div class="issue-detail-label">What we found</div>
+                                        <div class="small text-muted"><?= e($issueEvidenceSummary($issue)) ?></div>
+                                        <?php if (!empty($issue['detected_value']) && ($extractFirstUrl($issue['detected_value']) ?? null)): ?>
+                                        <div class="small text-break mt-1"><span class="text-primary">Link found:</span> <?= e($extractFirstUrl($issue['detected_value'])) ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="issue-detail-block">
+                                        <div class="issue-detail-label">Why it matters</div>
+                                        <div class="small text-muted"><?= e($issueDisplayWhy($issue)) ?></div>
+                                    </div>
+                                    <div class="issue-detail-block">
+                                        <div class="issue-detail-label">What to fix first</div>
+                                        <div class="small text-muted"><?= e($issueDisplayFix($issue)) ?></div>
+                                    </div>
                                 </div>
-                                <?php endif; ?>
                                 <?php if (!empty($issuePaths) || !empty($issueZones)): ?>
                                 <div class="issue-locator mb-2">
                                     <small class="text-muted d-block mb-1"><strong>Where this likely appears:</strong></small>
@@ -2418,16 +2504,10 @@ $actualCompetitors = array_values(array_filter((array) ($competitorAnalysis['com
                                     <div class="accordion-item border-0 bg-transparent">
                                         <button class="accordion-button collapsed bg-transparent p-0 py-1 text-primary small fw-semibold shadow-none" type="button"
                                                 data-bs-toggle="collapse" data-bs-target="#fix-<?= e($issue['code']) ?>-<?= substr(md5(serialize($issue)), 0, 6) ?>">
-                                            <i class="bi bi-chevron-right me-1 acc-icon"></i>Why this matters and how to fix it
+                                            <i class="bi bi-chevron-right me-1 acc-icon"></i>More detail
                                         </button>
                                         <div id="fix-<?= e($issue['code']) ?>-<?= substr(md5(serialize($issue)), 0, 6) ?>" class="collapse">
                                             <div class="pt-2 pb-1 ps-3">
-                                                <?php if ($issueDisplayWhy($issue) !== ''): ?>
-                                                <p class="small mb-2"><strong>Why it matters:</strong> <?= e($issueDisplayWhy($issue)) ?></p>
-                                                <?php endif; ?>
-                                                <?php if ($issueDisplayFix($issue) !== ''): ?>
-                                                <p class="small mb-2"><strong>How to fix:</strong> <?= e($issueDisplayFix($issue)) ?></p>
-                                                <?php endif; ?>
                                                 <?php if ($issueDisplayImpact($issue) !== ''): ?>
                                                 <p class="small mb-0 text-warning-emphasis"><i class="bi bi-graph-down me-1"></i><?= e($issueDisplayImpact($issue)) ?></p>
                                                 <?php endif; ?>

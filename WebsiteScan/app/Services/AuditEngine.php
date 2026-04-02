@@ -1142,7 +1142,22 @@ class AuditEngine {
             $robotsFetch = $this->fetchCached("{$scheme}://{$sitemapUrl}/robots.txt");
             $robotsBody = $this->lower((string) ($robotsFetch['html'] ?? ''));
 
-            if ($robotsBody !== '' && str_contains($robotsBody, 'disallow: /')) {
+            $hasSitewideDisallow = false;
+            if ($robotsBody !== '') {
+                $lines = preg_split('/\r\n|\r|\n/', $robotsBody) ?: [];
+                foreach ($lines as $line) {
+                    $line = trim((string) $line);
+                    if ($line === '' || str_starts_with($line, '#')) {
+                        continue;
+                    }
+                    if (preg_match('/^disallow:\s*\/\s*$/i', $line)) {
+                        $hasSitewideDisallow = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($hasSitewideDisallow) {
                 $this->addIssue('seo', 'critical', 'ROBOTS_BLOCKS_SITE',
                     'robots.txt May Block Search Engines',
                     'Your robots.txt contains a Disallow: / rule.',
