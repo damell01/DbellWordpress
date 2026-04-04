@@ -55,12 +55,19 @@
     });
 
 
-    // Scroll progress bar
+    // Scroll progress bar — use requestAnimationFrame to throttle updates
+    var rafScrollPending = false;
     $(window).scroll(function () {
-        var scrollTop = $(this).scrollTop();
-        var docHeight = $(document).height() - $(window).height();
-        var scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        $('#scrollProgress').css('width', scrollPercent + '%');
+        if (!rafScrollPending) {
+            rafScrollPending = true;
+            requestAnimationFrame(function () {
+                var scrollTop = $(window).scrollTop();
+                var docHeight = $(document).height() - $(window).height();
+                var scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                $('#scrollProgress').css('width', scrollPercent + '%');
+                rafScrollPending = false;
+            });
+        }
     });
 
     
