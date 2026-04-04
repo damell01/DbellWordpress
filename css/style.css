@@ -288,17 +288,19 @@ p { line-height: 1.75; }
 }
 
 /* Sticky navbar — keep colors readable on white bg */
-.sticky-top .brand-logo-text .brand-dbell     { color: var(--primary); text-shadow: none; }
-.sticky-top .brand-logo-text .brand-creations { color: var(--secondary); text-shadow: none; }
+.sticky-top .brand-logo-text .brand-dbell     { color: var(--primary)   !important; text-shadow: none; }
+.sticky-top .brand-logo-text .brand-creations { color: var(--secondary) !important; text-shadow: none; }
 
 /* Mobile — always show brand colors on white background */
 @media (max-width: 991.98px) {
     .brand-logo-text { font-size: 1.25rem; }
     .brand-logo-text .brand-dbell { font-size: 1.35rem; }
     .brand-logo-text .brand-creations { font-size: 0.95rem; }
-    /* Increase specificity to override any cascade that might turn text white */
-    .navbar-light .brand-logo-text .brand-dbell     { color: var(--primary);   text-shadow: none; }
-    .navbar-light .brand-logo-text .brand-creations { color: var(--secondary); text-shadow: none; }
+    /* Force brand colors with !important — overrides any Bootstrap cascade */
+    .navbar-light .brand-logo-text .brand-dbell,
+    .brand-logo-text .brand-dbell     { color: var(--primary)   !important; text-shadow: none; }
+    .navbar-light .brand-logo-text .brand-creations,
+    .brand-logo-text .brand-creations { color: var(--secondary) !important; text-shadow: none; }
 }
 
 @media (max-width: 991.98px) {
@@ -2281,3 +2283,434 @@ button:focus-visible,
         animation: none !important;
     }
 }
+
+
+/*** ===================================================
+     UI POLISH v2 — Site-wide visual enhancements
+     =================================================== ***/
+
+/* Ensure section containers don't overflow on mobile */
+.container-xxl {
+    overflow-x: hidden;
+}
+
+
+/* ── Navbar toggler — branded style ── */
+.navbar-toggler {
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(251, 165, 4, 0.3);
+}
+
+.navbar-toggler .fa-bars {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+}
+
+/* Mobile: toggler on white navbar bg */
+@media (max-width: 991.98px) {
+    .navbar-toggler {
+        border-color: rgba(98, 34, 204, 0.3);
+        background: rgba(98, 34, 204, 0.06);
+    }
+    .navbar-toggler .fa-bars {
+        color: var(--primary);
+    }
+}
+
+
+/* ── Hero section — deepened gradient + subtle radial glow ── */
+/* Note: uses the same selector as the earlier UI refresh rule.
+   The animation property is preserved via the original rule.
+   We only override visual appearance here without !important on
+   background-position so CSS animation continues to work. */
+.hero-header {
+    background:
+        url(../img/blob-top-left.png),
+        url(../img/blob-top-right.png),
+        url(../img/blob-bottom-left.png),
+        url(../img/blob-bottom-right.png),
+        url(../img/blob-center.png),
+        radial-gradient(ellipse at 20% 70%, rgba(180, 80, 255, 0.25) 0%, transparent 50%),
+        linear-gradient(135deg, #250870 0%, #4e18b5 35%, #7b2fe0 65%, #3e1199 100%);
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+    background-size: auto, auto, auto, auto, auto, 100% 100%, 200% 200%;
+}
+
+/* Hero headings larger on wide screens */
+@media (min-width: 1200px) {
+    .hero-header .container h1 {
+        font-size: clamp(2.2rem, 3.5vw, 3.4rem);
+    }
+}
+
+/* Hero subtext */
+.hero-header p.text-white-50 {
+    font-size: 0.92rem;
+    letter-spacing: 0.12em;
+}
+
+
+/* ── Stats / Fact bar — stronger gradient ── */
+.container-xxl.bg-primary.fact {
+    background:
+        url(../img/blob-top-left.png),
+        url(../img/blob-top-right.png),
+        url(../img/blob-bottom-left.png),
+        url(../img/blob-bottom-right.png),
+        linear-gradient(135deg, #250870 0%, #4e18b5 50%, #7b2fe0 100%) !important;
+    background-position:
+        left 0 top 0,
+        right 0 top 0,
+        left 0 bottom 0,
+        right 0 bottom 0,
+        center center;
+    background-repeat: no-repeat;
+}
+
+/* Fact stat number accent */
+.fact .col-md-6 h1 {
+    background: linear-gradient(135deg, #fff 0%, rgba(251,165,4,0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+}
+
+
+/* ── Services section ── */
+/* Service cards: tighten heading */
+.service-item h5 {
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+}
+
+/* Service CTA button on card */
+.service-item a.btn.btn-square {
+    width: 42px;
+    height: 42px;
+    border-radius: 50% !important;
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 2px solid rgba(98, 34, 204, 0.18);
+    font-size: 0.9rem;
+    margin-top: auto;
+    align-self: center;
+    transition: var(--transition);
+}
+
+.service-item:hover a.btn.btn-square {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    border-color: rgba(255,255,255,0.35);
+}
+
+
+/* ── Process section — tighter BG ── */
+.container-xxl[style*="background: var(--light)"],
+.container-xxl[style*="background:var(--light)"] {
+    background: linear-gradient(180deg, #f0eafb 0%, var(--light) 60%, #fff 100%) !important;
+}
+
+
+/* ── Why Choose Us / Trust cards — alternating highlight row ── */
+#why-us .row .col-lg-4:nth-child(2) .trust-card,
+#why-us .row .col-lg-4:nth-child(5) .trust-card {
+    border-color: rgba(251, 165, 4, 0.22);
+    background: linear-gradient(180deg, #fffdf5 0%, #fff 100%);
+}
+
+
+/* ── Portfolio card category tag ── */
+.portfolio-item .bg-light p.text-primary {
+    color: var(--primary) !important;
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+
+/* ── Testimonials ── */
+/* Quote icon styling */
+.testimonial-item.bg-white::before {
+    font-size: 5rem;
+    color: rgba(98, 34, 204, 0.07);
+    top: 8px;
+    right: 20px;
+}
+
+/* Avatar initials ── richer gradient */
+.testimonial-item .bg-primary.rounded-circle {
+    background: linear-gradient(135deg, #7a2fe0, var(--primary)) !important;
+}
+
+.testimonial-item .bg-secondary.rounded-circle {
+    background: linear-gradient(135deg, #ffc030, var(--secondary)) !important;
+}
+
+.testimonial-item .bg-dark.rounded-circle {
+    background: linear-gradient(135deg, #2d1b5e, #04000B) !important;
+}
+
+/* Star colors */
+.testimonial-item .fa-star.text-warning {
+    color: var(--secondary) !important;
+}
+
+
+/* ── CTA Banner — ensure proper contrast ── */
+.newsletter.bg-primary p.text-white-50,
+.newsletter.bg-primary .text-white-50 {
+    color: rgba(255, 255, 255, 0.88) !important;
+}
+
+
+/* ── Footer improvements ── */
+/* Footer brand heading */
+.footer .section-title.h5 {
+    font-size: 1rem !important;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+/* Footer contact info */
+.footer p i.fa {
+    color: var(--secondary);
+    width: 20px;
+}
+
+/* Footer service/quick link columns */
+.footer .btn-link::before {
+    color: var(--secondary);
+}
+
+/* Footer bottom copyright */
+.footer .copyright {
+    margin-top: 0;
+    padding: 20px 0;
+}
+
+
+/* ── Sticky mobile CTA bar — improved typography ── */
+.sticky-cta-bar .fw-semibold {
+    font-family: 'Jost', sans-serif;
+}
+
+
+/* ── Back to top — ensure visibility ── */
+.back-to-top {
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ── Mobile: hero alignment ── */
+@media (max-width: 575.98px) {
+    .hero-header {
+        padding: 6.5rem 0 4rem;
+        text-align: center;
+    }
+
+    .hero-header .d-flex.gap-3 {
+        justify-content: center !important;
+    }
+
+    .hero-header .col-lg-6:last-child {
+        /* Let hero image remain visible but smaller; let Bootstrap handle stacking */
+        max-height: 220px;
+        overflow: hidden;
+    }
+
+    .trust-pill {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+}
+
+/* ── Mobile: stats bar spacing ── */
+@media (max-width: 767.98px) {
+    .fact .col-md-6 {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+
+    .fact .col-md-6 i {
+        font-size: 2rem !important;
+    }
+
+    .service-item {
+        border-radius: var(--radius-md) !important;
+    }
+}
+
+/* ── Mobile navbar padding ── */
+@media (max-width: 991.98px) {
+    .navbar-light {
+        padding-top: 14px !important;
+        padding-bottom: 14px !important;
+    }
+
+    .navbar-brand {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+}
+
+/* ── Smooth section transition — alternating white/light ── */
+.container-xxl.py-5 + .container-xxl.py-5:not([style]) {
+    background: var(--light);
+}
+
+
+/* ── Global link color override ── */
+a.navbar-brand:hover .brand-dbell {
+    color: var(--primary) !important;
+    opacity: 0.85;
+}
+
+a.navbar-brand:hover .brand-creations {
+    color: var(--secondary) !important;
+    opacity: 0.85;
+}
+
+/* On desktop hero, DBELL in white but CREATIONS stays orange */
+@media (min-width: 992px) {
+    .navbar-light:not(.sticky-top) .brand-dbell {
+        color: rgba(255, 255, 255, 0.95) !important;
+    }
+    .navbar-light:not(.sticky-top) .brand-creations {
+        color: var(--secondary) !important;
+    }
+}
+
+
+/* ── Improved page section visual rhythm ── */
+/* Slight top-border accent on alternating sections */
+.container-xxl.py-5[style*="background: var(--light)"] > .container,
+.container-xxl.py-5[style*="background:var(--light)"] > .container {
+    position: relative;
+}
+
+/* Ensure service item list text is not clipped */
+.service-item .list-unstyled li {
+    font-size: 0.875rem;
+    line-height: 1.65;
+}
+
+
+/* ── Refined FAQ accordion (if visited) ── */
+.accordion-button {
+    font-size: 0.975rem;
+}
+
+.accordion-body {
+    font-size: 0.9rem;
+}
+
+
+/* ── Contact form improvements ── */
+.form-control,
+.form-select {
+    font-size: 0.9375rem;
+    color: #1a1625;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #4a4060;
+    margin-bottom: 6px;
+}
+
+
+/* ── Scroll bar branding (webkit) ── */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary), #8b2fe8);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #8b2fe8, var(--secondary));
+}
+
+
+/* ── Selection highlight ── */
+::selection {
+    background: rgba(98, 34, 204, 0.18);
+    color: var(--primary);
+}
+
+
+/* ── Card entrance shadow on scroll (WOW.js fadeIn items) ── */
+.wow.fadeInUp .service-item,
+.wow.fadeInUp .trust-card,
+.wow.fadeInUp .automation-card,
+.wow.fadeInUp .who-card {
+    transition: box-shadow 0.5s ease, transform 0.5s ease, border-color 0.5s ease;
+}
+
+
+/* ── Utility: gradient heading accent for all h2 section headers ── */
+.section-h2-accent {
+    position: relative;
+    display: inline-block;
+}
+
+.section-h2-accent::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 56px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 2px;
+}
+
+
+/* ── Divider between footer columns (desktop) ── */
+@media (min-width: 992px) {
+    .footer .col-lg-3:not(:last-child) {
+        border-right: 1px solid rgba(255, 255, 255, 0.07);
+        padding-right: 2.5rem;
+    }
+    .footer .col-lg-3:not(:first-child) {
+        padding-left: 2.5rem;
+    }
+}
+
+
+/* ── Responsive images in portfolio ── */
+.portfolio-item img {
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+.portfolio-item .bg-light {
+    padding: 20px 24px !important;
+}
+
+
+/* ── Mobile bottom nav area safe zone ── */
+@media (max-width: 991.98px) {
+    body {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+}
+
