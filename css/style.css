@@ -296,11 +296,6 @@ p { line-height: 1.75; }
     .brand-logo-text { font-size: 1.25rem; }
     .brand-logo-text .brand-dbell { font-size: 1.35rem; }
     .brand-logo-text .brand-creations { font-size: 0.95rem; }
-    /* Force brand colors with !important — overrides any Bootstrap cascade */
-    .navbar-light .brand-logo-text .brand-dbell,
-    .brand-logo-text .brand-dbell     { color: var(--primary)   !important; text-shadow: none; }
-    .navbar-light .brand-logo-text .brand-creations,
-    .brand-logo-text .brand-creations { color: var(--secondary) !important; text-shadow: none; }
 }
 
 @media (max-width: 991.98px) {
@@ -2581,15 +2576,7 @@ a.navbar-brand:hover .brand-creations {
     opacity: 0.85;
 }
 
-/* On desktop hero, DBELL in white but CREATIONS stays orange */
-@media (min-width: 992px) {
-    .navbar-light:not(.sticky-top) .brand-dbell {
-        color: rgba(255, 255, 255, 0.95) !important;
-    }
-    .navbar-light:not(.sticky-top) .brand-creations {
-        color: var(--secondary) !important;
-    }
-}
+
 
 
 /* ── Improved page section visual rhythm ── */
@@ -2711,6 +2698,130 @@ a.navbar-brand:hover .brand-creations {
 @media (max-width: 991.98px) {
     body {
         padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+}
+
+
+/* ========================================
+   CASE STUDY & PROJECT CARD STYLES
+======================================== */
+
+/* Featured case study row */
+.case-study-row {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.case-study-row:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+}
+
+.case-study-content {
+    background: #fff;
+}
+
+.case-tag-inline {
+    display: inline-block;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 50px;
+}
+
+.case-outcomes li {
+    font-size: 0.9rem;
+    color: #4a4560;
+    padding: 2px 0;
+}
+
+/* Mini case card (3-grid) */
+.mini-case-card {
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.mini-case-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.mini-case-card .portfolio-overlay {
+    border-radius: 0;
+}
+
+/* Project page cards */
+.project-card {
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.project-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+/* Portfolio section heading (on project.html) */
+.portfolio-section-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--dark);
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--primary-light);
+    letter-spacing: -0.01em;
+}
+
+/* Responsive: stack case study rows nicely on mobile */
+@media (max-width: 991.98px) {
+    .case-study-row .case-study-img img {
+        min-height: 240px;
+    }
+    .case-study-content {
+        padding: 1.5rem !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .case-study-row {
+        border-radius: var(--radius-md);
+    }
+    .case-study-content {
+        padding: 1.25rem !important;
+    }
+    .mini-case-card .p-3 {
+        padding: 1rem !important;
+    }
+}
+
+
+/* ========================================
+   DEFINITIVE BRAND COLOR LOCK
+   Ensures DBELL=purple, CREATIONS=orange
+   on ALL viewports and states
+======================================== */
+.brand-dbell {
+    color: var(--primary) !important;
+}
+.brand-creations {
+    color: var(--secondary) !important;
+}
+/* On the hero (non-sticky desktop), DBELL becomes white for readability */
+@media (min-width: 992px) {
+    .navbar-light:not(.sticky-top) .brand-dbell {
+        color: rgba(255, 255, 255, 0.95) !important;
+        text-shadow: 0 0 20px rgba(98, 34, 204, 0.55) !important;
+    }
+    .sticky-top .brand-dbell {
+        color: var(--primary) !important;
+        text-shadow: none !important;
     }
 }
 
