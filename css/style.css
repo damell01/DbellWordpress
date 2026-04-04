@@ -2271,11 +2271,6 @@ button:focus-visible,
 }
 
 
-/* ── Smooth image rendering ── */
-img {
-    image-rendering: -webkit-optimize-contrast;
-}
-
 /* ── Mobile: remove float animation on reduced-motion preference ── */
 @media (prefers-reduced-motion: reduce) {
     .hero-header,
