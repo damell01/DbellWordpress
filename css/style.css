@@ -296,28 +296,41 @@ p { line-height: 1.75; }
     .brand-logo-text { font-size: 1.25rem; }
     .brand-logo-text .brand-dbell { font-size: 1.35rem; }
     .brand-logo-text .brand-creations { font-size: 0.95rem; }
-    /* Increase specificity to override any cascade that might turn text white */
-    .navbar-light .brand-logo-text .brand-dbell     { color: var(--primary);   text-shadow: none; }
-    .navbar-light .brand-logo-text .brand-creations { color: var(--secondary); text-shadow: none; }
+    /* Bulletproof: force brand colors regardless of Bootstrap or inherited cascade */
+    .brand-logo-text .brand-dbell,
+    .navbar .brand-logo-text .brand-dbell,
+    .navbar-light .brand-logo-text .brand-dbell {
+        color: var(--primary) !important;
+        -webkit-text-fill-color: var(--primary) !important;
+        text-shadow: none !important;
+    }
+    .brand-logo-text .brand-creations,
+    .navbar .brand-logo-text .brand-creations,
+    .navbar-light .brand-logo-text .brand-creations {
+        color: var(--secondary) !important;
+        -webkit-text-fill-color: var(--secondary) !important;
+        text-shadow: none !important;
+    }
 }
 
 @media (max-width: 991.98px) {
     /* Ensure navbar always has a white background on mobile for brand readability */
     .navbar-light {
-        background: #FFFFFF;
+        background: #FFFFFF !important;
+        box-shadow: 0 2px 16px rgba(4, 0, 11, 0.07);
     }
 
     .sticky-top.navbar-light {
         position: relative;
-        background: #FFFFFF;
+        background: #FFFFFF !important;
         box-shadow: var(--shadow-sm);
     }
 
     .navbar-light .navbar-collapse {
         margin-top: 12px;
         border-top: 1px solid #e8e3f0;
-        padding-top: 8px;
-        padding-bottom: 8px;
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 
     .navbar-light .navbar-nav .nav-link,
@@ -326,6 +339,11 @@ p { line-height: 1.75; }
         margin-left: 0;
         color: var(--dark) !important;
         font-size: 15px;
+        border-bottom: 1px solid #f4f0fa;
+    }
+
+    .navbar-light .navbar-nav .nav-item:last-child .nav-link {
+        border-bottom: none;
     }
 
     .navbar-light .navbar-nav .nav-link::after,
@@ -339,6 +357,39 @@ p { line-height: 1.75; }
 
     .navbar-light .navbar-brand img {
         max-height: 44px;
+    }
+
+    /* Dropdown styling on mobile */
+    .navbar-light .navbar-nav .dropdown-menu {
+        border: none;
+        background: #f8f5ff;
+        border-radius: var(--radius-sm);
+        padding: 6px 0;
+        box-shadow: none;
+        margin-top: 4px;
+    }
+
+    .navbar-light .navbar-nav .dropdown-menu .dropdown-item {
+        font-size: 14px;
+        color: #4a3a7a;
+        padding: 8px 16px;
+        border-radius: var(--radius-sm);
+    }
+
+    .navbar-light .navbar-nav .dropdown-menu .dropdown-item:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+    }
+
+    /* Toggler icon styling */
+    .navbar-toggler {
+        border-color: rgba(98, 34, 204, 0.25) !important;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: 0 0 0 3px rgba(98, 34, 204, 0.15) !important;
     }
 }
 
@@ -1876,23 +1927,25 @@ body.scanner-modal-open {
 
 
 /* ── Section title — enhanced pill badge (layout-safe) ── */
-/* Wrap in a div.section-title-wrap for centering pill badges */
 .section-title {
     gap: 10px;
     font-size: 0.78rem;
     letter-spacing: 0.1em;
     font-weight: 700;
-    padding: 4px 14px 4px 10px;
+    padding: 5px 16px 5px 12px;
     border-radius: 50px;
     display: inline-flex;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    width: fit-content;      /* pill is only as wide as content */
 }
 
-/* Parent needs text-center or flex+justify-content-center to centre the inline pill */
+/* Center the pill when parent is text-center */
 p.section-title.justify-content-center,
 p.section-title.text-center {
-    display: flex;      /* keep block-width for centering via justify-content */
+    display: inline-flex;    /* stay content-width (not full-width flex) */
+    margin-left: auto;
+    margin-right: auto;
     justify-content: center;
 }
 
@@ -2144,23 +2197,33 @@ p.section-title.text-center {
 
 /* ── Hero bottom feature pills ── */
 .hero-header .trust-pill {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.13);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 50px;
-    padding: 8px 18px;
-    font-size: 0.88rem;
+    padding: 8px 16px;
+    font-size: 0.85rem;
     color: rgba(255,255,255,0.95);
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     transition: var(--transition);
+    white-space: nowrap;
 }
 
 .hero-header .trust-pill:hover {
-    background: rgba(255, 255, 255, 0.20);
-    border-color: rgba(255, 255, 255, 0.40);
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.45);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 575.98px) {
+    .hero-header .trust-pill {
+        font-size: 0.8rem;
+        padding: 7px 13px;
+        gap: 6px;
+    }
 }
 
 
@@ -2280,4 +2343,426 @@ button:focus-visible,
     .container-xxl.bg-white {
         animation: none !important;
     }
+}
+
+
+/* ================================================================
+   COMPREHENSIVE UI REFRESH v2 — Additional Visual Polish
+   ================================================================ */
+
+/* ── Button improvements ── */
+.btn {
+    border-radius: 50px;
+    letter-spacing: 0.02em;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #7a2fe0 0%, var(--primary) 100%);
+    border: none;
+    box-shadow: 0 4px 18px rgba(98, 34, 204, 0.30);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background: linear-gradient(135deg, var(--primary) 0%, #4e18b5 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 26px rgba(98, 34, 204, 0.42);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #ffc030 0%, var(--secondary) 100%);
+    border: none;
+    color: var(--dark) !important;
+    box-shadow: 0 4px 16px rgba(251, 165, 4, 0.28);
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+    background: linear-gradient(135deg, var(--secondary) 0%, #e8960a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(251, 165, 4, 0.42);
+    color: var(--dark) !important;
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-primary);
+}
+
+.btn-outline-light {
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(6px);
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.9);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+
+/* ── Hero section — richer visual ── */
+.hero-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(4, 0, 11, 0.18) 100%);
+    pointer-events: none;
+}
+
+.hero-header h1 {
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.22);
+    letter-spacing: -0.02em;
+}
+
+@media (max-width: 767.98px) {
+    .hero-header {
+        padding: 6.5rem 0 5.5rem;
+        text-align: center;
+    }
+
+    .hero-header h1 {
+        font-size: clamp(1.75rem, 7.5vw, 2.4rem);
+        line-height: 1.2;
+    }
+
+    .hero-header p {
+        font-size: 1rem !important;
+        opacity: 0.88;
+    }
+
+    /* Trust pills on mobile — wrap nicely */
+    .hero-header .d-flex.flex-wrap {
+        gap: 10px !important;
+        justify-content: center !important;
+    }
+
+    .hero-header .d-flex.gap-3 {
+        gap: 10px !important;
+    }
+}
+
+
+/* ── Service cards — richer base styling ── */
+.service-item {
+    position: relative;
+    padding: 44px 32px 48px;
+    background: #fff;
+    border-radius: var(--radius-md) !important;
+    border: 1.5px solid rgba(98, 34, 204, 0.08);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.service-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.service-item:hover::before {
+    opacity: 1;
+}
+
+/* Service card arrow button improvement */
+.service-item a.btn.btn-square {
+    width: 44px;
+    height: 44px;
+    border-radius: 50% !important;
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 2px solid rgba(98, 34, 204, 0.15);
+    position: static !important;
+    transform: none !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    margin-top: auto;
+    transition: var(--transition);
+    bottom: auto;
+    left: auto;
+    padding: 0;
+}
+
+.service-item a.btn.btn-square:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    transform: scale(1.1) !important;
+}
+
+.service-item:hover a.btn.btn-square {
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+    bottom: auto;
+}
+
+
+/* ── Trust / Why Choose Us cards — icon circle improvement ── */
+.trust-card {
+    background: #fff;
+    border: 1.5px solid #ebe6f5;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.trust-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.trust-card:hover::before {
+    opacity: 1;
+}
+
+.trust-card:hover {
+    border-color: rgba(98, 34, 204, 0.2);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-6px);
+}
+
+
+/* ── Process section — better background ── */
+.process-section-bg,
+div[id="process"] {
+    background: linear-gradient(180deg, #f0ebfa 0%, #f8f5ff 50%, var(--light) 100%);
+}
+
+/* ── Portfolio cards — image aspect ratio fix ── */
+.portfolio-item .position-relative.overflow-hidden img {
+    aspect-ratio: 16/10;
+    object-fit: cover;
+    width: 100%;
+}
+
+/* Portfolio card caption */
+.portfolio-item .bg-light {
+    padding: 18px 20px !important;
+    background: #fff !important;
+    border-top: 3px solid rgba(98, 34, 204, 0.08) !important;
+    transition: var(--transition);
+}
+
+.portfolio-item:hover .bg-light {
+    border-top-color: var(--primary) !important;
+}
+
+.portfolio-item .bg-light p {
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    color: var(--primary);
+    margin-bottom: 4px !important;
+}
+
+.portfolio-item .bg-light h5 {
+    font-size: 1rem;
+    margin-bottom: 0 !important;
+}
+
+
+/* ── Stats bar — richer look ── */
+.fact.bg-primary {
+    background: linear-gradient(135deg, #3a0e9e 0%, #6222CC 50%, #7a2fe0 100%) !important;
+    position: relative;
+}
+
+.fact.bg-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url(../img/blob-center.png) center center no-repeat;
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+.fact h1[data-toggle="counter-up"] {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+}
+
+@media (max-width: 767.98px) {
+    .fact h1[data-toggle="counter-up"] {
+        font-size: 2.4rem;
+    }
+}
+
+
+/* ── Testimonials — card polish ── */
+.testimonial-item.bg-white {
+    border: 1.5px solid #ebe6f5 !important;
+    border-top: 4px solid var(--primary) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-sm) !important;
+    padding: 28px 26px 24px !important;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.testimonial-item.bg-white::after {
+    content: '\201C';
+    position: absolute;
+    bottom: -10px;
+    right: 20px;
+    font-size: 5rem;
+    line-height: 1;
+    color: rgba(98, 34, 204, 0.07);
+    font-family: Georgia, serif;
+    font-weight: 700;
+}
+
+.testimonial-item.bg-white:hover {
+    box-shadow: var(--shadow-md) !important;
+    border-top-color: var(--secondary) !important;
+    transform: translateY(-4px);
+}
+
+/* Star colors for testimonials */
+.testimonial-item .fa-star.text-warning {
+    color: var(--secondary) !important;
+    font-size: 0.85rem;
+}
+
+
+/* ── Section headers — tighter + cleaner ── */
+.wow.fadeInUp.text-center.mb-5,
+.text-center.mb-5 {
+    margin-bottom: 3rem !important;
+}
+
+@media (max-width: 767.98px) {
+    .wow.fadeInUp.text-center.mb-5,
+    .text-center.mb-5 {
+        margin-bottom: 2.5rem !important;
+    }
+}
+
+
+/* ── CTA Banner — gradient divider line ── */
+.newsletter.bg-primary::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+}
+
+
+/* ── Footer improvements ── */
+.footer {
+    background: linear-gradient(180deg, #120730 0%, var(--dark) 100%);
+}
+
+.footer .col-md-6.col-lg-3 h5,
+.footer .col-md-6.col-lg-3 p.section-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.footer .copyright {
+    padding: 24px 0;
+    font-size: 0.82rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255,255,255,0.5);
+}
+
+@media (max-width: 767.98px) {
+    .footer .col-md-6.col-lg-3 {
+        margin-bottom: 16px;
+    }
+
+    .footer .btn.btn-link {
+        font-size: 13px;
+    }
+}
+
+
+/* ── Mobile section padding ── */
+@media (max-width: 767.98px) {
+    .container-xxl.py-5 > .container.py-5,
+    .container-xxl.py-5 > .container-fluid.py-5 {
+        padding-top: 3.5rem !important;
+        padding-bottom: 3.5rem !important;
+    }
+
+    /* Process steps on mobile */
+    .process-num {
+        width: 66px;
+        height: 66px;
+        font-size: 1.75rem;
+    }
+
+    /* Stats grid on mobile — 2x2 */
+    .fact .row.g-4 {
+        row-gap: 2rem !important;
+    }
+}
+
+
+/* ── Smooth page-load fade in ── */
+@keyframes pageFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.container-xxl.bg-white {
+    animation: pageFadeIn 0.45s ease-out both;
+}
+
+
+/* ── Input focus ring color fix ── */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(98, 34, 204, 0.14);
+}
+
+
+/* ── Scroll progress indicator (subtle top bar) ── */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    z-index: 9999;
+    transition: width 0.1s linear;
 }

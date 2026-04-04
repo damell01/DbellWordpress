@@ -53,7 +53,16 @@
             $('.navbar').removeClass('sticky-top shadow-sm');
         }
     });
-    
+
+
+    // Scroll progress bar
+    $(window).scroll(function () {
+        var scrollTop = $(this).scrollTop();
+        var docHeight = $(document).height() - $(window).height();
+        var scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        $('#scrollProgress').css('width', scrollPercent + '%');
+    });
+
     
     // Back to top button
     $(window).scroll(function () {
