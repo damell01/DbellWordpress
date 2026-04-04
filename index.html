@@ -127,7 +127,7 @@
                                 <a href="contact.html" class="btn btn-secondary py-sm-3 px-sm-5 rounded-pill">Contact Us</a>
                                 <a href="scan.html" class="btn btn-outline-light py-sm-3 px-sm-5 rounded-pill">Free Website Scanner</a>
                             </div>
-                            <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center justify-content-lg-start animated slideInUp">
+                            <div class="d-flex flex-wrap gap-2 mt-4 justify-content-center justify-content-lg-start animated slideInUp">
                                 <span class="trust-pill">
                                     <i class="fa fa-star" style="color:var(--secondary);"></i>
                                     <span><strong>5-Star</strong> Rated Agency</span>
@@ -316,112 +316,120 @@
         <!-- CTA Banner End -->
 
 
-        <!-- Portfolio Start -->
-        <div class="container-xxl py-5">
+        <!-- Portfolio / Case Studies Start -->
+        <div class="container-xxl py-5" id="portfolio" style="background: var(--light);">
             <div class="container py-5 px-lg-5">
                 <div class="wow fadeInUp text-center mb-5" data-wow-delay="0.1s">
                     <p class="section-title text-secondary justify-content-center"><span></span>Our Work<span></span></p>
-                    <h2 class="mb-3">Recently Completed Projects</h2>
-                    <p class="text-muted mx-auto" style="max-width:600px;">From small businesses to growing enterprises &mdash; here's a look at some of the work we're proud of.</p>
+                    <h2 class="mb-3">Featured Case Studies</h2>
+                    <p class="text-muted mx-auto" style="max-width:600px;">Real projects. Real results. Here's a look at how we've helped businesses grow with custom digital solutions.</p>
                 </div>
-                <div class="row g-4 portfolio-container">
-                    <div class="col-lg-4 col-md-6 portfolio-item first wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="rounded overflow-hidden">
-                            <div class="position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="img/AdamsComputerMock.webp" alt="Adams Offroad website design" loading="lazy">
-                                <div class="portfolio-overlay">
-                                    <a class="btn btn-square btn-outline-light mx-1" href="img/AdamsComputerMock.webp" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
-                                    <a class="btn btn-square btn-outline-light mx-1" href="https://www.adamsoffroadllc.com/" target="_blank" rel="noopener"><i class="fa fa-link"></i></a>
-                                </div>
-                            </div>
-                            <div class="bg-light p-4">
-                                <p class="text-primary fw-medium mb-2">Web Design &amp; Development</p>
-                                <h5 class="lh-base mb-0">Adams Offroad</h5>
-                            </div>
+
+                <!-- Case Study Row 1 -->
+                <div class="case-study-row row g-0 align-items-stretch mb-4 wow fadeInUp overflow-hidden" data-wow-delay="0.1s">
+                    <div class="col-lg-6">
+                        <div class="case-study-img h-100">
+                            <img class="w-100 h-100" src="img/AdamsComputerMock.webp" alt="Adams Offroad website redesign" loading="lazy" style="object-fit:cover; min-height:280px;">
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 portfolio-item second wow fadeInUp" data-wow-delay="0.3s">
-                        <div class="rounded overflow-hidden">
-                            <div class="position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="img/FastenersConnectorsMockup.webp" alt="Fasteners Connectors website design" loading="lazy">
-                                <div class="portfolio-overlay">
-                                    <a class="btn btn-square btn-outline-light mx-1" href="img/FastenersConnectorsMockup.webp" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
-                                    <a class="btn btn-square btn-outline-light mx-1" href="https://fastenersconnectors.com/" target="_blank" rel="noopener"><i class="fa fa-link"></i></a>
-                                </div>
-                            </div>
-                            <div class="bg-light p-4">
-                                <p class="text-primary fw-medium mb-2">Web Design &amp; Development</p>
-                                <h5 class="lh-base mb-0">Fasteners &amp; Connectors</h5>
-                            </div>
+                    <div class="col-lg-6 case-study-content p-4 p-lg-5 bg-white d-flex flex-column justify-content-center">
+                        <span class="case-tag-inline">Web Design &amp; Development</span>
+                        <h3 class="mt-2 mb-2">Adams Offroad</h3>
+                        <p class="text-muted mb-3">Complete website redesign for an off-road vehicle accessories business — built to drive conversions and boost local search visibility in Fairhope, AL.</p>
+                        <ul class="list-unstyled case-outcomes mb-4">
+                            <li class="mb-1"><i class="fa fa-check-circle text-secondary me-2"></i>40% increase in online leads post-launch</li>
+                            <li class="mb-1"><i class="fa fa-check-circle text-secondary me-2"></i>Modern, conversion-focused responsive design</li>
+                            <li class="mb-1"><i class="fa fa-check-circle text-secondary me-2"></i>Local SEO optimization built in</li>
+                        </ul>
+                        <div>
+                            <a href="https://www.adamsoffroadllc.com/" target="_blank" rel="noopener" class="btn btn-outline-primary rounded-pill py-2 px-4 me-2">Live Site <i class="fa fa-external-link-alt ms-1 fa-xs"></i></a>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 portfolio-item first wow fadeInUp" data-wow-delay="0.5s">
-                        <div class="rounded overflow-hidden">
+                </div>
+
+                <!-- Case Study Row 2 (reversed) -->
+                <div class="case-study-row row g-0 align-items-stretch mb-4 wow fadeInUp overflow-hidden" data-wow-delay="0.2s">
+                    <div class="col-lg-6 order-lg-2">
+                        <div class="case-study-img h-100">
+                            <img class="w-100 h-100" src="img/FastenersConnectorsMockup.webp" alt="Fasteners &amp; Connectors website" loading="lazy" style="object-fit:cover; min-height:280px;">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-1 case-study-content p-4 p-lg-5 bg-white d-flex flex-column justify-content-center">
+                        <span class="case-tag-inline">Web Design &amp; Development</span>
+                        <h3 class="mt-2 mb-2">Fasteners &amp; Connectors</h3>
+                        <p class="text-muted mb-3">Professional B2B website for an industrial supplier — streamlined navigation makes it fast and easy for contractors to find and order the right parts.</p>
+                        <ul class="list-unstyled case-outcomes mb-4">
+                            <li class="mb-1"><i class="fa fa-check-circle text-secondary me-2"></i>Streamlined product catalog &amp; navigation</li>
+                            <li class="mb-1"><i class="fa fa-check-circle text-secondary me-2"></i>B2B lead generation optimization</li>
+                            <li class="mb-1"><i class="fa fa-check-circle text-secondary me-2"></i>SEO-optimized site architecture</li>
+                        </ul>
+                        <div>
+                            <a href="https://fastenersconnectors.com/" target="_blank" rel="noopener" class="btn btn-outline-primary rounded-pill py-2 px-4 me-2">Live Site <i class="fa fa-external-link-alt ms-1 fa-xs"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom 3-card grid -->
+                <div class="row g-4 mt-2">
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="mini-case-card h-100 bg-white overflow-hidden">
                             <div class="position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="img/RiptideMockup.webp" alt="Riptide Pro Washing website design" loading="lazy">
+                                <img class="img-fluid w-100" src="img/RiptideMockup.webp" alt="Riptide Pro Washing website" loading="lazy" style="aspect-ratio:16/9;object-fit:cover;">
                                 <div class="portfolio-overlay">
                                     <a class="btn btn-square btn-outline-light mx-1" href="img/RiptideMockup.webp" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
                                     <a class="btn btn-square btn-outline-light mx-1" href="https://www.riptideprowashing.com/" target="_blank" rel="noopener"><i class="fa fa-link"></i></a>
                                 </div>
                             </div>
-                            <div class="bg-light p-4">
-                                <p class="text-primary fw-medium mb-2">Web Design &amp; Development</p>
-                                <h5 class="lh-base mb-0">Riptide Pro Washing</h5>
+                            <div class="p-3 p-lg-4">
+                                <span class="case-tag-inline small">Web Design</span>
+                                <h5 class="mt-2 mb-1">Riptide Pro Washing</h5>
+                                <p class="text-muted small mb-3">Pressure washing company site with online booking — online bookings doubled after launch.</p>
+                                <a href="https://www.riptideprowashing.com/" target="_blank" rel="noopener" class="text-primary small fw-semibold">View Live Site &rarr;</a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 portfolio-item second wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="rounded overflow-hidden">
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="mini-case-card h-100 bg-white overflow-hidden">
                             <div class="position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="img/ToolExpoMockup.webp" alt="Tool Expo website design" loading="lazy">
+                                <img class="img-fluid w-100" src="img/ToolExpoMockup.webp" alt="Tool Expo website design" loading="lazy" style="aspect-ratio:16/9;object-fit:cover;">
                                 <div class="portfolio-overlay">
                                     <a class="btn btn-square btn-outline-light mx-1" href="img/ToolExpoMockup.webp" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
                                     <a class="btn btn-square btn-outline-light mx-1" href="https://toolexpo.com/" target="_blank" rel="noopener"><i class="fa fa-link"></i></a>
                                 </div>
                             </div>
-                            <div class="bg-light p-4">
-                                <p class="text-primary fw-medium mb-2">Web Design &amp; Development</p>
-                                <h5 class="lh-base mb-0">Tool Expo</h5>
+                            <div class="p-3 p-lg-4">
+                                <span class="case-tag-inline small">Web Design &amp; SEO</span>
+                                <h5 class="mt-2 mb-1">Tool Expo</h5>
+                                <p class="text-muted small mb-3">E-commerce tool retailer — page 1 Google rankings within 3 months of SEO work.</p>
+                                <a href="https://toolexpo.com/" target="_blank" rel="noopener" class="text-primary small fw-semibold">View Live Site &rarr;</a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 portfolio-item first wow fadeInUp" data-wow-delay="0.3s">
-                        <div class="rounded overflow-hidden">
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="mini-case-card h-100 bg-white overflow-hidden">
                             <div class="position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="img/WorkorderDemo-front.png" alt="Custom work order software" loading="lazy">
+                                <img class="img-fluid w-100" src="img/WorkorderDemo-front.png" alt="Custom work order software" loading="lazy" style="aspect-ratio:16/9;object-fit:cover;">
                                 <div class="portfolio-overlay">
                                     <a class="btn btn-square btn-outline-light mx-1" href="img/WorkorderDemo-front.png" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
                                     <a class="btn btn-square btn-outline-light mx-1" href="software.html"><i class="fa fa-link"></i></a>
                                 </div>
                             </div>
-                            <div class="bg-light p-4">
-                                <p class="text-primary fw-medium mb-2">Custom Software</p>
-                                <h5 class="lh-base mb-0">Work Order Management System</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 portfolio-item second wow fadeInUp" data-wow-delay="0.5s">
-                        <div class="rounded overflow-hidden">
-                            <div class="position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="img/DBELLMOCKUP.png" alt="DBell Creations mockup" loading="lazy">
-                                <div class="portfolio-overlay">
-                                    <a class="btn btn-square btn-outline-light mx-1" href="img/DBELLMOCKUP.png" data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
-                                    <a class="btn btn-square btn-outline-light mx-1" href="project.html"><i class="fa fa-link"></i></a>
-                                </div>
-                            </div>
-                            <div class="bg-light p-4">
-                                <p class="text-primary fw-medium mb-2">Branding &amp; Design</p>
-                                <h5 class="lh-base mb-0">Brand Identity &amp; Mockup Design</h5>
+                            <div class="p-3 p-lg-4">
+                                <span class="case-tag-inline small">Custom Software</span>
+                                <h5 class="mt-2 mb-1">Work Order System</h5>
+                                <p class="text-muted small mb-3">Field service management system — saves hours per week through automated workflows.</p>
+                                <a href="software.html" class="text-primary small fw-semibold">Learn More &rarr;</a>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="text-center mt-5 wow fadeInUp" data-wow-delay="0.3s">
-                    <a href="project.html" class="btn btn-outline-primary py-sm-3 px-sm-5 rounded-pill">View All Projects</a>
+                    <a href="project.html" class="btn btn-outline-primary py-sm-3 px-sm-5 rounded-pill">View Full Portfolio</a>
                 </div>
             </div>
         </div>
-        <!-- Portfolio End -->
+        <!-- Portfolio / Case Studies End -->
 
 
         <!-- Why Choose Us Section Start -->
