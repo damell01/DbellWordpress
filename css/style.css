@@ -2911,13 +2911,24 @@ a.navbar-brand:hover .brand-creations {
    DEFINITIVE BRAND COLOR LOCK
    Ensures DBELL=purple, CREATIONS=orange
    on ALL viewports and states
+   Using hardcoded hex for maximum reliability
 ======================================== */
 .brand-dbell {
-    color: var(--primary) !important;
+    color: #6222CC !important;
 }
 .brand-creations {
-    color: var(--secondary) !important;
+    color: #FBA504 !important;
 }
+
+/* On mobile, ensure white background for nav so colors are visible */
+@media (max-width: 991.98px) {
+    .navbar { background: #FFFFFF !important; }
+    .navbar .brand-dbell { color: #6222CC !important; text-shadow: none !important; }
+    .navbar .brand-creations { color: #FBA504 !important; text-shadow: none !important; }
+    .sticky-top .brand-dbell { color: #6222CC !important; text-shadow: none !important; }
+    .sticky-top .brand-creations { color: #FBA504 !important; text-shadow: none !important; }
+}
+
 /* On the hero (non-sticky desktop), DBELL becomes white for readability */
 @media (min-width: 992px) {
     .navbar-light:not(.sticky-top) .brand-dbell {
@@ -2925,7 +2936,7 @@ a.navbar-brand:hover .brand-creations {
         text-shadow: 0 0 20px rgba(98, 34, 204, 0.55) !important;
     }
     .sticky-top .brand-dbell {
-        color: var(--primary) !important;
+        color: #6222CC !important;
         text-shadow: none !important;
     }
 }
