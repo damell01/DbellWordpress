@@ -2772,6 +2772,22 @@ a.navbar-brand:hover .brand-creations {
 
 .mini-case-card .portfolio-overlay {
     border-radius: 0;
+    /* Overlay positioning for non-.portfolio-item cards */
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, rgba(98, 34, 204, 0.90) 0%, rgba(30, 4, 90, 0.86) 100%);
+    transition: var(--transition);
+    opacity: 0;
+}
+
+.mini-case-card:hover .portfolio-overlay {
+    opacity: 1;
 }
 
 /* Project page cards */
@@ -2784,6 +2800,44 @@ a.navbar-brand:hover .brand-creations {
 .project-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-4px);
+}
+
+/* Overlay for project-card */
+.project-card .portfolio-overlay {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, rgba(98, 34, 204, 0.90) 0%, rgba(30, 4, 90, 0.86) 100%);
+    transition: var(--transition);
+    opacity: 0;
+}
+
+.project-card:hover .portfolio-overlay {
+    opacity: 1;
+}
+
+.project-card .portfolio-overlay .btn-square,
+.mini-case-card .portfolio-overlay .btn-square {
+    width: 40px;
+    height: 40px;
+    border-radius: 50% !important;
+    border: 2px solid rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #fff;
+    transition: var(--transition);
+}
+
+.project-card .portfolio-overlay .btn-square:hover,
+.mini-case-card .portfolio-overlay .btn-square:hover {
+    background: rgba(255,255,255,0.25);
+    border-color: #fff;
 }
 
 /* Portfolio section heading (on project.html) */
@@ -2815,6 +2869,18 @@ a.navbar-brand:hover .brand-creations {
     }
     .mini-case-card .p-3 {
         padding: 1rem !important;
+    }
+    /* Stack case study rows: image takes 220px on mobile */
+    .case-study-row .case-study-img img {
+        min-height: 200px;
+        max-height: 260px;
+    }
+    /* On mobile, the col-md-5 order fix for reversed rows */
+    .case-study-row .col-md-5.order-md-2 {
+        order: 0 !important;
+    }
+    .case-study-row .col-md-7.order-md-1 {
+        order: 1 !important;
     }
 }
 
