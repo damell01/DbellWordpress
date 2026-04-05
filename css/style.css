@@ -2904,6 +2904,25 @@ a.navbar-brand:hover .brand-creations {
     .portfolio-section-heading {
         font-size: 0.95rem;
     }
+    /* Mini case cards in 2-col grid on mobile */
+    .mini-case-card .p-3,
+    .mini-case-card .p-3.p-lg-4 {
+        padding: 0.6rem !important;
+    }
+    .mini-case-card h5 {
+        font-size: 0.85rem;
+        margin-bottom: 0.1rem;
+    }
+    .mini-case-card .case-tag-inline {
+        font-size: 0.6rem !important;
+        padding: 2px 6px;
+    }
+    .mini-case-card .text-muted {
+        display: none;
+    }
+    .mini-case-card .text-primary {
+        font-size: 0.75rem;
+    }
 }
 
 
@@ -2913,19 +2932,40 @@ a.navbar-brand:hover .brand-creations {
    on ALL viewports and states
 ======================================== */
 .brand-dbell {
-    color: var(--primary) !important;
+    color: #6222CC !important;
 }
 .brand-creations {
-    color: var(--secondary) !important;
+    color: #FBA504 !important;
+}
+/* Ensure navbar is always visible against page background */
+.navbar-light {
+    background-color: #ffffff;
+}
+@media (max-width: 991.98px) {
+    .navbar-light,
+    .navbar-light.sticky-top,
+    .navbar {
+        background-color: #ffffff !important;
+        box-shadow: 0 2px 12px rgba(4,0,11,0.07);
+    }
+    .brand-dbell {
+        color: #6222CC !important;
+    }
+    .brand-creations {
+        color: #FBA504 !important;
+    }
 }
 /* On the hero (non-sticky desktop), DBELL becomes white for readability */
 @media (min-width: 992px) {
+    .navbar-light {
+        background-color: transparent;
+    }
     .navbar-light:not(.sticky-top) .brand-dbell {
         color: rgba(255, 255, 255, 0.95) !important;
         text-shadow: 0 0 20px rgba(98, 34, 204, 0.55) !important;
     }
     .sticky-top .brand-dbell {
-        color: var(--primary) !important;
+        color: #6222CC !important;
         text-shadow: none !important;
     }
 }
