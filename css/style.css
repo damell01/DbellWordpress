@@ -305,9 +305,26 @@ p { line-height: 1.75; }
     }
 
     .sticky-top.navbar-light {
-        position: relative;
+        position: sticky;
+        top: 0;
         background: #FFFFFF;
         box-shadow: var(--shadow-sm);
+    }
+
+    /* ── MOBILE BRAND COLOR — high-specificity definitive rules ── */
+    .navbar-light .navbar-brand .brand-dbell,
+    .navbar-light .navbar-brand:hover .brand-dbell,
+    .navbar-light .navbar-brand:focus .brand-dbell,
+    .sticky-top .navbar-brand .brand-dbell {
+        color: var(--primary) !important;
+        text-shadow: none !important;
+    }
+    .navbar-light .navbar-brand .brand-creations,
+    .navbar-light .navbar-brand:hover .brand-creations,
+    .navbar-light .navbar-brand:focus .brand-creations,
+    .sticky-top .navbar-brand .brand-creations {
+        color: var(--secondary) !important;
+        text-shadow: none !important;
     }
 
     .navbar-light .navbar-collapse {
@@ -2755,6 +2772,22 @@ a.navbar-brand:hover .brand-creations {
 
 .mini-case-card .portfolio-overlay {
     border-radius: 0;
+    /* Overlay positioning for non-.portfolio-item cards */
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, rgba(98, 34, 204, 0.90) 0%, rgba(30, 4, 90, 0.86) 100%);
+    transition: var(--transition);
+    opacity: 0;
+}
+
+.mini-case-card:hover .portfolio-overlay {
+    opacity: 1;
 }
 
 /* Project page cards */
@@ -2767,6 +2800,44 @@ a.navbar-brand:hover .brand-creations {
 .project-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-4px);
+}
+
+/* Overlay for project-card */
+.project-card .portfolio-overlay {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, rgba(98, 34, 204, 0.90) 0%, rgba(30, 4, 90, 0.86) 100%);
+    transition: var(--transition);
+    opacity: 0;
+}
+
+.project-card:hover .portfolio-overlay {
+    opacity: 1;
+}
+
+.project-card .portfolio-overlay .btn-square,
+.mini-case-card .portfolio-overlay .btn-square {
+    width: 40px;
+    height: 40px;
+    border-radius: 50% !important;
+    border: 2px solid rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #fff;
+    transition: var(--transition);
+}
+
+.project-card .portfolio-overlay .btn-square:hover,
+.mini-case-card .portfolio-overlay .btn-square:hover {
+    background: rgba(255,255,255,0.25);
+    border-color: #fff;
 }
 
 /* Portfolio section heading (on project.html) */
@@ -2798,6 +2869,40 @@ a.navbar-brand:hover .brand-creations {
     }
     .mini-case-card .p-3 {
         padding: 1rem !important;
+    }
+    /* Stack case study rows: image takes 220px on mobile */
+    .case-study-row .case-study-img img {
+        min-height: 200px;
+        max-height: 260px;
+    }
+    /* On mobile, the col-md-5 order fix for reversed rows */
+    .case-study-row .col-md-5.order-md-2 {
+        order: 0 !important;
+    }
+    .case-study-row .col-md-7.order-md-1 {
+        order: 1 !important;
+    }
+}
+
+/* ── Portfolio grid — small-screen tightening ── */
+@media (max-width: 575.98px) {
+    /* col-6 project cards on tiny phones — shrink text & padding */
+    .project-card .p-3 {
+        padding: 0.6rem !important;
+    }
+    .project-card h6 {
+        font-size: 0.8rem;
+        margin-bottom: 0.15rem;
+    }
+    .project-card .case-tag-inline {
+        font-size: 0.62rem !important;
+        padding: 2px 8px;
+    }
+    .project-card .text-muted[style] {
+        display: none;  /* hide description on tiny phones, keeps card compact */
+    }
+    .portfolio-section-heading {
+        font-size: 0.95rem;
     }
 }
 
