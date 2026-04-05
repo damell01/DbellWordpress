@@ -293,9 +293,9 @@ p { line-height: 1.75; }
 
 /* Mobile — always show brand colors on white background */
 @media (max-width: 991.98px) {
-    .brand-logo-text { font-size: 1.25rem; }
-    .brand-logo-text .brand-dbell { font-size: 1.35rem; }
-    .brand-logo-text .brand-creations { font-size: 0.95rem; }
+    .brand-logo-text { font-size: 1.25rem !important; }
+    .brand-logo-text .brand-dbell { font-size: 1.35rem !important; color: var(--primary) !important; }
+    .brand-logo-text .brand-creations { font-size: 0.95rem !important; color: var(--secondary) !important; }
 }
 
 @media (max-width: 991.98px) {
@@ -2930,3 +2930,11 @@ a.navbar-brand:hover .brand-creations {
     }
 }
 
+
+/* MOBILE: force brand colors with maximum specificity */
+@media (max-width: 991.98px) {
+    .brand-dbell { color: var(--primary) !important; }
+    .brand-creations { color: var(--secondary) !important; }
+    .navbar .brand-dbell { color: var(--primary) !important; }
+    .navbar .brand-creations { color: var(--secondary) !important; }
+}
