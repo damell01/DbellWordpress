@@ -12,6 +12,14 @@
     <script>
         window.location.replace('WebsiteScan/audit');
     </script>
+    <!-- Google Analytics GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
 </head>
 <body>
     <p>Redirecting to free website scanner... <a href="WebsiteScan/audit">Click here if you are not redirected.</a></p>
