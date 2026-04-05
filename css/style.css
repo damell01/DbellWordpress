@@ -2922,9 +2922,9 @@ a.navbar-brand:hover .brand-creations {
 
 /* On mobile, ensure white background for nav so colors are visible */
 @media (max-width: 991.98px) {
-    .navbar { background: #FFFFFF !important; }
-    .navbar .brand-dbell { color: #6222CC !important; text-shadow: none !important; }
-    .navbar .brand-creations { color: #FBA504 !important; text-shadow: none !important; }
+    .navbar-light { background: #FFFFFF !important; }
+    .navbar-light .brand-dbell { color: #6222CC !important; text-shadow: none !important; }
+    .navbar-light .brand-creations { color: #FBA504 !important; text-shadow: none !important; }
     .sticky-top .brand-dbell { color: #6222CC !important; text-shadow: none !important; }
     .sticky-top .brand-creations { color: #FBA504 !important; text-shadow: none !important; }
 }
