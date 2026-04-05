@@ -305,9 +305,26 @@ p { line-height: 1.75; }
     }
 
     .sticky-top.navbar-light {
-        position: relative;
+        position: sticky;
+        top: 0;
         background: #FFFFFF;
         box-shadow: var(--shadow-sm);
+    }
+
+    /* ── MOBILE BRAND COLOR — high-specificity definitive rules ── */
+    .navbar-light .navbar-brand .brand-dbell,
+    .navbar-light .navbar-brand:hover .brand-dbell,
+    .navbar-light .navbar-brand:focus .brand-dbell,
+    .sticky-top .navbar-brand .brand-dbell {
+        color: var(--primary) !important;
+        text-shadow: none !important;
+    }
+    .navbar-light .navbar-brand .brand-creations,
+    .navbar-light .navbar-brand:hover .brand-creations,
+    .navbar-light .navbar-brand:focus .brand-creations,
+    .sticky-top .navbar-brand .brand-creations {
+        color: var(--secondary) !important;
+        text-shadow: none !important;
     }
 
     .navbar-light .navbar-collapse {
@@ -2798,6 +2815,28 @@ a.navbar-brand:hover .brand-creations {
     }
     .mini-case-card .p-3 {
         padding: 1rem !important;
+    }
+}
+
+/* ── Portfolio grid — small-screen tightening ── */
+@media (max-width: 575.98px) {
+    /* col-6 project cards on tiny phones — shrink text & padding */
+    .project-card .p-3 {
+        padding: 0.6rem !important;
+    }
+    .project-card h6 {
+        font-size: 0.8rem;
+        margin-bottom: 0.15rem;
+    }
+    .project-card .case-tag-inline {
+        font-size: 0.62rem !important;
+        padding: 2px 8px;
+    }
+    .project-card .text-muted[style] {
+        display: none;  /* hide description on tiny phones, keeps card compact */
+    }
+    .portfolio-section-heading {
+        font-size: 0.95rem;
     }
 }
 
