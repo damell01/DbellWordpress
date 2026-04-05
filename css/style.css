@@ -2930,3 +2930,26 @@ a.navbar-brand:hover .brand-creations {
     }
 }
 
+
+/* ===== ABSOLUTE BRAND COLOR GUARANTEE — APPENDED LAST ===== */
+/* Ensures DBELL=purple, CREATIONS=orange on ALL devices, ALL states */
+.brand-dbell { color: var(--primary) !important; }
+.brand-creations { color: var(--secondary) !important; }
+/* Mobile: reinforce on every possible navbar state */
+@media (max-width: 991.98px) {
+    .navbar .brand-dbell,
+    .navbar-light .brand-dbell,
+    .navbar-brand .brand-dbell,
+    .brand-logo-text .brand-dbell { color: var(--primary) !important; text-shadow: none !important; }
+    .navbar .brand-creations,
+    .navbar-light .brand-creations,
+    .navbar-brand .brand-creations,
+    .brand-logo-text .brand-creations { color: var(--secondary) !important; text-shadow: none !important; }
+}
+/* Desktop hero override: DBELL appears white on dark hero background */
+@media (min-width: 992px) {
+    .navbar-light:not(.sticky-top) .brand-dbell {
+        color: rgba(255, 255, 255, 0.95) !important;
+        text-shadow: 0 0 20px rgba(98, 34, 204, 0.55) !important;
+    }
+}
