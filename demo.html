@@ -47,6 +47,15 @@
         });
       </script>
       
+    <!-- Google Analytics 4 — Replace G-XXXXXXXXXX with your Measurement ID -->
+    <!-- To find your ID: analytics.google.com → Admin → Data Streams → Web Stream → Measurement ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
 </head>
 
 <body>
