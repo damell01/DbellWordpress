@@ -158,13 +158,14 @@
                 </div>
 
                 <!-- Contact Form -->
-                <div id="panel-contact" class="row justify-content-center" style="display:none!important;">
+                <div id="panel-contact" class="row justify-content-center" style="display:none;">
                     <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.3s">
                         <div class="booking-card p-4 p-lg-5">
                             <form method="post" action="sendEmail.php">
                                 <div class="row g-3">
-                                  
                                     <input type="hidden" name="formStartedAt" class="form-started-at" value="">
+                                    <!-- Honeypot: must stay blank -->
+                                    <input type="text" name="websiteUrl" class="d-none" tabindex="-1" autocomplete="off" value="">
                                     <div class="col-md-6">
                                         <div class="form-floating">
                                             <input type="text" name="contactName" class="form-control" id="name" placeholder="Your Name" required>
@@ -433,8 +434,10 @@
 
     function switchTab(tab) {
         var isContact = (tab === 'contact');
-        document.getElementById('panel-contact').style.setProperty('display', isContact ? '' : 'none', 'important');
-        document.getElementById('panel-booking').style.setProperty('display', isContact ? 'none' : '', 'important');
+        var panelContact = document.getElementById('panel-contact');
+        var panelBooking = document.getElementById('panel-booking');
+        if (panelContact) panelContact.style.display = isContact ? '' : 'none';
+        if (panelBooking) panelBooking.style.display  = isContact ? 'none' : '';
         document.getElementById('tab-contact').classList.toggle('active', isContact);
         document.getElementById('tab-contact').classList.toggle('btn-primary', isContact);
         document.getElementById('tab-booking').classList.toggle('active', !isContact);
