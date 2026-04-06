@@ -433,8 +433,11 @@ if ($_POST) {
         $error['spam'] = 'Spam detected.';
     }
 
-    // Humans typically take at least 3 seconds to submit.
-    if ($formStartedAt <= 0 || ((int) floor(microtime(true) * 1000) - $formStartedAt) < 3000) {
+    // Humans typically take at least 3 seconds to fill out a form.
+    // We only verify the timestamp was set by JS (non-zero, within 2 hours).
+    $nowMs = (int) floor(microtime(true) * 1000);
+    $elapsedMs = $nowMs - $formStartedAt;
+    if ($formStartedAt <= 0 || $elapsedMs < 3000 || $elapsedMs > 7200000) {
         $error['timing'] = 'Submission too fast.';
     }
 
