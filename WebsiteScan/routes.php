@@ -32,7 +32,8 @@ $router->get('/admin',                    'AdminController@dashboard',    ['Admi
 $router->get('/admin/leads',              'AdminController@leads',        ['Admin']);
 $router->get('/admin/leads/{id}',         'AdminController@viewLead',     ['Admin']);
 $router->post('/admin/leads/{id}',        'AdminController@updateLead',   ['Admin', 'Csrf']);
-$router->post('/admin/leads/{id}/note',   'AdminController@addLeadNote',  ['Admin', 'Csrf']);
+$router->post('/admin/leads/{id}/note',         'AdminController@addLeadNote',    ['Admin', 'Csrf']);
+$router->post('/admin/leads/{id}/send-message', 'AdminController@sendLeadMessage', ['Admin', 'Csrf']);
 $router->get('/admin/scans',              'AdminController@scans',        ['Admin']);
 $router->get('/admin/contacts',           'AdminController@contacts',           ['Admin']);
 $router->get('/admin/contacts/{id}',      'AdminController@viewContact',         ['Admin']);
