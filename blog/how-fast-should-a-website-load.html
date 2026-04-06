@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>How Fast Should a Website Load? (And Why It Matters for Leads) | DBell Creations Blog</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="description" content="Website load time directly impacts your bounce rate, Google rankings, and lead conversions. Here's what load time you should target and how to get there.">
+    <meta name="keywords" content="how fast should a website load, website load time, website speed optimization, Core Web Vitals, page speed SEO, improve website speed">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="DBell Creations">
+    <link rel="canonical" href="https://www.dbellcreations.com/blog/how-fast-should-a-website-load.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.dbellcreations.com/blog/how-fast-should-a-website-load.html">
+    <meta property="og:title" content="How Fast Should a Website Load? (And Why It Matters for Leads) | DBell Creations">
+    <meta property="og:description" content="Website load time affects your bounce rate, Google rankings, and conversions. Here's your target load time and how to hit it.">
+    <meta property="og:image" content="../img/DBellCreationsLogo.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How Fast Should a Website Load? (And Why It Matters for Leads)">
+    <meta name="twitter:description" content="A slow website is costing you leads. Here's the target load time, why it matters, and exactly how to get there.">
+
+    <!-- Favicon -->
+    <link href="../img/WebsiteSmallIcon.png" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Jost:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="../lib/animate/animate.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="../css/style.css" rel="stylesheet">
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "How Fast Should a Website Load? (And Why It Matters for Leads)",
+        "description": "Website load time affects bounce rate, Google rankings, and lead conversions. This guide covers target load times, Google Core Web Vitals, common speed problems, and fixes.",
+        "url": "https://www.dbellcreations.com/blog/how-fast-should-a-website-load.html",
+        "author": {
+            "@type": "Organization",
+            "name": "DBell Creations",
+            "url": "https://www.dbellcreations.com"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "DBell Creations",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.dbellcreations.com/img/DBellCreationsLogo.png"
+            }
+        },
+        "datePublished": "2025-07-01",
+        "dateModified": "2025-07-01"
+    }
+    </script>
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Navbar & Hero Start -->
+        <div class="container-xxl position-relative p-0">
+            <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+                <a href="../index.html" class="navbar-brand p-0">
+                    <span class="brand-logo-text"><span class="brand-dbell">DBELL</span><span class="brand-creations">CREATIONS</span></span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav mx-auto py-0">
+                        <a href="../index.html" class="nav-item nav-link">Home</a>
+                        <a href="../about.html" class="nav-item nav-link">About</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Services</a>
+                            <div class="dropdown-menu m-0">
+                                <a href="../webDesign.html" class="dropdown-item">Web Design</a>
+                                <a href="../software.html" class="dropdown-item">Custom Software</a>
+                                <a href="../automations.html" class="dropdown-item">Business Automation</a>
+                                <a href="../marketing.html" class="dropdown-item">Digital Marketing</a>
+                                <a href="../seo.html" class="dropdown-item">SEO Optimization</a>
+                                <a href="../scan.html" class="dropdown-item">Free Website Scanner</a>
+                            </div>
+                        </div>
+                        <a href="../project.html" class="nav-item nav-link">Portfolio</a>
+                        <a href="../frequentlyaskedquestions.html" class="nav-item nav-link">FAQ</a>
+                        <a href="index.html" class="nav-item nav-link active">Blog</a>
+                        <a href="../pricing.html" class="nav-item nav-link">Pricing</a>
+                        <a href="../contact.html" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <a href="../scan.html" class="btn rounded-pill py-2 px-4 ms-3 d-none d-lg-block">Free Audit</a>
+                </div>
+            </nav>
+
+            <div class="container-xxl bg-primary hero-header page-hero">
+                <div class="container py-2 px-lg-5">
+                    <div class="row g-3 py-2">
+                        <div class="col-12 text-center">
+                            <h1 class="text-white animated slideInDown">How Fast Should a Website Load?</h1>
+                            <hr class="bg-white mx-auto mt-0" style="width: 90px;">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb justify-content-center">
+                                    <li class="breadcrumb-item"><a class="text-white" href="../index.html">Home</a></li>
+                                    <li class="breadcrumb-item"><a class="text-white" href="index.html">Blog</a></li>
+                                    <li class="breadcrumb-item text-white active" aria-current="page">Website Speed</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Navbar & Hero End -->
+
+        <!-- Article Content Start -->
+        <div class="container-xxl py-5">
+            <div class="container py-5 px-lg-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 wow fadeInUp" data-wow-delay="0.1s">
+                        <p class="text-muted small mb-4"><i class="fa fa-calendar me-2"></i>Published July 2025 &bull; <i class="fa fa-user me-2 ms-2"></i>DBell Creations</p>
+
+                        <!-- Quick Summary -->
+                        <div class="bg-light border-start border-primary border-4 rounded p-4 mb-5">
+                            <strong>Quick Summary:</strong> Your website should load in under 3 seconds — ideally under 2 seconds on mobile. Every extra second of load time costs you visitors, damages your Google rankings, and reduces conversions. This guide explains Google's Core Web Vitals, the most common causes of slow websites, how to test your speed, and a prioritized list of fixes that make the biggest difference.
+                        </div>
+
+                        <p class="lead text-muted">Here's a number that should concern every business owner: <strong>a one-second delay in page load time reduces conversions by 7%.</strong> A three-second delay loses 53% of mobile visitors before your page even finishes loading. If your website takes 5–6 seconds to load — which is not uncommon for small business sites built on bloated platforms — you're losing more than half your traffic before anyone reads a single word.</p>
+                        <p class="text-muted">Website speed isn't a technical luxury. It's a business-critical metric that directly impacts your bottom line. Let's look at what load time you should actually target, why it matters for both users and Google, and — most importantly — how to get there.</p>
+
+                        <h2 class="h3 mt-5 mb-3">What's the Target Website Load Time?</h2>
+                        <p class="text-muted">The general industry benchmark is <strong>under 3 seconds</strong> for full page load. But to be truly competitive in 2025, you should aim for:</p>
+                        <ul class="text-muted">
+                            <li><strong>Under 2.5 seconds</strong> on desktop</li>
+                            <li><strong>Under 3 seconds</strong> on mobile (4G connection)</li>
+                            <li><strong>Largest Contentful Paint (LCP) under 2.5 seconds</strong> — Google's key speed metric</li>
+                            <li><strong>First Input Delay (FID) under 100ms</strong> — how quickly your page responds to the first user interaction</li>
+                            <li><strong>Cumulative Layout Shift (CLS) under 0.1</strong> — how stable your page is as it loads</li>
+                        </ul>
+                        <p class="text-muted">These last three are Google's <strong>Core Web Vitals</strong> — and they're an official Google ranking factor. Getting a "Good" rating on all three gives you a measurable SEO advantage over competitors who score "Needs Improvement" or "Poor."</p>
+
+                        <h2 class="h3 mt-5 mb-3">How Speed Affects Your Google Rankings</h2>
+                        <p class="text-muted">Google has been using page speed as a ranking factor since 2010 — and in 2021, they made Core Web Vitals an explicit part of their ranking algorithm. This means slow websites don't just frustrate users; they literally rank lower in search results.</p>
+                        <p class="text-muted">Think about the competitive dynamic for a local service business: if you and a competitor both have similar content and backlinks, the faster site will outrank the slower one. For many Alabama businesses, simply improving website speed is enough to move from page 2 to page 1 for key local search terms. That can mean the difference between 50 visitors a month and 500.</p>
+
+                        <h2 class="h3 mt-5 mb-3">How Speed Affects Conversions</h2>
+                        <p class="text-muted">The data on speed and conversions is striking:</p>
+                        <ul class="text-muted">
+                            <li>Pages that load in 1 second convert <strong>3x better</strong> than pages that load in 5 seconds (Portent, 2021)</li>
+                            <li>53% of mobile users abandon sites that take more than <strong>3 seconds</strong> to load (Google)</li>
+                            <li>A 100ms improvement in load time can increase conversion rates by <strong>8%</strong> (Deloitte)</li>
+                            <li>Amazon estimated that every 100ms of load time costs them <strong>1% in sales</strong></li>
+                        </ul>
+                        <p class="text-muted">For a local service business getting 200 visitors per month and converting at 2%, moving from a 5-second load time to a 2-second load time could realistically mean 5 additional leads per month — just from retaining visitors who would have bounced.</p>
+
+                        <!-- Mid-article CTA -->
+                        <div class="bg-light rounded p-4 my-5 border-start border-secondary border-4">
+                            <p class="mb-2"><strong>👉 Get a Free Website Audit</strong> — Find out what's holding your site back.</p>
+                            <a href="../scan.html" class="btn btn-secondary rounded-pill py-2 px-4">Run Free Scan →</a>
+                        </div>
+
+                        <h2 class="h3 mt-5 mb-3">How to Test Your Website Speed</h2>
+                        <p class="text-muted">Before you can fix anything, you need to measure your current performance. These are the best free tools:</p>
+                        <ul class="text-muted">
+                            <li><strong>Google PageSpeed Insights</strong> (pagespeed.web.dev) — gives you your Core Web Vitals scores for both mobile and desktop, plus a prioritized list of specific issues to fix. This is the most important tool because it uses Google's actual measurement.</li>
+                            <li><strong>GTmetrix</strong> (gtmetrix.com) — provides a detailed waterfall chart of every resource your page loads, making it easier to identify exactly what's causing delays.</li>
+                            <li><strong>WebPageTest</strong> (webpagetest.org) — more technical, but excellent for advanced diagnostics and testing from different global locations and connection speeds.</li>
+                        </ul>
+                        <p class="text-muted">You can also use our <a href="../scan.html">free website scanner</a> to get an instant performance snapshot alongside SEO, mobile, and security checks in one report.</p>
+
+                        <h2 class="h3 mt-5 mb-3">The Most Common Causes of Slow Websites</h2>
+                        <p class="text-muted">Most slow small business websites suffer from the same handful of problems:</p>
+
+                        <h3 class="h5 mt-4 mb-2">1. Unoptimized Images</h3>
+                        <p class="text-muted">This is the #1 cause of slow load times. A smartphone photo can be 5–10 MB. Put five of those on a page and you've got a 40 MB site that takes forever to load. Images should be compressed to under 200 KB each and served in modern formats like WebP. Tools like Squoosh, TinyPNG, or an automatic compression plugin handle this automatically.</p>
+
+                        <h3 class="h5 mt-4 mb-2">2. No Browser Caching</h3>
+                        <p class="text-muted">Browser caching tells a visitor's browser to store parts of your site (like logos, stylesheets, and scripts) after their first visit, so subsequent page loads are near-instant. Without caching, every page load downloads everything from scratch. This is a server-level configuration that your hosting provider or developer can enable.</p>
+
+                        <h3 class="h5 mt-4 mb-2">3. Slow Hosting</h3>
+                        <p class="text-muted">Cheap shared hosting puts your website on a server alongside thousands of other sites, competing for the same resources. When that server gets busy, every site on it slows down. Upgrading to a managed WordPress host (like WP Engine, Kinsta, or Cloudways) or a VPS can cut load times in half — often the single biggest improvement you can make.</p>
+
+                        <h3 class="h5 mt-4 mb-2">4. Render-Blocking JavaScript and CSS</h3>
+                        <p class="text-muted">Scripts that must load before your page can display anything delay when visitors first see content. The fix is to defer non-critical JavaScript, inline critical CSS, and load non-essential stylesheets asynchronously. This is a developer-level fix but often dramatically improves LCP scores.</p>
+
+                        <h3 class="h5 mt-4 mb-2">5. Too Many Plugins or Third-Party Scripts</h3>
+                        <p class="text-muted">Every plugin on a WordPress site (and every third-party script like chat widgets, analytics tools, or ad pixels) adds load time. Audit your plugins and scripts — remove anything you don't actively use. Combine scripts where possible and load non-essential elements lazily (after the main content is visible).</p>
+
+                        <h2 class="h3 mt-5 mb-3">How to Fix Your Website Speed: A Prioritized List</h2>
+                        <p class="text-muted">In order of impact:</p>
+                        <ol class="text-muted">
+                            <li><strong>Compress and resize all images</strong> — single highest-impact fix for most sites</li>
+                            <li><strong>Switch to faster hosting</strong> — managed or VPS hosting vs. shared</li>
+                            <li><strong>Enable browser caching</strong> — server configuration or plugin</li>
+                            <li><strong>Use a Content Delivery Network (CDN)</strong> — Cloudflare's free plan works for most small businesses</li>
+                            <li><strong>Defer non-critical JavaScript</strong> — developer fix or speed optimization plugin</li>
+                            <li><strong>Eliminate unused plugins</strong> — audit and remove anything non-essential</li>
+                            <li><strong>Minify HTML, CSS, and JavaScript</strong> — removes unnecessary whitespace and comments</li>
+                            <li><strong>Enable lazy loading for images</strong> — only loads images when they scroll into view</li>
+                        </ol>
+                        <p class="text-muted">Our team handles all of this as part of our <a href="../webDesign.html">website design</a> and optimization services. When we build or redesign a site, performance is baked in from the start — not bolted on as an afterthought. Read our full <a href="website-speed-optimization-guide.html">website speed optimization guide</a> for a more technical deep-dive.</p>
+
+                        <h2 class="h3 mt-5 mb-3">The Bottom Line on Load Time</h2>
+                        <p class="text-muted">If your website loads in more than 3 seconds, you are actively losing visitors, leads, and rankings every single day. The good news is that most speed problems are fixable without rebuilding your entire site — and the ROI on speed optimization is immediate and measurable.</p>
+                        <p class="text-muted">Start by running a free test on Google PageSpeed Insights or our <a href="../scan.html">free website scanner</a>. If your scores are poor, you now have a prioritized list of exactly what to fix. Need help getting there? Our team specializes in performance optimization for Alabama small businesses.</p>
+
+                        <!-- End CTA -->
+                        <div class="bg-light rounded p-4 mt-5">
+                            <h2 class="h4 mb-3">Ready to Grow Your Business?</h2>
+                            <p class="text-muted mb-3">We build and optimize fast websites that rank and convert. See our pricing or get in touch today.</p>
+                            <a href="../pricing.html" class="btn btn-primary rounded-pill py-2 px-4 me-3">View Our Pricing →</a>
+                            <a href="../contact.html" class="btn btn-outline-secondary rounded-pill py-2 px-4">Contact Us →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Article Content End -->
+
+        <!-- Related Articles Start -->
+        <div class="container-xxl py-5 bg-light">
+            <div class="container py-5 px-lg-5">
+                <div class="wow fadeInUp text-center mb-4" data-wow-delay="0.1s">
+                    <h2 class="h4 mb-3">Related Articles</h2>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="service-item rounded p-4 h-100">
+                            <h3 class="h6 text-secondary mb-2">Website Performance</h3>
+                            <h4 class="h5 mb-3"><a href="website-speed-optimization-guide.html" class="text-dark text-decoration-none">Website Speed Optimization Guide</a></h4>
+                            <p class="text-muted small">A deep technical dive into every technique for making your website faster.</p>
+                            <a href="website-speed-optimization-guide.html" class="btn btn-outline-primary rounded-pill btn-sm mt-2">Read More</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="service-item rounded p-4 h-100">
+                            <h3 class="h6 text-secondary mb-2">Lead Generation</h3>
+                            <h4 class="h5 mb-3"><a href="how-to-get-more-leads-from-website.html" class="text-dark text-decoration-none">How to Get More Leads From Your Website: 10 Proven Strategies</a></h4>
+                            <p class="text-muted small">10 conversion strategies to turn your website traffic into paying customers.</p>
+                            <a href="how-to-get-more-leads-from-website.html" class="btn btn-outline-primary rounded-pill btn-sm mt-2">Read More</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="service-item rounded p-4 h-100">
+                            <h3 class="h6 text-secondary mb-2">Web Design</h3>
+                            <h4 class="h5 mb-3"><a href="website-redesign-checklist.html" class="text-dark text-decoration-none">Website Redesign Checklist: 15 Things to Do Before You Relaunch</a></h4>
+                            <p class="text-muted small">Don't lose rankings or leads during your redesign — use this checklist first.</p>
+                            <a href="website-redesign-checklist.html" class="btn btn-outline-primary rounded-pill btn-sm mt-2">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Related Articles End -->
+
+        <!-- Footer Start -->
+        <footer>
+            <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">
+                <div class="container py-5 px-lg-5">
+                    <div class="row g-5">
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">DBell Creations<span></span></p>
+                            <p class="text-white-50 small mb-3">Full-service digital agency in Fairhope, AL &mdash; web design, software, automation, SEO, and marketing.</p>
+                            <p><i class="fa fa-map-marker-alt me-3"></i>Fairhope, AL</p>
+                            <p><i class="fa fa-phone-alt me-3"></i><a id="number" href="tel:251-406-2292">251-406-2292</a></p>
+                            <p><i class="fa fa-envelope me-3"></i><a id="number" href="mailto:dbellcreations@gmail.com">Dbellcreations@gmail.com</a></p>
+                            <div class="d-flex pt-2">
+                                <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/profile.php?id=100090989871594&mibextid=LQQJ4d" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-light btn-social" href="https://www.instagram.com/dbellcreations/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Services<span></span></p>
+                            <a class="btn btn-link" href="../webDesign.html">Web Design</a>
+                            <a class="btn btn-link" href="../software.html">Custom Software</a>
+                            <a class="btn btn-link" href="../automations.html">Business Automation</a>
+                            <a class="btn btn-link" href="../marketing.html">Digital Marketing</a>
+                            <a class="btn btn-link" href="../seo.html">SEO Optimization</a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Quick Links<span></span></p>
+                            <a class="btn btn-link" href="../about.html">About Us</a>
+                            <a class="btn btn-link" href="../project.html">Portfolio</a>
+                            <a class="btn btn-link" href="../frequentlyaskedquestions.html">FAQs</a>
+                            <a class="btn btn-link" href="../contact.html">Contact Us</a>
+                            <a class="btn btn-link" href="index.html">Blog</a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Local SEO Pages<span></span></p>
+                            <a class="btn btn-link" href="../web-design-fairhope-al.html">Web Design Fairhope AL</a>
+                            <a class="btn btn-link" href="../seo-fairhope-al.html">SEO Fairhope AL</a>
+                            <a class="btn btn-link" href="../custom-software-development-alabama.html">Custom Software Alabama</a>
+                            <a class="btn btn-link" href="../automation-services-alabama.html">Automation Alabama</a>
+                            <a class="btn btn-link" href="../website-redesign-alabama.html">Website Redesign Alabama</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="container px-lg-5">
+                    <div class="copyright">
+                        <div class="row">
+                            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                                &copy; 2025 <a class="border-bottom" href="../index.html">DBell Creations</a>. All Rights Reserved.
+                            </div>
+                            <div class="col-md-6 text-center text-md-end">
+                                <div class="footer-menu">
+                                    <a href="../index.html">Home</a>
+                                    <a href="../about.html">About</a>
+                                    <a href="../contact.html">Contact</a>
+                                    <a href="../frequentlyaskedquestions.html">FAQs</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-secondary btn-lg-square back-to-top" aria-label="Back to top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script defer src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="../lib/wow/wow.min.js"></script>
+    <script defer src="../lib/easing/easing.min.js"></script>
+    <script defer src="../lib/waypoints/waypoints.min.js"></script>
+    <script defer src="../lib/counterup/counterup.min.js"></script>
+    <script defer src="../lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script defer src="../js/main.js"></script>
+</body>
+</html>
