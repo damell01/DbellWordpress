@@ -68,6 +68,31 @@ class CsvExporter {
         return $csv;
     }
 
+    public function exportContacts(array $contacts): string {
+        $headers = ['ID', 'Name', 'Email', 'Phone', 'Company', 'Website URL', 'Service Type', 'Source', 'Status', 'Message', 'Created At'];
+        $output  = fopen('php://temp', 'r+');
+        fputcsv($output, $headers);
+        foreach ($contacts as $c) {
+            fputcsv($output, [
+                $c['id'],
+                $c['name'] ?? '',
+                $c['email'] ?? '',
+                $c['phone'] ?? '',
+                $c['company'] ?? '',
+                $c['website_url'] ?? '',
+                $c['service_type'] ?? '',
+                $c['source'] ?? '',
+                $c['status'] ?? 'new',
+                $c['message'] ?? '',
+                $c['created_at'] ?? '',
+            ]);
+        }
+        rewind($output);
+        $csv = stream_get_contents($output);
+        fclose($output);
+        return $csv;
+    }
+
     public function sendDownload(string $csv, string $filename): void {
         header('Content-Type: text/csv; charset=UTF-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');

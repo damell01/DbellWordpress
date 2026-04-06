@@ -343,6 +343,76 @@ function appendQueryValue($path, $key, $value) {
     return $path . $separator . rawurlencode($key) . '=' . rawurlencode($value);
 }
 
+/**
+ * Save a contact form submission to the WebsiteScan CRM database.
+ * Silently fails if the DB is unavailable so email delivery is never blocked.
+ */
+function saveToCrm(string $name, string $email, string $phone, string $contactMessage, string $subject): void {
+    try {
+        $dbConfigFile = __DIR__ . '/WebsiteScan/config/database.php';
+        if (!file_exists($dbConfigFile)) {
+            return;
+        }
+        $dbConfig = require $dbConfigFile;
+        if (empty($dbConfig['database'])) {
+            return;
+        }
+
+        $dsn = sprintf(
+            'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
+            $dbConfig['host']     ?? '127.0.0.1',
+            $dbConfig['port']     ?? 3306,
+            $dbConfig['database']
+        );
+        $pdo = new PDO($dsn, $dbConfig['username'] ?? 'root', $dbConfig['password'] ?? '', [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
+
+        $now = date('Y-m-d H:i:s');
+
+        // Find or create a lead record
+        $leadId = null;
+        if ($email !== '') {
+            $stmt = $pdo->prepare("SELECT id FROM leads WHERE email = ? LIMIT 1");
+            $stmt->execute([$email]);
+            $existing = $stmt->fetch();
+            if ($existing) {
+                $leadId = (int) $existing['id'];
+                $pdo->prepare("UPDATE leads SET contact_name = ?, phone = ? WHERE id = ?")
+                    ->execute([$name, $phone ?: null, $leadId]);
+            }
+        }
+
+        if ($leadId === null) {
+            $stmt = $pdo->prepare(
+                "INSERT INTO leads (contact_name, email, phone, notes, source, status, created_at) VALUES (?, ?, ?, ?, 'contact_form', 'new', ?)"
+            );
+            $stmt->execute([$name, $email, $phone ?: null, $contactMessage, $now]);
+            $leadId = (int) $pdo->lastInsertId();
+        }
+
+        // Check if contact_requests table has the new columns
+        $hasSource = false;
+        $hasStatus = false;
+        $colStmt = $pdo->query("SHOW COLUMNS FROM `contact_requests`");
+        foreach ($colStmt->fetchAll(PDO::FETCH_ASSOC) as $col) {
+            if ($col['Field'] === 'source') $hasSource = true;
+            if ($col['Field'] === 'status') $hasStatus = true;
+        }
+
+        if ($hasSource && $hasStatus) {
+            $pdo->prepare("INSERT INTO contact_requests (lead_id, name, email, phone, message, service_type, source, status, created_at) VALUES (?, ?, ?, ?, ?, ?, 'contact_form', 'new', ?)")
+                ->execute([$leadId, $name, $email, $phone ?: null, $contactMessage, $subject, $now]);
+        } else {
+            $pdo->prepare("INSERT INTO contact_requests (lead_id, name, email, phone, message, service_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                ->execute([$leadId, $name, $email, $phone ?: null, $contactMessage, $subject, $now]);
+        }
+    } catch (Throwable $e) {
+        error_log('sendEmail.php CRM save error: ' . $e->getMessage());
+    }
+}
+
 if ($_POST) {
     $error = array();
 
@@ -421,6 +491,9 @@ if ($_POST) {
     }
 
     if (empty($error)) {
+        // Always save to CRM regardless of email outcome
+        saveToCrm($name, $email, $phone, $contact_message, $subject);
+
         $mail = sendContactEmail($siteOwnersEmail, $subject, $message, $textMessage, $replyToEmail, $name);
 
         if ($mail) {

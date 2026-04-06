@@ -34,12 +34,15 @@ $router->get('/admin/leads/{id}',         'AdminController@viewLead',     ['Admi
 $router->post('/admin/leads/{id}',        'AdminController@updateLead',   ['Admin', 'Csrf']);
 $router->post('/admin/leads/{id}/note',   'AdminController@addLeadNote',  ['Admin', 'Csrf']);
 $router->get('/admin/scans',              'AdminController@scans',        ['Admin']);
-$router->get('/admin/contacts',           'AdminController@contacts',     ['Admin']);
+$router->get('/admin/contacts',           'AdminController@contacts',           ['Admin']);
+$router->get('/admin/contacts/{id}',      'AdminController@viewContact',         ['Admin']);
+$router->post('/admin/contacts/{id}',     'AdminController@updateContactStatus', ['Admin', 'Csrf']);
 $router->get('/admin/settings',           'AdminController@settings',     ['Admin']);
 $router->post('/admin/settings',          'AdminController@settings',     ['Admin', 'Csrf']);
 $router->post('/admin/settings/test-email','AdminController@sendTestEmail',['Admin', 'Csrf']);
 $router->get('/admin/schema-upgrade',     'AdminController@schemaUpgrade',['Admin']);
 $router->get('/admin/export/leads',       'AdminController@exportLeads',  ['Admin']);
 $router->get('/admin/export/scans',       'AdminController@exportScans',  ['Admin']);
+$router->get('/admin/export/contacts',    'AdminController@exportContacts',['Admin']);
 
 return $router;

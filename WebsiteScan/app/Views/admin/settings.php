@@ -285,19 +285,32 @@
     </div>
 
     <div class="col-lg-4">
-        <div class="admin-card">
+        <!-- Database Tools - Prominent Panel -->
+        <div class="admin-card mb-4" style="border:2px solid #2563eb22;">
+            <div class="admin-card-header" style="background:linear-gradient(135deg,#2563eb18,#06b6d418);">
+                <h6 class="fw-semibold mb-0"><i class="bi bi-database-gear me-2 text-primary"></i>Database Tools</h6>
+            </div>
+            <div class="admin-card-body">
+                <p class="small text-muted mb-3">Run the schema upgrade to apply any new database table changes or columns added in updates.</p>
+                <a href="<?= url('admin/schema-upgrade') ?>" class="btn btn-primary w-100 mb-2"
+                   onclick="return confirm('Run schema upgrade now? This will apply any pending database changes.');">
+                    <i class="bi bi-database-gear me-2"></i>Run DB Schema Upgrade
+                </a>
+                <p class="small text-muted mb-0">
+                    <i class="bi bi-info-circle me-1"></i>Safe to run multiple times — only applies missing changes.
+                </p>
+            </div>
+        </div>
+
+        <div class="admin-card mb-4">
             <div class="admin-card-header"><h6 class="fw-semibold mb-0">Quick Links</h6></div>
             <div class="admin-card-body">
                 <ul class="list-unstyled mb-0">
                     <li class="mb-2"><a href="<?= url('/') ?>" target="_blank" class="text-decoration-none small"><i class="bi bi-box-arrow-up-right me-2"></i>View Public Site</a></li>
                     <li class="mb-2"><a href="<?= url('admin/export/leads') ?>" class="text-decoration-none small"><i class="bi bi-download me-2"></i>Export All Leads</a></li>
-                    <li><a href="<?= url('admin/export/scans') ?>" class="text-decoration-none small"><i class="bi bi-download me-2"></i>Export All Scans</a></li>
+                    <li class="mb-2"><a href="<?= url('admin/export/scans') ?>" class="text-decoration-none small"><i class="bi bi-download me-2"></i>Export All Scans</a></li>
+                    <li><a href="<?= url('admin/export/contacts') ?>" class="text-decoration-none small"><i class="bi bi-download me-2"></i>Export All Contacts</a></li>
                 </ul>
-                <hr>
-                <p class="small text-muted mb-2">Browser schema upgrade link:</p>
-                <div class="small mb-3">
-                    <a href="<?= url('admin/schema-upgrade') ?>" class="text-decoration-none"><?= e(url('admin/schema-upgrade')) ?></a>
-                </div>
                 <hr>
                 <p class="small text-muted mb-2">If you prefer using environment variables, add these keys to the project root <code>.env</code> file:</p>
                 <pre class="small bg-light border rounded p-3 mb-0"><code>GOOGLE_MAPS_API_KEY=your_google_maps_key

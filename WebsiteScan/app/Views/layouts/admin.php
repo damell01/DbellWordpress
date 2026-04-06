@@ -60,6 +60,11 @@
                         <i class="bi bi-download"></i> Export Scans
                     </a>
                 </li>
+                <li>
+                    <a href="<?= url('admin/export/contacts') ?>" class="admin-nav-link">
+                        <i class="bi bi-download"></i> Export Contacts
+                    </a>
+                </li>
 
                 <li class="nav-divider"></li>
                 <li>

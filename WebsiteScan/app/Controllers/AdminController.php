@@ -143,10 +143,73 @@ class AdminController extends BaseController {
     }
 
     public function contacts(Request $request): void {
-        $page  = max(1, (int)$request->get('page', 1));
+        $page   = max(1, (int)$request->get('page', 1));
+        $search = $request->get('search', '');
+        $status = $request->get('status', '');
+        $model  = new ContactRequest();
+
+        if ($search) {
+            $data = $model->search($search, $page, 20, $status);
+        } elseif ($status) {
+            $data = $model->filterByStatus($status, $page);
+        } else {
+            $data = $model->paginate($page, 20, '', [], 'created_at DESC');
+        }
+
+        $statusCounts = $model->countByStatus();
+        $this->adminView('contacts', [
+            'title'         => 'Contact Requests',
+            'contactsData'  => $data,
+            'search'        => $search,
+            'status'        => $status,
+            'statusCounts'  => $statusCounts,
+        ]);
+    }
+
+    public function viewContact(Request $request, array $params): void {
+        $id = (int)($params['id'] ?? 0);
         $model = new ContactRequest();
-        $data  = $model->paginate($page, 20);
-        $this->adminView('contacts', ['title' => 'Contact Requests', 'contactsData' => $data]);
+        $contact = $model->withLead($id);
+        if (!$contact) abort(404);
+
+        // Mark as read automatically when admin views it
+        if (($contact['status'] ?? 'new') === 'new') {
+            $model->updateStatus($id, 'read');
+            $contact['status'] = 'read';
+        }
+
+        $this->adminView('contact-detail', [
+            'title'   => 'Contact: ' . ($contact['name'] ?? 'Details'),
+            'contact' => $contact,
+        ]);
+    }
+
+    public function updateContactStatus(Request $request, array $params): void {
+        $id     = (int)($params['id'] ?? 0);
+        $model  = new ContactRequest();
+        $allowed = ['new', 'read', 'replied', 'archived'];
+        $status  = in_array($request->post('status'), $allowed) ? $request->post('status') : 'read';
+        $model->updateStatus($id, $status);
+
+        $note = trim((string) $request->post('notes', ''));
+        if ($note !== '') {
+            $model->addNote($id, $note);
+        }
+
+        Session::setFlash('success', 'Contact updated.');
+        $this->redirect("admin/contacts/{$id}");
+    }
+
+    public function exportContacts(Request $request): void {
+        $model    = new ContactRequest();
+        $contacts = $model->exportAll([
+            'status' => $request->get('status', ''),
+            'from'   => $request->get('from', ''),
+            'to'     => $request->get('to', ''),
+        ]);
+        $exporter = new CsvExporter();
+        $csv      = $exporter->exportContacts($contacts);
+        $exporter->sendDownload($csv, 'contacts-' . date('Y-m-d') . '.csv');
     }
 
     public function settings(Request $request): void {

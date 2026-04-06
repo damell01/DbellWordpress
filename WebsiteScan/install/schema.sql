@@ -126,10 +126,15 @@ CREATE TABLE IF NOT EXISTS `contact_requests` (
     `company`         VARCHAR(200) DEFAULT NULL,
     `message`         TEXT DEFAULT NULL,
     `service_type`    VARCHAR(100) DEFAULT NULL,
+    `source`          VARCHAR(50) DEFAULT 'website',
+    `website_url`     VARCHAR(500) DEFAULT NULL,
+    `status`          ENUM('new','read','replied','archived') NOT NULL DEFAULT 'new',
+    `notes`           TEXT DEFAULT NULL,
     `created_at`      DATETIME NOT NULL,
     PRIMARY KEY (`id`),
     KEY `idx_cr_email` (`email`),
-    KEY `idx_cr_created` (`created_at`)
+    KEY `idx_cr_created` (`created_at`),
+    KEY `idx_cr_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ── Lead Notes ────────────────────────────────────────────────────────────────

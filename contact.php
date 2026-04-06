@@ -81,8 +81,8 @@ try {
         }
 
         // Also save contact request
-        $pdo->prepare("INSERT INTO contact_requests (lead_id, name, email, phone, company, message, service_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-            ->execute([$leadId ?: null, $name, $email, $phone ?: null, $businessName ?: null, $message, $serviceInterest ?: null, $now]);
+        $pdo->prepare("INSERT INTO contact_requests (lead_id, name, email, phone, company, message, service_type, source, website_url, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'contact_form', ?, 'new', ?)")
+            ->execute([$leadId ?: null, $name, $email, $phone ?: null, $businessName ?: null, $message, $serviceInterest ?: null, $website ?: null, $now]);
     }
 } catch (\Throwable $e) {
     // DB save failed — log but don't block the form submission
