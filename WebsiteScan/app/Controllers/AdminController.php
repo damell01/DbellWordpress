@@ -11,6 +11,25 @@ class AdminController extends BaseController {
     public function __construct() {
         parent::__construct();
         $this->db = Database::getInstance();
+        $this->autoUpgradeSchema();
+    }
+
+    /**
+     * Run the schema upgrade automatically once per session so that new
+     * database columns (e.g. leads.follow_up_stage) are always present
+     * without requiring the admin to manually visit /admin/schema-upgrade.
+     */
+    private function autoUpgradeSchema(): void {
+        if (Session::get('_schema_checked')) {
+            return;
+        }
+        try {
+            (new UpgradeService($this->db))->run(false);
+        } catch (\Throwable $e) {
+            // Non-fatal: schema upgrade failure must not prevent admin access
+            app_log('WARN', 'Auto schema upgrade failed: ' . $e->getMessage());
+        }
+        Session::set('_schema_checked', true);
     }
 
     public function dashboard(Request $request): void {
