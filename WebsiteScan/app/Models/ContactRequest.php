@@ -37,14 +37,36 @@ class ContactRequest extends Model {
     }
 
     public function withLead(int $id): ?array {
-        return $this->db->fetch(
-            "SELECT cr.*, l.status AS lead_status, l.business_name, l.website_url AS lead_website,
-                    l.follow_up_stage, l.service_interest, l.source AS lead_source
-             FROM `{$this->table}` cr
-             LEFT JOIN leads l ON l.id = cr.lead_id
-             WHERE cr.id = ?",
-            [$id]
-        );
+        try {
+            $row = $this->db->fetch(
+                "SELECT cr.*, l.status AS lead_status, l.business_name, l.website_url AS lead_website,
+                        l.follow_up_stage, l.service_interest, l.source AS lead_source
+                 FROM `{$this->table}` cr
+                 LEFT JOIN leads l ON l.id = cr.lead_id
+                 WHERE cr.id = ?",
+                [$id]
+            );
+        } catch (\PDOException $e) {
+            // Fallback for databases that haven't run the schema upgrade yet
+            $row = $this->db->fetch(
+                "SELECT cr.*, l.status AS lead_status, l.business_name, l.website_url AS lead_website
+                 FROM `{$this->table}` cr
+                 LEFT JOIN leads l ON l.id = cr.lead_id
+                 WHERE cr.id = ?",
+                [$id]
+            );
+        }
+
+        if ($row !== null) {
+            // Ensure follow-up fields always exist with safe defaults
+            $row += [
+                'follow_up_stage'  => 0,
+                'service_interest' => null,
+                'lead_source'      => null,
+            ];
+        }
+
+        return $row;
     }
 
     public function withAuditInfo(int $limit = 50): array {
