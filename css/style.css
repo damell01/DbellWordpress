@@ -316,14 +316,14 @@ p { line-height: 1.75; }
     .navbar-light .navbar-brand:hover .brand-dbell,
     .navbar-light .navbar-brand:focus .brand-dbell,
     .sticky-top .navbar-brand .brand-dbell {
-        color: var(--primary) !important;
+        color: #6222CC !important;
         text-shadow: none !important;
     }
     .navbar-light .navbar-brand .brand-creations,
     .navbar-light .navbar-brand:hover .brand-creations,
     .navbar-light .navbar-brand:focus .brand-creations,
     .sticky-top .navbar-brand .brand-creations {
-        color: var(--secondary) !important;
+        color: #FBA504 !important;
         text-shadow: none !important;
     }
 
@@ -2913,10 +2913,10 @@ a.navbar-brand:hover .brand-creations {
    on ALL viewports and states
 ======================================== */
 .brand-dbell {
-    color: var(--primary) !important;
+    color: #6222CC !important;
 }
 .brand-creations {
-    color: var(--secondary) !important;
+    color: #FBA504 !important;
 }
 /* On the hero (non-sticky desktop), DBELL becomes white for readability */
 @media (min-width: 992px) {
@@ -2925,8 +2925,9 @@ a.navbar-brand:hover .brand-creations {
         text-shadow: 0 0 20px rgba(98, 34, 204, 0.55) !important;
     }
     .sticky-top .brand-dbell {
-        color: var(--primary) !important;
+        color: #6222CC !important;
         text-shadow: none !important;
     }
 }
+
 
