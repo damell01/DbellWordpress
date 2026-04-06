@@ -76,6 +76,37 @@ class UpgradeService {
             }
         }
 
+        // ── contact_requests enhancements ────────────────────────────────────
+        if ($this->tableExists($pdo, 'contact_requests')) {
+            if (!$this->columnExists($pdo, 'contact_requests', 'source')) {
+                $actions[] = [
+                    'description' => 'Add contact_requests.source column',
+                    'sql' => "ALTER TABLE `contact_requests` ADD COLUMN `source` VARCHAR(50) DEFAULT 'website'",
+                ];
+            }
+
+            if (!$this->columnExists($pdo, 'contact_requests', 'website_url')) {
+                $actions[] = [
+                    'description' => 'Add contact_requests.website_url column',
+                    'sql' => "ALTER TABLE `contact_requests` ADD COLUMN `website_url` VARCHAR(500) DEFAULT NULL",
+                ];
+            }
+
+            if (!$this->columnExists($pdo, 'contact_requests', 'status')) {
+                $actions[] = [
+                    'description' => 'Add contact_requests.status column',
+                    'sql' => "ALTER TABLE `contact_requests` ADD COLUMN `status` ENUM('new','read','replied','archived') NOT NULL DEFAULT 'new'",
+                ];
+            }
+
+            if (!$this->columnExists($pdo, 'contact_requests', 'notes')) {
+                $actions[] = [
+                    'description' => 'Add contact_requests.notes column (admin internal notes)',
+                    'sql' => "ALTER TABLE `contact_requests` ADD COLUMN `notes` TEXT DEFAULT NULL",
+                ];
+            }
+        }
+
         return $actions;
     }
 

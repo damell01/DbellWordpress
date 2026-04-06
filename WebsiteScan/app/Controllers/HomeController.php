@@ -56,6 +56,9 @@ class HomeController extends BaseController {
             'company'      => $request->post('company', ''),
             'message'      => $request->post('message'),
             'service_type' => $request->post('service_type', ''),
+            'source'       => 'websitescan',
+            'website_url'  => $request->post('website_url', ''),
+            'status'       => 'new',
             'created_at'   => date('Y-m-d H:i:s'),
         ]);
 
