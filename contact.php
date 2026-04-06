@@ -73,7 +73,8 @@ try {
             $pdo->prepare("UPDATE leads SET contact_name = ?, phone = ?, business_name = ?, website_url = ?, service_interest = ?, source_page = ?, notes = ? WHERE id = ?")
                 ->execute([$name, $phone ?: null, $businessName ?: null, $website ?: null, $serviceInterest ?: null, $sourcePage, $message, $leadId]);
         } else {
-            // Insert new lead
+            // Insert new lead — 9 bound params: contact_name, email, phone, business_name,
+            // website_url, notes, service_interest, source_page, created_at
             $stmt = $pdo->prepare("INSERT INTO leads (contact_name, email, phone, business_name, website_url, notes, source, service_interest, source_page, status, follow_up_stage, next_follow_up_at, created_at) VALUES (?, ?, ?, ?, ?, ?, 'contact_form', ?, ?, 'new', 0, DATE_ADD(NOW(), INTERVAL 1 DAY), ?)");
             $stmt->execute([$name, $email, $phone ?: null, $businessName ?: null, $website ?: null, $message, $serviceInterest ?: null, $sourcePage, $now]);
             $leadId = (int)$pdo->lastInsertId();

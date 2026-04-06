@@ -64,7 +64,7 @@ foreach ($leads as $lead) {
     $dupCheck->execute([$lead['id'], $nextStage]);
     if ($dupCheck->fetch()) {
         // Already sent this stage — advance stage silently
-        $pdo->prepare("UPDATE leads SET follow_up_stage = ?, next_follow_up_at = ? WHERE id = ?")
+        $pdo->prepare("UPDATE leads SET follow_up_stage = ?, last_contacted_at = NOW(), next_follow_up_at = ? WHERE id = ?")
             ->execute([$nextStage, getNextFollowUpDate($nextStage), $lead['id']]);
         continue;
     }
@@ -102,6 +102,8 @@ foreach ($leads as $lead) {
 echo "Done. Sent: {$sent}, Failed: {$failed}\n";
 
 function getNextFollowUpDate(int $stage): ?string {
+    // Intervals (days) between stages: stage 1→2 waits 1 day, 2→3 waits 3 days, 3→4 waits 5 days
+    // Cumulative from first contact: stage 1 = day 0, stage 2 = day 1, stage 3 = day 4, stage 4 = day 9
     $daysMap = [1 => 1, 2 => 3, 3 => 5, 4 => null];
     $days = $daysMap[$stage] ?? null;
     if ($days === null) return null;
