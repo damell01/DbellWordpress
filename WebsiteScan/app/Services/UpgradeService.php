@@ -107,6 +107,86 @@ class UpgradeService {
             }
         }
 
+        // ── lead_notes table ─────────────────────────────────────────────────
+        if (!$this->tableExists($pdo, 'lead_notes')) {
+            $actions[] = [
+                'description' => 'Create lead_notes table',
+                'sql' => "CREATE TABLE `lead_notes` (
+                    `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                    `lead_id`    INT UNSIGNED NOT NULL,
+                    `user_id`    INT UNSIGNED DEFAULT NULL,
+                    `note`       TEXT NOT NULL,
+                    `created_at` DATETIME NOT NULL,
+                    PRIMARY KEY (`id`),
+                    KEY `idx_ln_lead` (`lead_id`),
+                    CONSTRAINT `fk_ln_lead` FOREIGN KEY (`lead_id`) REFERENCES `leads` (`id`) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            ];
+        }
+
+        // ── email_log table ───────────────────────────────────────────────────
+        if (!$this->tableExists($pdo, 'email_log')) {
+            $actions[] = [
+                'description' => 'Create email_log table',
+                'sql' => "CREATE TABLE `email_log` (
+                    `id`              INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                    `lead_id`         INT UNSIGNED NOT NULL,
+                    `email_stage`     TINYINT UNSIGNED NOT NULL DEFAULT 1,
+                    `recipient_email` VARCHAR(255) NOT NULL,
+                    `subject`         VARCHAR(500) NOT NULL,
+                    `body`            TEXT DEFAULT NULL,
+                    `status`          ENUM('sent','failed') NOT NULL DEFAULT 'sent',
+                    `sent_at`         DATETIME NOT NULL,
+                    PRIMARY KEY (`id`),
+                    KEY `idx_el_lead`  (`lead_id`),
+                    KEY `idx_el_stage` (`email_stage`),
+                    KEY `idx_el_sent`  (`sent_at`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            ];
+        } else {
+            // Add body column to existing email_log tables that predate this column
+            if (!$this->columnExists($pdo, 'email_log', 'body')) {
+                $actions[] = [
+                    'description' => 'Add email_log.body column',
+                    'sql' => "ALTER TABLE `email_log` ADD COLUMN `body` TEXT DEFAULT NULL AFTER `subject`",
+                ];
+            }
+        }
+
+        // ── leads follow-up columns ───────────────────────────────────────────
+        if ($this->tableExists($pdo, 'leads')) {
+            if (!$this->columnExists($pdo, 'leads', 'service_interest')) {
+                $actions[] = [
+                    'description' => 'Add leads.service_interest column',
+                    'sql' => "ALTER TABLE `leads` ADD COLUMN `service_interest` VARCHAR(50) DEFAULT NULL AFTER `status`",
+                ];
+            }
+            if (!$this->columnExists($pdo, 'leads', 'source_page')) {
+                $actions[] = [
+                    'description' => 'Add leads.source_page column',
+                    'sql' => "ALTER TABLE `leads` ADD COLUMN `source_page` VARCHAR(200) DEFAULT NULL AFTER `service_interest`",
+                ];
+            }
+            if (!$this->columnExists($pdo, 'leads', 'follow_up_stage')) {
+                $actions[] = [
+                    'description' => 'Add leads.follow_up_stage column',
+                    'sql' => "ALTER TABLE `leads` ADD COLUMN `follow_up_stage` TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER `source_page`",
+                ];
+            }
+            if (!$this->columnExists($pdo, 'leads', 'last_contacted_at')) {
+                $actions[] = [
+                    'description' => 'Add leads.last_contacted_at column',
+                    'sql' => "ALTER TABLE `leads` ADD COLUMN `last_contacted_at` DATETIME DEFAULT NULL AFTER `follow_up_stage`",
+                ];
+            }
+            if (!$this->columnExists($pdo, 'leads', 'next_follow_up_at')) {
+                $actions[] = [
+                    'description' => 'Add leads.next_follow_up_at column',
+                    'sql' => "ALTER TABLE `leads` ADD COLUMN `next_follow_up_at` DATETIME DEFAULT NULL AFTER `last_contacted_at`",
+                ];
+            }
+        }
+
         return $actions;
     }
 
