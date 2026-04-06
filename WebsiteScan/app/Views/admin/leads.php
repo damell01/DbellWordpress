@@ -14,6 +14,13 @@
             <option value="closed_won" <?= ($status ?? '') === 'closed_won' ? 'selected' : '' ?>>Closed Won</option>
             <option value="closed_lost" <?= ($status ?? '') === 'closed_lost' ? 'selected' : '' ?>>Closed Lost</option>
         </select>
+        <select name="service" class="form-select form-select-sm" style="width:160px">
+            <option value="">All Services</option>
+            <option value="web" <?= ($service ?? '') === 'web' ? 'selected' : '' ?>>Web Design</option>
+            <option value="software" <?= ($service ?? '') === 'software' ? 'selected' : '' ?>>Software</option>
+            <option value="seo" <?= ($service ?? '') === 'seo' ? 'selected' : '' ?>>SEO</option>
+            <option value="automation" <?= ($service ?? '') === 'automation' ? 'selected' : '' ?>>Automation</option>
+        </select>
         <button type="submit" class="btn btn-primary btn-sm px-3">Filter</button>
         <?php if (!empty($search) || !empty($status)): ?>
         <a href="<?= url('admin/leads') ?>" class="btn btn-outline-secondary btn-sm">Clear</a>
@@ -46,6 +53,7 @@
                         <th>Website</th>
                         <th>Source</th>
                         <th>Status</th>
+                        <th>Follow-Up</th>
                         <th>Date</th>
                         <th style="width:60px;"></th>
                     </tr>
@@ -102,6 +110,13 @@
                             ?>
                             <span class="badge bg-<?= $sc['bg'] ?>" style="font-size:.75rem;"><?= e($sc['label']) ?></span>
                         </td>
+                        <td>
+                            <?php $fStage = (int)($lead['follow_up_stage'] ?? 0); ?>
+                            <span class="text-muted small">Stage <?= $fStage ?>/4</span>
+                            <?php if (!empty($lead['next_follow_up_at']) && $fStage < 4): ?>
+                            <br><span class="text-muted" style="font-size:.7rem;"><?= e(date('M j', strtotime($lead['next_follow_up_at']))) ?></span>
+                            <?php endif; ?>
+                        </td>
                         <td class="text-muted" style="font-size:.775rem;white-space:nowrap;"><?= timeAgo($lead['created_at']) ?></td>
                         <td>
                             <a href="<?= url('admin/leads/' . $lead['id']) ?>" class="btn-action" title="View lead">
@@ -112,7 +127,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($leadsData['items'])): ?>
                     <tr>
-                        <td colspan="8" class="text-center py-5">
+                        <td colspan="9" class="text-center py-5">
                             <i class="bi bi-people text-muted" style="font-size:2rem;"></i>
                             <p class="text-muted mt-2 mb-0">No leads found.
                                 <?php if (!empty($search) || !empty($status)): ?>

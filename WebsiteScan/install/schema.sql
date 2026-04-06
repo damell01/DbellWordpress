@@ -208,3 +208,26 @@ CREATE TABLE IF NOT EXISTS `audit_issue_feedback` (
     KEY `idx_aif_issue` (`audit_issue_id`),
     KEY `idx_aif_type` (`feedback_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ── Lead Follow-Up Fields ─────────────────────────────────────────────────────
+ALTER TABLE `leads`
+    ADD COLUMN IF NOT EXISTS `service_interest` VARCHAR(50) DEFAULT NULL AFTER `status`,
+    ADD COLUMN IF NOT EXISTS `source_page` VARCHAR(200) DEFAULT NULL AFTER `service_interest`,
+    ADD COLUMN IF NOT EXISTS `follow_up_stage` TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER `source_page`,
+    ADD COLUMN IF NOT EXISTS `last_contacted_at` DATETIME DEFAULT NULL AFTER `follow_up_stage`,
+    ADD COLUMN IF NOT EXISTS `next_follow_up_at` DATETIME DEFAULT NULL AFTER `last_contacted_at`;
+
+-- ── Email Log ─────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS `email_log` (
+    `id`              INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `lead_id`         INT UNSIGNED NOT NULL,
+    `email_stage`     TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    `recipient_email` VARCHAR(255) NOT NULL,
+    `subject`         VARCHAR(500) NOT NULL,
+    `status`          ENUM('sent','failed') NOT NULL DEFAULT 'sent',
+    `sent_at`         DATETIME NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_el_lead`    (`lead_id`),
+    KEY `idx_el_stage`   (`email_stage`),
+    KEY `idx_el_sent`    (`sent_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
