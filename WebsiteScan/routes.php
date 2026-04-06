@@ -38,6 +38,7 @@ $router->get('/admin/scans',              'AdminController@scans',        ['Admi
 $router->get('/admin/contacts',           'AdminController@contacts',           ['Admin']);
 $router->get('/admin/contacts/{id}',      'AdminController@viewContact',         ['Admin']);
 $router->post('/admin/contacts/{id}',     'AdminController@updateContactStatus', ['Admin', 'Csrf']);
+$router->post('/admin/contacts/{id}/send-message', 'AdminController@sendContactMessage', ['Admin', 'Csrf']);
 $router->get('/admin/settings',           'AdminController@settings',     ['Admin']);
 $router->post('/admin/settings',          'AdminController@settings',     ['Admin', 'Csrf']);
 $router->post('/admin/settings/test-email','AdminController@sendTestEmail',['Admin', 'Csrf']);

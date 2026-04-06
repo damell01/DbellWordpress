@@ -190,16 +190,74 @@ $st = $cr['status'] ?? 'new';
     <!-- ── Right: Actions + Status + Lead ─────── -->
     <div class="col-lg-5">
 
+        <!-- Send & Track Message -->
+        <div class="admin-card mb-4" id="sendMessageCard">
+            <div class="admin-card-header">
+                <h6 class="fw-semibold mb-0">
+                    <i class="bi bi-send-fill me-2" style="color:#6222CC;"></i>
+                    Send Message
+                    <?php if (!empty($nextMessage) && ($nextStage ?? 5) <= 4): ?>
+                    <span class="badge ms-2" style="background:#e8e2f4;color:#6222CC;font-size:.7rem;">Stage <?= (int)$nextStage ?> suggested</span>
+                    <?php endif; ?>
+                </h6>
+            </div>
+            <div class="admin-card-body">
+                <?php if (!empty($nextMessage) && ($nextStage ?? 5) <= 4): ?>
+                <!-- Suggested template chips -->
+                <div class="mb-3">
+                    <div style="font-size:.72rem;font-weight:700;color:#6b5b8f;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Suggested Template</div>
+                    <button type="button" class="btn btn-sm cr-tpl-btn"
+                            style="background:#6222CC;color:#fff;border:none;border-radius:20px;font-size:.78rem;padding:4px 14px;"
+                            data-subject="<?= e($nextMessage['subject']) ?>"
+                            data-body="<?= e($nextMessage['body']) ?>">
+                        <i class="bi bi-robot me-1"></i>Stage <?= (int)$nextStage ?> Auto-Template
+                    </button>
+                </div>
+                <?php endif; ?>
+
+                <form method="POST" action="<?= url('admin/contacts/' . (int)($cr['id'] ?? 0) . '/send-message') ?>" id="crSendMsgForm">
+                    <?= csrf_field() ?>
+                    <div class="mb-2">
+                        <label class="form-label" style="font-size:.8rem;font-weight:600;color:#6b5b8f;">To</label>
+                        <input type="text" class="form-control form-control-sm" value="<?= e($cr['email'] ?? '') ?>" readonly
+                               style="background:#faf8ff;border-color:#d1c4e9;color:#6b5b8f;">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label" style="font-size:.8rem;font-weight:600;color:#6b5b8f;">Subject</label>
+                        <input type="text" name="subject" id="crMsgSubject" class="form-control form-control-sm"
+                               style="border-color:#d1c4e9;"
+                               placeholder="Enter subject…"
+                               value="<?= !empty($nextMessage) && ($nextStage ?? 5) <= 4 ? e($nextMessage['subject']) : '' ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:.8rem;font-weight:600;color:#6b5b8f;">Message</label>
+                        <textarea name="body" id="crMsgBody" class="form-control" rows="8"
+                                  style="border-color:#d1c4e9;resize:vertical;font-family:monospace;font-size:.82rem;"
+                                  placeholder="Compose your message…" required><?= !empty($nextMessage) && ($nextStage ?? 5) <= 4 ? e($nextMessage['body']) : '' ?></textarea>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="bi bi-send-fill me-1"></i>Send &amp; Track
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="crClearMsgBtn">
+                            <i class="bi bi-x-circle me-1"></i>Clear
+                        </button>
+                        <?php if (!empty($cr['lead_id'])): ?>
+                        <span class="text-muted ms-auto" style="font-size:.72rem;">
+                            <i class="bi bi-bar-chart-steps me-1"></i>Will advance nurturing step
+                        </span>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Quick Actions -->
         <div class="admin-card mb-4">
             <div class="admin-card-header">
                 <h6 class="fw-semibold mb-0"><i class="bi bi-lightning-charge-fill me-2" style="color:#FBA504;"></i>Quick Actions</h6>
             </div>
             <div class="admin-card-body d-grid gap-2">
-                <a href="mailto:<?= e($cr['email'] ?? '') ?>?subject=<?= urlencode('Following up on your inquiry — DBell Creations') ?>"
-                   class="btn btn-primary">
-                    <i class="bi bi-envelope-fill me-2"></i>Send Follow-Up Email
-                </a>
                 <?php if (!empty($cr['phone'])): ?>
                 <a href="tel:<?= e($cr['phone']) ?>" class="btn btn-outline-success">
                     <i class="bi bi-telephone-fill me-2"></i>Call <?= e($cr['phone']) ?>
@@ -304,3 +362,29 @@ $st = $cr['status'] ?? 'new';
         <?php endif; ?>
     </div>
 </div>
+
+<script>
+(function () {
+    'use strict';
+    // Template chip → fill subject + body
+    document.querySelectorAll('.cr-tpl-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var subj = document.getElementById('crMsgSubject');
+            var body = document.getElementById('crMsgBody');
+            if (subj) subj.value = btn.dataset.subject || '';
+            if (body) body.value = btn.dataset.body || '';
+        });
+    });
+
+    // Clear button
+    var clearBtn = document.getElementById('crClearMsgBtn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            var subj = document.getElementById('crMsgSubject');
+            var body = document.getElementById('crMsgBody');
+            if (subj) subj.value = '';
+            if (body) body.value = '';
+        });
+    }
+}());
+</script>

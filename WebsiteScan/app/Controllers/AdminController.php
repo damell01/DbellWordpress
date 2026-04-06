@@ -372,9 +372,19 @@ class AdminController extends BaseController {
             $contact['status'] = 'read';
         }
 
+        // Build next pipeline message preview (if linked to a lead)
+        $nextStage   = (int)($contact['follow_up_stage'] ?? 0) + 1;
+        $nextMessage = $nextStage <= 4 ? $this->buildFollowUpMessage($nextStage, [
+            'contact_name'   => $contact['name'] ?? '',
+            'business_name'  => $contact['company'] ?? ($contact['business_name'] ?? ''),
+            'service_interest' => $contact['service_type'] ?? ($contact['service_interest'] ?? ''),
+        ]) : null;
+
         $this->adminView('contact-detail', [
-            'title'   => 'Contact: ' . ($contact['name'] ?? 'Details'),
-            'contact' => $contact,
+            'title'       => 'Contact: ' . ($contact['name'] ?? 'Details'),
+            'contact'     => $contact,
+            'nextStage'   => $nextStage,
+            'nextMessage' => $nextMessage,
         ]);
     }
 
@@ -391,6 +401,87 @@ class AdminController extends BaseController {
         }
 
         Session::setFlash('success', 'Contact updated.');
+        $this->redirect("admin/contacts/{$id}");
+    }
+
+    public function sendContactMessage(Request $request, array $params): void {
+        $id      = (int)($params['id'] ?? 0);
+        $model   = new ContactRequest();
+        $contact = $model->withLead($id);
+        if (!$contact) abort(404);
+
+        $subject = trim((string) $request->post('subject', ''));
+        $body    = trim((string) $request->post('body', ''));
+
+        if ($subject === '' || $body === '') {
+            Session::setFlash('error', 'Subject and message body are required.');
+            $this->redirect("admin/contacts/{$id}");
+            return;
+        }
+
+        $email = $contact['email'] ?? '';
+        if ($email === '') {
+            Session::setFlash('error', 'This contact has no email address on file.');
+            $this->redirect("admin/contacts/{$id}");
+            return;
+        }
+
+        $mailer   = new \App\Services\MailService();
+        $htmlBody = nl2br(htmlspecialchars($body, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        $sent     = $mailer->send($email, $subject, $htmlBody, $body);
+
+        if ($sent) {
+            // Mark contact as replied
+            $model->updateStatus($id, 'replied');
+
+            // Advance the linked lead's nurturing step (mirrors cron/follow-up.php logic)
+            $leadId = (int)($contact['lead_id'] ?? 0);
+            if ($leadId > 0) {
+                $lead = $this->db->fetch("SELECT * FROM leads WHERE id = ?", [$leadId]);
+                if ($lead) {
+                    $stage    = (int)($lead['follow_up_stage'] ?? 0) + 1;
+                    $daysMap  = [1 => 1, 2 => 3, 3 => 5, 4 => null];
+                    $days     = $daysMap[$stage] ?? null;
+                    $nextDate = $days !== null ? date('Y-m-d H:i:s', strtotime("+{$days} days")) : null;
+
+                    $updateData = [
+                        'follow_up_stage'   => $stage,
+                        'last_contacted_at' => date('Y-m-d H:i:s'),
+                        'next_follow_up_at' => $nextDate,
+                    ];
+                    // Move status from 'new' → 'contacted' on first send
+                    if (($lead['status'] ?? 'new') === 'new') {
+                        $updateData['status'] = 'contacted';
+                    }
+                    try {
+                        $this->db->update('leads', $updateData, ['id' => $leadId]);
+                    } catch (\Throwable $e) {
+                        // column may not exist on old schema; non-fatal
+                    }
+
+                    // Log to email_log
+                    try {
+                        $this->db->insert('email_log', [
+                            'lead_id'         => $leadId,
+                            'email_stage'     => $stage,
+                            'recipient_email' => $email,
+                            'subject'         => $subject,
+                            'body'            => $body,
+                            'status'          => 'sent',
+                            'sent_at'         => date('Y-m-d H:i:s'),
+                        ]);
+                    } catch (\Throwable $e) {
+                        // email_log table may not exist yet; non-fatal
+                    }
+                }
+            }
+
+            Session::setFlash('success', "Message sent to {$email}." . ($leadId > 0 ? ' Nurturing step advanced.' : ''));
+        } else {
+            $err = $mailer->getLastError();
+            Session::setFlash('error', 'Failed to send message.' . ($err !== '' ? ' ' . $err : ' Check your mail settings.'));
+        }
+
         $this->redirect("admin/contacts/{$id}");
     }
 
