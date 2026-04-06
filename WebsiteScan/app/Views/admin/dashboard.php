@@ -339,13 +339,13 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(ctx.getContext('2d'), {
         type: 'bar',
         data: {
-            labels: data.map(function(d) {
+            labels: data.map(d => {
                 var dt = new Date(d.day);
                 return dt.toLocaleDateString('en-US', { month:'short', day:'numeric' });
             }),
             datasets: [{
                 label: 'Audits',
-                data: data.map(function(d) { return d.total; }),
+                data: data.map(d => d.total),
                 backgroundColor: 'rgba(98,34,204,0.15)',
                 borderColor: '#6222CC',
                 borderWidth: 2,

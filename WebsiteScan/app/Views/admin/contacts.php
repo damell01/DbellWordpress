@@ -137,7 +137,7 @@ $currentSearch = $search ?? '';
                 </thead>
                 <tbody>
                     <?php foreach ($contactsData['items'] ?? [] as $cr): ?>
-                    <tr class="<?= ($cr['status'] ?? 'new') === 'new' ? '' : '' ?>">
+                    <tr>
                         <td class="ps-3">
                             <div class="d-flex align-items-center gap-2">
                                 <div class="lead-avatar">
