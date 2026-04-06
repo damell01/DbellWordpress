@@ -1,51 +1,49 @@
-<?php 
-$errors = '';
-$myemail = 'yourname@website.com';//<-----Put Your email address here.
-if(empty($_POST['name'])  || 
-   empty($_POST['email']) || 
-   empty($_POST['message']))
-{
-    $errors .= "\n Error: all fields are required";
-}
-
-$name = $_POST['name']; 
-$email_address = $_POST['email']; 
-$message = $_POST['message']; 
-
-if (!preg_match(
-"/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", 
-$email_address))
-{
-    $errors .= "\n Error: Invalid email address";
-}
-
-if( empty($errors))
-{
-	$to = $myemail; 
-	$email_subject = "Contact form submission: $name";
-	$email_body = "You have received a new message. ".
-	" Here are the details:\n Name: $name \n Email: $email_address \n Message \n $message"; 
-	
-	$headers = "From: $myemail\n"; 
-	$headers .= "Reply-To: $email_address";
-	
-	mail($to,$email_subject,$email_body,$headers);
-	//redirect to the 'thank you' page
-	header('Location: contact-form-thank-you.html');
-} 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
-<html>
-<head>
-	<title>Contact form handler</title>
-</head>
-
-<body>
-<!-- This page is displayed only if there is some error -->
 <?php
-echo nl2br($errors);
+/**
+ * DBell Creations - Contact Form Handler (Legacy endpoint)
+ * Redirects to/uses contact.php logic
+ */
+
+$adminEmail = 'dbellcreations@gmail.com';
+
+$errors = '';
+if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['message'])) {
+    $errors .= 'Error: name, email, and message are required.';
+}
+
+$name    = trim(strip_tags($_POST['name'] ?? ''));
+$email   = trim(strip_tags($_POST['email'] ?? ''));
+$message = trim(strip_tags($_POST['message'] ?? ''));
+$phone   = trim(strip_tags($_POST['phone'] ?? ''));
+$businessName = trim(strip_tags($_POST['business_name'] ?? $_POST['surname'] ?? ''));
+
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors .= ' Error: Invalid email address.';
+}
+
+if (empty($errors)) {
+    $subject = "New Contact Form Submission: {$name}";
+    $body    = "New message from dbellcreations.com contact form\n";
+    $body   .= "=================================================\n";
+    $body   .= "Name:          {$name}\n";
+    $body   .= "Email:         {$email}\n";
+    $body   .= "Phone:         " . ($phone ?: 'Not provided') . "\n";
+    $body   .= "Business:      " . ($businessName ?: 'Not provided') . "\n";
+    $body   .= "Message:\n{$message}\n";
+
+    $headers  = "From: {$adminEmail}\r\n";
+    $headers .= "Reply-To: {$email}\r\n";
+
+    mail($adminEmail, $subject, $body, $headers);
+    header('Location: contact.html?success=1');
+    exit;
+}
 ?>
-
-
+<!DOCTYPE HTML>
+<html>
+<head><title>Contact Form Error</title></head>
+<body>
+<p><?php echo nl2br(htmlspecialchars($errors)); ?></p>
+<p><a href="contact.html">← Go back</a></p>
 </body>
 </html>

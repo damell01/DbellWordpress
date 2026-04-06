@@ -22,6 +22,16 @@
                     <dd class="col-sm-8 small"><?= e($lead['notes'] ?: '—') ?></dd>
                     <dt class="col-sm-4 text-muted small">Source</dt>
                     <dd class="col-sm-8 small"><?= e($lead['source'] ?? 'audit') ?></dd>
+                    <dt class="col-sm-4 text-muted small">Service Interest</dt>
+                    <dd class="col-sm-8 small"><?= e($lead['service_interest'] ?? '—') ?></dd>
+                    <dt class="col-sm-4 text-muted small">Follow-Up Stage</dt>
+                    <dd class="col-sm-8 small"><?= (int)($lead['follow_up_stage'] ?? 0) ?> / 4</dd>
+                    <dt class="col-sm-4 text-muted small">Last Contacted</dt>
+                    <dd class="col-sm-8 small"><?= e($lead['last_contacted_at'] ?? '—') ?></dd>
+                    <dt class="col-sm-4 text-muted small">Next Follow-Up</dt>
+                    <dd class="col-sm-8 small"><?= e($lead['next_follow_up_at'] ?? '—') ?></dd>
+                    <dt class="col-sm-4 text-muted small">Source Page</dt>
+                    <dd class="col-sm-8 small"><?= e($lead['source_page'] ?? '—') ?></dd>
                     <dt class="col-sm-4 text-muted small">Created</dt>
                     <dd class="col-sm-8 small"><?= e($lead['created_at']) ?></dd>
                 </dl>
