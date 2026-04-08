@@ -737,6 +737,98 @@
 
     <!-- Template Javascript -->
     <script defer src="js/main.js"></script>
+
+    <!-- Exit Intent Modal -->
+    <div class="modal fade" id="exitIntentModal" tabindex="-1" aria-labelledby="exitIntentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 overflow-hidden">
+                <div class="modal-header bg-primary text-white border-0 p-4">
+                    <div>
+                        <h4 class="modal-title mb-1" id="exitIntentModalLabel"><i class="fa fa-gift me-2"></i>Wait — Before You Go!</h4>
+                        <p class="mb-0 text-white-50 small">Grab your FREE Alabama Small Business Website Checklist</p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">The <strong>50-Point Checklist</strong> every Alabama small business website needs:</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fa fa-check-circle text-secondary me-2"></i>SEO essentials that get you found on Google</li>
+                                <li class="mb-2"><i class="fa fa-check-circle text-secondary me-2"></i>Speed &amp; mobile optimization must-haves</li>
+                                <li class="mb-2"><i class="fa fa-check-circle text-secondary me-2"></i>Local SEO tactics specific to Alabama markets</li>
+                                <li class="mb-2"><i class="fa fa-check-circle text-secondary me-2"></i>Lead generation &amp; conversion best practices</li>
+                                <li class="mb-2"><i class="fa fa-check-circle text-secondary me-2"></i>Security &amp; compliance checklist items</li>
+                            </ul>
+                            <p class="text-muted small mt-3">Free — no credit card required. Instant access.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <form id="exitIntentForm" action="contact.php" method="POST">
+                                <input type="hidden" name="lead_source" value="exit-intent-checklist">
+                                <div class="mb-3">
+                                    <label for="exitName" class="form-label fw-semibold">Your Name</label>
+                                    <input type="text" class="form-control" id="exitName" name="name" placeholder="Jane Smith" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="exitEmail" class="form-label fw-semibold">Your Email</label>
+                                    <input type="email" class="form-control" id="exitEmail" name="email" placeholder="jane@yourbusiness.com" required>
+                                </div>
+                                <button type="submit" class="btn btn-secondary rounded-pill w-100 py-3 fw-bold">
+                                    <i class="fa fa-download me-2"></i>Send Me the Free Checklist
+                                </button>
+                            </form>
+                            <div id="exitIntentThanks" class="alert alert-success mt-3 d-none">
+                                <i class="fa fa-check-circle me-2"></i><strong>Thank you!</strong> Check your email shortly.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0 pb-3 justify-content-center">
+                    <a href="website-checklist.html" class="text-primary small me-3">View checklist online &rarr;</a>
+                    <button type="button" class="btn btn-link text-muted small p-0" data-bs-dismiss="modal">No thanks, I don't need more leads</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exit Intent Script -->
+    <script>
+    (function() {
+        var shown = sessionStorage.getItem('exitModalShown');
+        if (shown) return;
+        function showModal() {
+            if (sessionStorage.getItem('exitModalShown')) return;
+            sessionStorage.setItem('exitModalShown', '1');
+            // Wait for Bootstrap to be ready
+            var tryShow = function() {
+                if (typeof bootstrap !== 'undefined' && document.getElementById('exitIntentModal')) {
+                    var m = new bootstrap.Modal(document.getElementById('exitIntentModal'));
+                    m.show();
+                } else {
+                    setTimeout(tryShow, 300);
+                }
+            };
+            tryShow();
+        }
+        document.addEventListener('mouseleave', function(e) {
+            if (e.clientY < 10) showModal();
+        });
+        setTimeout(showModal, 45000);
+
+        // Handle form submit with AJAX-style UX
+        document.addEventListener('submit', function(e) {
+            if (e.target && e.target.id === 'exitIntentForm') {
+                e.preventDefault();
+                sessionStorage.setItem('exitModalShown', '1');
+                document.getElementById('exitIntentThanks').classList.remove('d-none');
+                document.getElementById('exitIntentForm').classList.add('d-none');
+                setTimeout(function() {
+                    window.location.href = 'website-checklist.html';
+                }, 2000);
+            }
+        });
+    })();
+    </script>
 </body>
 </html>
 
