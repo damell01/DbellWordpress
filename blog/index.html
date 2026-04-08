@@ -83,6 +83,14 @@
         ]
     }
     </script>
+    <!-- Google Analytics GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V6FYWKK2QM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-V6FYWKK2QM');
+    </script>
 </head>
 
 <body>
@@ -152,15 +160,42 @@
         <!-- Blog Listing Start -->
         <div class="container-xxl py-5">
             <div class="container py-5 px-lg-5">
-                <div class="wow fadeInUp text-center mb-5" data-wow-delay="0.1s">
+                <div class="text-center mb-5" data-wow-delay="0.1s">
                     <p class="section-title text-secondary justify-content-center"><span></span>Latest Articles<span></span></p>
                     <h2 class="mb-3">Web Design, SEO &amp; Digital Marketing Tips</h2>
                     <p class="text-muted mx-auto" style="max-width:680px;">Practical advice for Alabama business owners on building a stronger online presence, ranking higher on Google, and turning website visitors into paying customers.</p>
                 </div>
 
                 
+                <!-- Start Here / Popular Posts -->
+                <div class="row g-3 mb-5" id="start-here">
+                    <div class="col-12">
+                        <div class="p-4 rounded d-flex flex-column flex-md-row align-items-md-center gap-4" style="background:var(--primary);">
+                            <div class="flex-grow-1">
+                                <span class="badge bg-secondary text-dark fw-bold mb-2" style="font-size:.78rem; letter-spacing:.05em;">&#9733; START HERE</span>
+                                <h3 class="h5 fw-bold text-white mb-1">New to DBell Creations? Start with these.</h3>
+                                <p class="text-white-50 small mb-0">Our most useful guides for Alabama small business owners.</p>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 flex-shrink-0">
+                                <a href="affordable-web-design-small-business.html" class="btn btn-secondary btn-sm rounded-pill px-3 fw-bold">Affordable Web Design</a>
+                                <a href="local-seo-guide-alabama-small-businesses.html" class="btn btn-outline-light btn-sm rounded-pill px-3">Local SEO Guide</a>
+                                <a href="google-business-profile-optimization.html" class="btn btn-outline-light btn-sm rounded-pill px-3">Google Profile Tips</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog Quick Links -->
+                <div class="d-flex flex-wrap gap-3 align-items-center justify-content-center mb-4 small">
+                    <span class="text-muted">Explore:</span>
+                    <a href="../pricing.html" class="text-primary fw-semibold">&#128179; View Pricing</a>
+                    <a href="../scan.html" class="text-primary fw-semibold">&#128269; Free Website Audit</a>
+                    <a href="../compare.html" class="text-primary fw-semibold">&#9878; DBell vs. Wix</a>
+                    <a href="../contact.html" class="text-primary fw-semibold">&#128172; Contact Us</a>
+                </div>
+
                 <!-- Blog Search & Filter -->
-                <div class="row align-items-center mb-5 g-3 wow fadeInUp" data-wow-delay="0.2s" id="blog-controls">
+                <div class="row align-items-center mb-5 g-3" id="blog-controls">
                     <div class="col-12 col-md-5">
                         <div class="input-group shadow-sm">
                             <span class="input-group-text bg-white border-end-0 border-secondary-subtle"><i class="fa fa-search text-muted"></i></span>
@@ -180,10 +215,11 @@
                 <div class="row g-4" id="blog-grid">
 
                     <!-- Article: Web Design Mistakes -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Mistakes</p>
+                                <p class="text-muted" style="font-size:.78rem; margin-bottom:.5rem;"><i class="bi bi-calendar2 me-1"></i>Updated: March 2025</p>
                                 <h2 class="h5 mb-3"><a href="web-design-mistakes-small-business.html" class="text-dark text-decoration-none">7 Web Design Mistakes Small Businesses Make (And How to Fix Them)</a></h2>
                                 <p class="text-muted">Avoid these 7 common web design mistakes that cost small businesses leads and customers. Learn what to fix first for better conversions and Google rankings.</p>
                             </div>
@@ -194,10 +230,11 @@
                     </div>
 
                     <!-- Article: Google Business Profile Optimization -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="seo">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> SEO &bull; Local SEO</p>
+                                <p class="text-muted" style="font-size:.78rem; margin-bottom:.5rem;"><i class="bi bi-calendar2 me-1"></i>Updated: Feb 2025</p>
                                 <h2 class="h5 mb-3"><a href="google-business-profile-optimization.html" class="text-dark text-decoration-none">How to Optimize Your Google Business Profile for More Local Customers</a></h2>
                                 <p class="text-muted">A step-by-step guide to optimizing your Google Business Profile to rank higher in local search, get more reviews, and attract customers in Alabama.</p>
                             </div>
@@ -208,10 +245,11 @@
                     </div>
 
                     <!-- Article: How to Get Clients as a New Business -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="digital-marketing">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Digital Marketing &bull; Lead Generation</p>
+                                <p class="text-muted" style="font-size:.78rem; margin-bottom:.5rem;"><i class="bi bi-calendar2 me-1"></i>Updated: Jan 2025</p>
                                 <h2 class="h5 mb-3"><a href="how-to-get-clients-as-a-new-business.html" class="text-dark text-decoration-none">How to Get Your First Clients as a New Business: 10 Proven Methods</a></h2>
                                 <p class="text-muted">Starting a new business? Here are 10 proven ways to get your first clients — from Google Business Profile to referrals, networking, and building a website that converts.</p>
                             </div>
@@ -222,10 +260,11 @@
                     </div>
 
                     <!-- New Article: Affordable Web Design -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Pricing</p>
+                                <p class="text-muted" style="font-size:.78rem; margin-bottom:.5rem;"><i class="bi bi-calendar2 me-1"></i>Updated: March 2025</p>
                                 <h2 class="h5 mb-3"><a href="affordable-web-design-small-business.html" class="text-dark text-decoration-none">Affordable Web Design for Small Businesses: What You Should Actually Pay</a></h2>
                                 <p class="text-muted">How much should a small business pay for web design? Learn what affordable web design actually includes, what to avoid, and how to get the best value for your budget.</p>
                             </div>
@@ -236,7 +275,7 @@
                     </div>
 
                     <!-- New Article: Get More Leads From Website -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="digital-marketing">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Lead Generation &bull; Conversion</p>
@@ -250,7 +289,7 @@
                     </div>
 
                     <!-- New Article: Best Website Design for Contractors -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Contractors</p>
@@ -264,7 +303,7 @@
                     </div>
 
                     <!-- New Article: Website Load Speed -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Performance &bull; SEO</p>
@@ -278,7 +317,7 @@
                     </div>
 
                     <!-- New Article: Website Redesign Checklist -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Checklist</p>
@@ -292,7 +331,7 @@
                     </div>
 
                     <!-- New Article: Local SEO for Service Businesses -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="seo">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Local SEO &bull; Rankings</p>
@@ -306,7 +345,7 @@
                     </div>
 
                     <!-- New Article: Automate Business Tasks -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="automation" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="automation">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Automation &bull; Productivity</p>
@@ -320,7 +359,7 @@
                     </div>
 
                     <!-- Article 1 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Cost Guide</p>
@@ -334,7 +373,7 @@
                     </div>
 
                     <!-- Article 2 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Lead Generation &bull; Web Design</p>
@@ -348,7 +387,7 @@
                     </div>
 
                     <!-- Article 3 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="tools" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="tools">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> CRM &bull; Business Tools</p>
@@ -362,10 +401,11 @@
                     </div>
 
                     <!-- Article 4 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="seo">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> SEO &bull; Local Search</p>
+                                <p class="text-muted" style="font-size:.78rem; margin-bottom:.5rem;"><i class="bi bi-calendar2 me-1"></i>Updated: March 2025</p>
                                 <h2 class="h5 mb-3"><a href="local-seo-guide-alabama-small-businesses.html" class="text-dark text-decoration-none">Local SEO Guide for Alabama Small Businesses</a></h2>
                                 <p class="text-muted">Step-by-step local SEO strategies to help your Alabama business rank higher on Google, get more reviews, and attract more local customers — most of it free to implement.</p>
                             </div>
@@ -376,7 +416,7 @@
                     </div>
 
                     <!-- Article 5 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Hiring Guide</p>
@@ -390,7 +430,7 @@
                     </div>
 
                     <!-- Article 6 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="automation" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="automation">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Automation &bull; Productivity</p>
@@ -404,7 +444,7 @@
                     </div>
 
                     <!-- Article 7 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Redesign</p>
@@ -418,7 +458,7 @@
                     </div>
 
                     <!-- Article 8 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="seo">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Local SEO &bull; Google</p>
@@ -432,7 +472,7 @@
                     </div>
 
                     <!-- Article 9 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Mobile</p>
@@ -446,7 +486,7 @@
                     </div>
 
                     <!-- Article 10 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="digital-marketing">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Digital Marketing &bull; Social Media</p>
@@ -460,7 +500,7 @@
                     </div>
 
                     <!-- Article 11 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> E-Commerce &bull; Web Design</p>
@@ -474,7 +514,7 @@
                     </div>
 
                     <!-- Article 12 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="tools" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="tools">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> AI &bull; Business Tools</p>
@@ -488,7 +528,7 @@
                     </div>
 
                     <!-- Article 13 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Performance</p>
@@ -502,7 +542,7 @@
                     </div>
 
                     <!-- Article 14 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="digital-marketing">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Lead Generation &bull; Marketing</p>
@@ -516,7 +556,7 @@
                     </div>
 
                     <!-- Article 15 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="tools" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="tools">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Custom Software &bull; Business Tools</p>
@@ -530,7 +570,7 @@
                     </div>
 
                     <!-- Article 16 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="digital-marketing">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Content Marketing &bull; SEO</p>
@@ -544,7 +584,7 @@
                     </div>
 
                     <!-- Article 17 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="digital-marketing">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Email Marketing &bull; Digital Marketing</p>
@@ -558,7 +598,7 @@
                     </div>
 
                     <!-- Article 18 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Trends</p>
@@ -572,7 +612,7 @@
                     </div>
 
                     <!-- Article 19 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="automation" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="automation">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Business Automation &bull; Finance</p>
@@ -586,7 +626,7 @@
                     </div>
 
                     <!-- Article 20 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="seo">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> SEO &bull; Paid Advertising</p>
@@ -600,7 +640,7 @@
                     </div>
 
                     <!-- Article 21 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Local Business</p>
@@ -614,7 +654,7 @@
                     </div>
 
                     <!-- Article 22 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="seo">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Local SEO &bull; Reputation</p>
@@ -628,7 +668,7 @@
                     </div>
 
                     <!-- Article 23 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="automation" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="automation">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Business Automation &bull; Productivity</p>
@@ -642,7 +682,7 @@
                     </div>
 
                     <!-- Article 24 -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="digital-marketing">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Digital Marketing &bull; Strategy</p>
@@ -656,7 +696,7 @@
                     </div>
 
                     <!-- Article: Google Maps Ranking -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.1s">
+                    <div class="col-lg-4 blog-card" data-categories="seo">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> SEO &bull; Local Search</p>
@@ -670,7 +710,7 @@
                     </div>
 
                     <!-- Article: Website Accessibility Guide -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.2s">
+                    <div class="col-lg-4 blog-card" data-categories="web-design">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Accessibility</p>
@@ -684,10 +724,11 @@
                     </div>
 
                     <!-- Article: ChatGPT Prompts for Small Business -->
-                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="tools" data-wow-delay="0.3s">
+                    <div class="col-lg-4 blog-card" data-categories="tools">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> AI Tools &bull; Productivity</p>
+                                <p class="text-muted" style="font-size:.78rem; margin-bottom:.5rem;"><i class="bi bi-calendar2 me-1"></i>Updated: Feb 2025</p>
                                 <h2 class="h5 mb-3"><a href="chatgpt-prompts-for-small-business.html" class="text-dark text-decoration-none">ChatGPT Prompts for Small Business Owners: 50+ Ready-to-Use Examples</a></h2>
                                 <p class="text-muted">Save hours every week with 50+ ready-to-use ChatGPT prompts for marketing, content creation, customer service, operations, and sales.</p>
                             </div>
@@ -724,7 +765,7 @@
 
         <!-- Footer Start -->
         <footer>
-            <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">
+            <div class="container-fluid bg-primary text-light footer">
                 <div class="container py-5 px-lg-5">
                     <div class="row g-5">
                         <div class="col-md-6 col-lg-3">
@@ -751,6 +792,8 @@
                             <a class="btn btn-link" href="../about.html">About Us</a>
                             <a class="btn btn-link" href="../project.html">Portfolio</a>
                             <a class="btn btn-link" href="../frequentlyaskedquestions.html">FAQs</a>
+                            <a class="btn btn-link" href="../pricing.html">Pricing</a>
+                            <a class="btn btn-link" href="../compare.html">Compare Options</a>
                             <a class="btn btn-link" href="../contact.html">Contact Us</a>
                             <a class="btn btn-link" href="index.html">Blog</a>
                         </div>

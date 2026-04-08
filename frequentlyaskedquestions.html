@@ -61,37 +61,63 @@
             {
                 "@type": "Question",
                 "name": "How much does a website cost?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Website pricing depends on the scope — a simple business website starts around $1,500–$3,000, while larger e-commerce or custom sites range from $3,000–$8,000+. We provide a detailed fixed-price quote before any work begins."
-                }
+                "acceptedAnswer": { "@type": "Answer", "text": "Our websites start at $350 for the Starter package, $750 for the Business package, and $1,000–$1,500+ for Custom/Advanced. Every package is a one-time fee — no monthly charges from us." }
+            },
+            {
+                "@type": "Question",
+                "name": "Are there any monthly fees from DBell Creations?",
+                "acceptedAnswer": { "@type": "Answer", "text": "No. We charge a one-time design and build fee. After your site is live you pay hosting directly to your provider — typically $10–$20/month. No recurring fees from us." }
+            },
+            {
+                "@type": "Question",
+                "name": "Do I need to sign a long-term contract?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Never. We do not require contracts of any kind. You pay once and you own your site." }
+            },
+            {
+                "@type": "Question",
+                "name": "Is maintenance included in the price?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Maintenance is optional — it's available as a separate add-on service, not required. You can also request one-off updates anytime." }
             },
             {
                 "@type": "Question",
                 "name": "How long does it take to build a website?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Most websites are designed and launched within 2–4 weeks. Larger or more complex projects may take 4–8 weeks. We move fast without sacrificing quality."
-                }
+                "acceptedAnswer": { "@type": "Answer", "text": "Starter packages take 3–5 days, Business packages 5–10 days, Custom/Advanced 10–14 days. Complex projects are scoped individually." }
             },
             {
                 "@type": "Question",
-                "name": "Do you offer ongoing support after launch?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes — post-launch support, updates, and strategic guidance are available. We offer ongoing maintenance plans and respond to every client within 24 hours."
-                }
+                "name": "Do I own my website after payment?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Yes, 100%. You own all code, content, and design files once payment is complete. You can move hosts, modify the site, or hand it to another developer — it's yours." }
             },
             {
                 "@type": "Question",
-                "name": "What areas do you serve?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "We're based in Fairhope, AL and serve clients throughout Baldwin County, the Gulf Coast, and across the US. Most work is done remotely, so location rarely matters."
-                }
+                "name": "Who handles hosting?",
+                "acceptedAnswer": { "@type": "Answer", "text": "We configure everything but the hosting account is in your name. You pay your hosting provider directly — typically $10–$20/month." }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I move my website to another host later?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Absolutely. You own the site, so you're free to move it to any host at any time." }
+            },
+            {
+                "@type": "Question",
+                "name": "What SEO is included in the website packages?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Every package includes on-page SEO — meta titles, descriptions, schema markup, sitemap, and Google indexing submission. Custom and advanced packages also include a full SEO foundation package." }
+            },
+            {
+                "@type": "Question",
+                "name": "What does the process look like?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Discovery call → Design mockup → Build → Review & revisions → Launch → Optional support. We manage the heavy lifting so you can focus on your business." }
             }
         ]
     }
+    </script>
+    <!-- Google Analytics GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V6FYWKK2QM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-V6FYWKK2QM');
     </script>
 </head>
 
@@ -161,110 +187,191 @@
 
         <!-- FAQ Start -->
         <div class="container-xxl py-5">
-            <div class="container py-5 px-lg-5">
-                <div class="wow fadeInUp text-center mb-5" data-wow-delay="0.1s">
+            <div class="container py-4 px-lg-5">
+                <div class="text-center mb-5">
                     <p class="section-title text-secondary justify-content-center"><span></span>FAQs<span></span></p>
                     <h2 class="mb-3">Frequently Asked Questions</h2>
-                    <p class="text-muted mx-auto" style="max-width:600px;">Have questions? We have answers. Browse the most common questions our clients ask about working with DBell Creations.</p>
+                    <p class="text-muted mx-auto" style="max-width:600px;">Browse by category — find answers about pricing, ownership, SEO, process, and more.</p>
                 </div>
 
-                <div class="row justify-content-center wow fadeInUp" data-wow-delay="0.2s">
+                <!-- FAQ Tabs -->
+                <ul class="nav flex-wrap justify-content-center mb-4 gap-1 border-0" id="faqTabs" role="tablist" style="row-gap:.5rem;">
+                    <li class="nav-item" role="presentation">
+                        <button class="btn btn-outline-primary rounded-pill px-3 py-2 faq-tab-btn active" id="tab-pricing" data-bs-toggle="tab" data-bs-target="#faq-pricing" type="button" role="tab" aria-selected="true" style="font-size:.88rem;">💳 Pricing</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="btn btn-outline-primary rounded-pill px-3 py-2 faq-tab-btn" id="tab-ownership" data-bs-toggle="tab" data-bs-target="#faq-ownership" type="button" role="tab" aria-selected="false" style="font-size:.88rem;">🏠 Ownership &amp; Hosting</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="btn btn-outline-primary rounded-pill px-3 py-2 faq-tab-btn" id="tab-webdesign" data-bs-toggle="tab" data-bs-target="#faq-webdesign" type="button" role="tab" aria-selected="false" style="font-size:.88rem;">🎨 Web Design</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="btn btn-outline-primary rounded-pill px-3 py-2 faq-tab-btn" id="tab-seo" data-bs-toggle="tab" data-bs-target="#faq-seo" type="button" role="tab" aria-selected="false" style="font-size:.88rem;">📈 SEO</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="btn btn-outline-primary rounded-pill px-3 py-2 faq-tab-btn" id="tab-automation" data-bs-toggle="tab" data-bs-target="#faq-automation" type="button" role="tab" aria-selected="false" style="font-size:.88rem;">⚙️ Automation</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="btn btn-outline-primary rounded-pill px-3 py-2 faq-tab-btn" id="tab-process" data-bs-toggle="tab" data-bs-target="#faq-process" type="button" role="tab" aria-selected="false" style="font-size:.88rem;">🔄 Process</button>
+                    </li>
+                </ul>
+                <style>
+                    .faq-tab-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+                    .faq-tab-btn:not(.active):hover { background:var(--primary); color:#fff; border-color:var(--primary); }
+                </style>
+
+                <div class="row justify-content-center">
                     <div class="col-lg-8">
-                        <div class="accordion" id="faqAccordion">
+                        <div class="tab-content" id="faqTabContent">
 
-                            <div class="accordion-item border mb-3 rounded">
-                                <h2 class="accordion-header" id="faq1">
-                                    <button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1">
-                                        Why do I need a website?
-                                    </button>
-                                </h2>
-                                <div id="faqCollapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p>A website is crucial when it comes to marketing your business. It can:</p>
-                                        <ul>
-                                            <li>Drive direct sales and revenue</li>
-                                            <li>Generate qualified leads around the clock</li>
-                                            <li>Build your email marketing list</li>
-                                            <li>Reach a much larger audience than traditional methods</li>
-                                            <li>Communicate with customers 24/7</li>
-                                            <li>Build credibility and establish your brand</li>
-                                        </ul>
+                            <!-- Pricing Tab -->
+                            <div class="tab-pane fade show active" id="faq-pricing" role="tabpanel">
+                                <div class="accordion" id="accPricing">
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#pr1" aria-expanded="true">How much does a website cost?</button></h2>
+                                        <div id="pr1" class="accordion-collapse collapse show" data-bs-parent="#accPricing"><div class="accordion-body">Our websites start at <strong>$350</strong> for the Starter package, <strong>$750</strong> for Business, and <strong>$1,000–$1,500+</strong> for Custom/Advanced. Every package is a <strong>one-time fee</strong> — no monthly charges from us. <a href="pricing.html">See full pricing &rarr;</a></div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#pr2">Are there any monthly fees from DBell Creations?</button></h2>
+                                        <div id="pr2" class="accordion-collapse collapse" data-bs-parent="#accPricing"><div class="accordion-body"><strong>No.</strong> We charge a one-time design and build fee. After your site is live, you pay hosting to your provider — typically $10–$20/month. No recurring fees from us, ever.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#pr3">Do I need to sign a long-term contract?</button></h2>
+                                        <div id="pr3" class="accordion-collapse collapse" data-bs-parent="#accPricing"><div class="accordion-body"><strong>Never.</strong> We do not require contracts of any kind. You pay once, we build your site, and you own it outright.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#pr4">Is maintenance included in the price?</button></h2>
+                                        <div id="pr4" class="accordion-collapse collapse" data-bs-parent="#accPricing"><div class="accordion-body">Maintenance is <strong>optional</strong> — available as a separate add-on, never required. You can also request one-off updates at any time without a plan.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#pr5">What payment methods do you accept?</button></h2>
+                                        <div id="pr5" class="accordion-collapse collapse" data-bs-parent="#accPricing"><div class="accordion-body">We accept all major credit cards, ACH transfer, and PayPal. A deposit is required to begin; the balance is due upon completion before launch.</div></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="accordion-item border mb-3 rounded">
-                                <h2 class="accordion-header" id="faq2">
-                                    <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2">
-                                        How long will my website take to complete?
-                                    </button>
-                                </h2>
-                                <div id="faqCollapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p>At the onset of a project, we create a schedule consisting of 3 phases. Depending on variables such as client engagement and the scope of edits, we can typically complete your website within <strong>60–90 days</strong>.</p>
-                                        <p class="mb-0">We also offer a package that guarantees a fully complete site of up to 5 pages in just <strong>30 days</strong>.</p>
+                            <!-- Ownership & Hosting Tab -->
+                            <div class="tab-pane fade" id="faq-ownership" role="tabpanel">
+                                <div class="accordion" id="accOwnership">
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#ow1" aria-expanded="true">Do I own my website after payment?</button></h2>
+                                        <div id="ow1" class="accordion-collapse collapse show" data-bs-parent="#accOwnership"><div class="accordion-body"><strong>Yes, 100%.</strong> You own all code, content, and design files the moment your project is complete and paid. Move hosts, modify it, hand it to another developer — it is fully yours.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#ow2">Who handles hosting?</button></h2>
+                                        <div id="ow2" class="accordion-collapse collapse" data-bs-parent="#accOwnership"><div class="accordion-body">We configure everything and walk you through setup, but the hosting account is <strong>in your name</strong>. You pay your hosting provider directly — typically $10–$20/month. We never touch your billing.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#ow3">Can I move my website to another host later?</button></h2>
+                                        <div id="ow3" class="accordion-collapse collapse" data-bs-parent="#accOwnership"><div class="accordion-body">Absolutely. You own the site, so you are free to move it to any host at any time. We can assist with migrations as a separate service if needed.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#ow4">What if I need updates after launch?</button></h2>
+                                        <div id="ow4" class="accordion-collapse collapse" data-bs-parent="#accOwnership"><div class="accordion-body">Optional maintenance plans are available. Or reach out for one-off updates — no plan required. We are always here to help.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#ow5">Can I update the site myself?</button></h2>
+                                        <div id="ow5" class="accordion-collapse collapse" data-bs-parent="#accOwnership"><div class="accordion-body">Business, Custom/Advanced, and Enterprise packages include a simple CMS so you can edit text and images without touching code. The Starter package is developer-managed.</div></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="accordion-item border mb-3 rounded">
-                                <h2 class="accordion-header" id="faq3">
-                                    <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3">
-                                        Who provides content for the site?
-                                    </button>
-                                </h2>
-                                <div id="faqCollapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p class="mb-0">We have a content writer on staff who has the know-how and experience to create one-of-a-kind content for your website. However, if you prefer, you are welcome to write your own content — we'll incorporate it seamlessly.</p>
+                            <!-- Web Design Tab -->
+                            <div class="tab-pane fade" id="faq-webdesign" role="tabpanel">
+                                <div class="accordion" id="accWebdesign">
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#wd1" aria-expanded="true">How long does it take to build a website?</button></h2>
+                                        <div id="wd1" class="accordion-collapse collapse show" data-bs-parent="#accWebdesign"><div class="accordion-body">Starter packages take <strong>3–5 days</strong>, Business <strong>5–10 days</strong>, Custom/Advanced <strong>10–14 days</strong>. Complex projects are scoped individually.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#wd2">What do I need to provide to get started?</button></h2>
+                                        <div id="wd2" class="accordion-collapse collapse" data-bs-parent="#accWebdesign"><div class="accordion-body">Brand assets (logo, colors, fonts if available), photos or content, examples of sites you like, and domain login if applicable. We guide you through everything in our onboarding call.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#wd3">Will my website look professional and unique?</button></h2>
+                                        <div id="wd3" class="accordion-collapse collapse" data-bs-parent="#accWebdesign"><div class="accordion-body">Yes — every site is custom-designed to your brand. We do not use generic templates that make your site look like thousands of others.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#wd4">What if I do not have a logo or brand identity?</button></h2>
+                                        <div id="wd4" class="accordion-collapse collapse" data-bs-parent="#accWebdesign"><div class="accordion-body">No problem. We can help with basic brand setup as part of your project, or recommend our preferred designers for a full brand identity package.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#wd5">Who provides content for the site?</button></h2>
+                                        <div id="wd5" class="accordion-collapse collapse" data-bs-parent="#accWebdesign"><div class="accordion-body">You can provide your own content, or our content writer can craft professional copy for your pages. We incorporate whatever you provide seamlessly.</div></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="accordion-item border mb-3 rounded">
-                                <h2 class="accordion-header" id="faq4">
-                                    <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4">
-                                        What is Search Engine Optimization (SEO)?
-                                    </button>
-                                </h2>
-                                <div id="faqCollapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p class="mb-0">SEO is the process of improving your website's visibility in search engines' organic (unpaid) results. For example, when someone searches "web design near me," strong SEO puts your business at the top of those results — generating consistent, free traffic to your site.</p>
+                            <!-- SEO Tab -->
+                            <div class="tab-pane fade" id="faq-seo" role="tabpanel">
+                                <div class="accordion" id="accSeo">
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#seo1" aria-expanded="true">What SEO is included in website packages?</button></h2>
+                                        <div id="seo1" class="accordion-collapse collapse show" data-bs-parent="#accSeo"><div class="accordion-body">Every package includes <strong>on-page SEO</strong> — meta titles, descriptions, schema markup, XML sitemap, and Google indexing submission. Custom/Advanced packages also include a full SEO foundation. <a href="seo.html">Learn about our SEO services &rarr;</a></div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#seo2">Do you offer ongoing SEO services?</button></h2>
+                                        <div id="seo2" class="accordion-collapse collapse" data-bs-parent="#accSeo"><div class="accordion-body">Yes, as a separate service. Ongoing SEO includes content strategy, local citation building, Google Business Profile management, link building, and monthly reporting. <a href="seo.html">View SEO services &rarr;</a></div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#seo3">How long does SEO take to work?</button></h2>
+                                        <div id="seo3" class="accordion-collapse collapse" data-bs-parent="#accSeo"><div class="accordion-body">Typically <strong>3–6 months</strong> for meaningful organic results. Local SEO in less competitive markets can show results in 4–8 weeks. SEO compounds over time.</div></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="accordion-item border mb-3 rounded">
-                                <h2 class="accordion-header" id="faq5">
-                                    <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse5" aria-expanded="false" aria-controls="faqCollapse5">
-                                        What platforms do you build websites on?
-                                    </button>
-                                </h2>
-                                <div id="faqCollapse5" class="accordion-collapse collapse" aria-labelledby="faq5" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p class="mb-0">We build on a variety of platforms to suit your needs — including WordPress, Wix, GoDaddy, Squarespace, and fully custom-coded websites. We'll recommend the best platform based on your goals, budget, and long-term plans.</p>
+                            <!-- Automation Tab -->
+                            <div class="tab-pane fade" id="faq-automation" role="tabpanel">
+                                <div class="accordion" id="accAutomation">
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#au1" aria-expanded="true">What is business automation?</button></h2>
+                                        <div id="au1" class="accordion-collapse collapse show" data-bs-parent="#accAutomation"><div class="accordion-body">Using software to handle repetitive tasks automatically — follow-up emails, lead routing, invoicing, appointment scheduling, data syncing. It saves time and reduces errors. <a href="automations.html">Learn more &rarr;</a></div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#au2">What tools do you use for automation?</button></h2>
+                                        <div id="au2" class="accordion-collapse collapse" data-bs-parent="#accAutomation"><div class="accordion-body">It depends on your stack. We integrate with most CRMs, email platforms, accounting tools, and scheduling systems. We also build custom automation with APIs when off-the-shelf tools are not the right fit.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#au3">Is automation included in web design packages?</button></h2>
+                                        <div id="au3" class="accordion-collapse collapse" data-bs-parent="#accAutomation"><div class="accordion-body">Basic form-to-email automation is included in all packages. Full business automation (lead routing, CRM sync, invoicing, etc.) is priced separately. <a href="contact.html">Contact us to discuss your needs &rarr;</a></div></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="accordion-item border mb-3 rounded">
-                                <h2 class="accordion-header" id="faq6">
-                                    <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse6" aria-expanded="false" aria-controls="faqCollapse6">
-                                        Do you offer ongoing support after launch?
-                                    </button>
-                                </h2>
-                                <div id="faqCollapse6" class="accordion-collapse collapse" aria-labelledby="faq6" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p class="mb-0">Yes! We offer ongoing maintenance and support packages to keep your website secure, updated, and performing at its best. We're a long-term partner, not just a one-time service.</p>
+                            <!-- Process Tab -->
+                            <div class="tab-pane fade" id="faq-process" role="tabpanel">
+                                <div class="accordion" id="accProcess">
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#pc1" aria-expanded="true">What does the process look like?</button></h2>
+                                        <div id="pc1" class="accordion-collapse collapse show" data-bs-parent="#accProcess"><div class="accordion-body">Discovery call &rarr; Design mockup &rarr; Build &rarr; Review &amp; revisions &rarr; Launch &rarr; Optional support. We manage the heavy lifting so you can focus on running your business.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#pc2">How involved do I need to be?</button></h2>
+                                        <div id="pc2" class="accordion-collapse collapse" data-bs-parent="#accProcess"><div class="accordion-body">As little or as much as you want. We provide a clear checklist of what we need from you upfront, then handle the build. Most clients spend only a few hours total on review and feedback.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#pc3">Do you offer revisions?</button></h2>
+                                        <div id="pc3" class="accordion-collapse collapse" data-bs-parent="#accProcess"><div class="accordion-body">Yes. Starter includes 2 revisions, Business 3, Custom/Advanced 5. Additional revisions are available at a flat hourly rate.</div></div>
+                                    </div>
+                                    <div class="accordion-item border mb-3 rounded">
+                                        <h2 class="accordion-header"><button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#pc4">What areas do you serve?</button></h2>
+                                        <div id="pc4" class="accordion-collapse collapse" data-bs-parent="#accProcess"><div class="accordion-body">We are based in Fairhope, AL and serve clients throughout Baldwin County, the Gulf Coast, and across the US. Most work is done remotely, so location rarely matters.</div></div>
                                     </div>
                                 </div>
                             </div>
 
+                        </div><!-- /.tab-content -->
+
+                        <!-- CTA -->
+                        <div class="text-center mt-5 p-4 rounded" style="background:var(--light);">
+                            <h3 class="h5 fw-bold mb-2">Still have questions?</h3>
+                            <p class="text-muted mb-3">We respond within 24 hours and are happy to answer anything before you commit.</p>
+                            <div class="d-flex flex-wrap gap-3 justify-content-center">
+                                <a href="contact.html" class="btn btn-primary rounded-pill py-2 px-4 fw-bold">Contact Us &rarr;</a>
+                                <a href="pricing.html" class="btn btn-outline-primary rounded-pill py-2 px-4">See Pricing</a>
+                            </div>
                         </div>
 
-                        <div class="text-center mt-5">
-                            <p class="text-muted mb-3">Still have questions? We'd love to help.</p>
-                            <a href="contact.html" class="btn btn-primary rounded-pill py-3 px-5">Contact Us</a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -332,6 +439,8 @@
                                 <div class="footer-menu">
                                     <a href="index.html">Home</a>
                                     <a href="about.html">About</a>
+                                    <a href="pricing.html">Pricing</a>
+                                    <a href="compare.html">Compare</a>
                                     <a href="contact.html">Contact</a>
                                     <a href="frequentlyaskedquestions.html">FAQs</a>
                                 </div>
