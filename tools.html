@@ -712,11 +712,23 @@
 
     function copySchema() {
         var ta = document.getElementById('schOutput');
-        ta.select();
-        document.execCommand('copy');
         var msg = document.getElementById('schemaCopied');
-        msg.style.display = 'inline';
-        setTimeout(function(){ msg.style.display = 'none'; }, 2500);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(ta.value).then(function() {
+                msg.style.display = 'inline';
+                setTimeout(function(){ msg.style.display = 'none'; }, 2500);
+            }).catch(function() {
+                ta.select();
+                document.execCommand('copy');
+                msg.style.display = 'inline';
+                setTimeout(function(){ msg.style.display = 'none'; }, 2500);
+            });
+        } else {
+            ta.select();
+            document.execCommand('copy');
+            msg.style.display = 'inline';
+            setTimeout(function(){ msg.style.display = 'none'; }, 2500);
+        }
     }
     </script>
 </body>
