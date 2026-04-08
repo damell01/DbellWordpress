@@ -49,21 +49,32 @@
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "Blog",
-        "name": "DBell Creations Blog",
-        "url": "https://www.dbellcreations.com/blog/",
-        "description": "Expert tips on web design, SEO, business automation, and digital marketing for Alabama small businesses.",
-        "publisher": {
-            "@type": "LocalBusiness",
-            "name": "DBell Creations",
-            "url": "https://www.dbellcreations.com",
-            "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Fairhope",
-                "addressRegion": "AL",
-                "addressCountry": "US"
+        "@graph": [
+            {
+                "@type": "Blog",
+                "name": "DBell Creations Blog",
+                "url": "https://www.dbellcreations.com/blog/",
+                "description": "Expert tips on web design, SEO, business automation, and digital marketing for Alabama small businesses.",
+                "publisher": {
+                    "@type": "LocalBusiness",
+                    "name": "DBell Creations",
+                    "url": "https://www.dbellcreations.com",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": "Fairhope",
+                        "addressRegion": "AL",
+                        "addressCountry": "US"
+                    }
+                }
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.dbellcreations.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.dbellcreations.com/blog/" }
+                ]
             }
-        }
+        ]
     }
     </script>
 </head>
@@ -140,9 +151,29 @@
                     <p class="text-muted mx-auto" style="max-width:680px;">Practical advice for Alabama business owners on building a stronger online presence, ranking higher on Google, and turning website visitors into paying customers.</p>
                 </div>
 
-                <div class="row g-4">
+                
+                <!-- Blog Search & Filter -->
+                <div class="row align-items-center mb-5 g-3 wow fadeInUp" data-wow-delay="0.2s" id="blog-controls">
+                    <div class="col-12 col-md-5">
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-white border-end-0 border-secondary-subtle"><i class="fa fa-search text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 border-secondary-subtle ps-0" id="blog-search" placeholder="Search articles&hellip;" aria-label="Search articles">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-7 d-flex flex-wrap gap-2 align-items-center justify-content-md-end">
+                        <button class="btn btn-primary rounded-pill btn-sm px-3 filter-btn active" data-filter="all">All</button>
+                        <button class="btn btn-outline-primary rounded-pill btn-sm px-3 filter-btn" data-filter="web-design">Web Design</button>
+                        <button class="btn btn-outline-primary rounded-pill btn-sm px-3 filter-btn" data-filter="seo">SEO</button>
+                        <button class="btn btn-outline-primary rounded-pill btn-sm px-3 filter-btn" data-filter="automation">Automation</button>
+                        <button class="btn btn-outline-primary rounded-pill btn-sm px-3 filter-btn" data-filter="digital-marketing">Marketing</button>
+                        <button class="btn btn-outline-primary rounded-pill btn-sm px-3 filter-btn" data-filter="tools">Tools &amp; Software</button>
+                    </div>
+                </div>
+
+                <div class="row g-4" id="blog-grid">
+
                     <!-- New Article: Affordable Web Design -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Pricing</p>
@@ -156,7 +187,7 @@
                     </div>
 
                     <!-- New Article: Get More Leads From Website -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.2s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Lead Generation &bull; Conversion</p>
@@ -170,7 +201,7 @@
                     </div>
 
                     <!-- New Article: Best Website Design for Contractors -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.3s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Contractors</p>
@@ -184,7 +215,7 @@
                     </div>
 
                     <!-- New Article: Website Load Speed -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Performance &bull; SEO</p>
@@ -198,7 +229,7 @@
                     </div>
 
                     <!-- New Article: Website Redesign Checklist -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.2s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Checklist</p>
@@ -212,7 +243,7 @@
                     </div>
 
                     <!-- New Article: Local SEO for Service Businesses -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.3s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Local SEO &bull; Rankings</p>
@@ -226,7 +257,7 @@
                     </div>
 
                     <!-- New Article: Automate Business Tasks -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="automation" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Automation &bull; Productivity</p>
@@ -240,7 +271,7 @@
                     </div>
 
                     <!-- Article 1 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Cost Guide</p>
@@ -254,7 +285,7 @@
                     </div>
 
                     <!-- Article 2 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.2s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Lead Generation &bull; Web Design</p>
@@ -268,7 +299,7 @@
                     </div>
 
                     <!-- Article 3 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="tools" data-wow-delay="0.3s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> CRM &bull; Business Tools</p>
@@ -282,7 +313,7 @@
                     </div>
 
                     <!-- Article 4 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> SEO &bull; Local Search</p>
@@ -296,7 +327,7 @@
                     </div>
 
                     <!-- Article 5 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.2s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Hiring Guide</p>
@@ -310,7 +341,7 @@
                     </div>
 
                     <!-- Article 6 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="automation" data-wow-delay="0.3s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Automation &bull; Productivity</p>
@@ -324,7 +355,7 @@
                     </div>
 
                     <!-- Article 7 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Redesign</p>
@@ -338,7 +369,7 @@
                     </div>
 
                     <!-- Article 8 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.2s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Local SEO &bull; Google</p>
@@ -352,7 +383,7 @@
                     </div>
 
                     <!-- Article 9 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.3s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Mobile</p>
@@ -366,7 +397,7 @@
                     </div>
 
                     <!-- Article 10 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Digital Marketing &bull; Social Media</p>
@@ -380,7 +411,7 @@
                     </div>
 
                     <!-- Article 11 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.2s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> E-Commerce &bull; Web Design</p>
@@ -394,7 +425,7 @@
                     </div>
 
                     <!-- Article 12 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="tools" data-wow-delay="0.3s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> AI &bull; Business Tools</p>
@@ -408,7 +439,7 @@
                     </div>
 
                     <!-- Article 13 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Performance</p>
@@ -422,7 +453,7 @@
                     </div>
 
                     <!-- Article 14 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.2s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Lead Generation &bull; Marketing</p>
@@ -436,7 +467,7 @@
                     </div>
 
                     <!-- Article 15 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="tools" data-wow-delay="0.3s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Custom Software &bull; Business Tools</p>
@@ -450,7 +481,7 @@
                     </div>
 
                     <!-- Article 16 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Content Marketing &bull; SEO</p>
@@ -464,7 +495,7 @@
                     </div>
 
                     <!-- Article 17 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.2s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Email Marketing &bull; Digital Marketing</p>
@@ -478,7 +509,7 @@
                     </div>
 
                     <!-- Article 18 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.3s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Trends</p>
@@ -492,7 +523,7 @@
                     </div>
 
                     <!-- Article 19 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="automation" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Business Automation &bull; Finance</p>
@@ -506,7 +537,7 @@
                     </div>
 
                     <!-- Article 20 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.2s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> SEO &bull; Paid Advertising</p>
@@ -520,7 +551,7 @@
                     </div>
 
                     <!-- Article 21 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="web-design" data-wow-delay="0.3s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Web Design &bull; Local Business</p>
@@ -534,7 +565,7 @@
                     </div>
 
                     <!-- Article 22 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="seo" data-wow-delay="0.1s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Local SEO &bull; Reputation</p>
@@ -548,7 +579,7 @@
                     </div>
 
                     <!-- Article 23 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="automation" data-wow-delay="0.2s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Business Automation &bull; Productivity</p>
@@ -562,7 +593,7 @@
                     </div>
 
                     <!-- Article 24 -->
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="col-lg-4 wow fadeInUp blog-card" data-categories="digital-marketing" data-wow-delay="0.3s">
                         <div class="service-item rounded overflow-hidden h-100 d-flex flex-column">
                             <div class="p-4 flex-grow-1">
                                 <p class="text-secondary small mb-2 fw-semibold"><i class="fa fa-tag me-1"></i> Digital Marketing &bull; Strategy</p>
@@ -574,7 +605,15 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- No Results -->
+                    <div id="blog-no-results" class="col-12 text-center py-5 d-none">
+                        <i class="fa fa-search text-muted mb-3 d-block" style="font-size:3rem;opacity:.4;"></i>
+                        <p class="text-muted mt-3">No articles found. Try a different search term or category.</p>
+                        <button class="btn btn-outline-primary rounded-pill btn-sm px-4 mt-2" onclick="document.getElementById('blog-search').value=''; document.querySelectorAll('.filter-btn')[0].click();">Clear Filters</button>
+                    </div>
                 </div>
+
             </div>
         </div>
         <!-- Blog Listing End -->
@@ -670,5 +709,52 @@
 
     <!-- Template Javascript -->
     <script defer src="../js/main.js"></script>
+
+    <!-- Blog Search & Filter JS -->
+    <script>
+    (function () {
+        var cards = Array.from(document.querySelectorAll('.blog-card'));
+        var filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
+        var searchInput = document.getElementById('blog-search');
+        var noResults = document.getElementById('blog-no-results');
+        var activeFilter = 'all';
+
+        function filterCards() {
+            var q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            var visible = 0;
+            cards.forEach(function (card) {
+                var cats = card.getAttribute('data-categories') || '';
+                var matchCat = activeFilter === 'all' || cats.indexOf(activeFilter) !== -1;
+                var cardText = card.textContent.toLowerCase();
+                var matchSearch = !q || cardText.indexOf(q) !== -1;
+                if (matchCat && matchSearch) {
+                    card.style.display = '';
+                    visible++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            if (noResults) noResults.classList.toggle('d-none', visible > 0);
+        }
+
+        filterBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                activeFilter = this.getAttribute('data-filter');
+                filterBtns.forEach(function (b) {
+                    b.classList.remove('btn-primary', 'active');
+                    b.classList.add('btn-outline-primary');
+                });
+                this.classList.remove('btn-outline-primary');
+                this.classList.add('btn-primary', 'active');
+                filterCards();
+            });
+        });
+
+        if (searchInput) {
+            searchInput.addEventListener('input', filterCards);
+        }
+    })();
+    </script>
+
 </body>
 </html>
