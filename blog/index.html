@@ -610,7 +610,7 @@
                     <div id="blog-no-results" class="col-12 text-center py-5 d-none">
                         <i class="fa fa-search text-muted mb-3 d-block" style="font-size:3rem;opacity:.4;"></i>
                         <p class="text-muted mt-3">No articles found. Try a different search term or category.</p>
-                        <button class="btn btn-outline-primary rounded-pill btn-sm px-4 mt-2" onclick="document.getElementById('blog-search').value=''; document.querySelectorAll('.filter-btn')[0].click();">Clear Filters</button>
+                        <button class="btn btn-outline-primary rounded-pill btn-sm px-4 mt-2" id="blog-clear-filters">Clear Filters</button>
                     </div>
                 </div>
 
@@ -752,6 +752,15 @@
 
         if (searchInput) {
             searchInput.addEventListener('input', filterCards);
+        }
+
+        var clearBtn = document.getElementById('blog-clear-filters');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                if (searchInput) searchInput.value = '';
+                var allBtn = document.querySelector('.filter-btn[data-filter="all"]');
+                if (allBtn) allBtn.click();
+            });
         }
     })();
     </script>
