@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Free SEO & Web Design Tools | DBell Creations</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="description" content="Free SEO and web design tools from DBell Creations — meta tag previewer, keyword density checker, character counter, ROI calculator, and website scanner for small businesses.">
+    <meta name="keywords" content="free SEO tools, meta tag generator, keyword density checker, website audit tool, SEO title preview, website ROI calculator, DBell Creations tools">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="DBell Creations">
+    <link rel="canonical" href="https://www.dbellcreations.com/tools.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.dbellcreations.com/tools.html">
+    <meta property="og:title" content="Free SEO & Web Design Tools | DBell Creations">
+    <meta property="og:description" content="Free SEO tools for small businesses — meta tag previewer, keyword density checker, SEO character counter, ROI calculator, and more.">
+    <meta property="og:image" content="https://www.dbellcreations.com/img/DBellCreationsLogo.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://www.dbellcreations.com/img/DBellCreationsLogo.png">
+    <meta name="twitter:title" content="Free SEO & Web Design Tools | DBell Creations">
+    <meta name="twitter:description" content="Free SEO tools for small businesses — meta tag previewer, keyword density checker, SEO character counter, and more.">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#6222CC">
+
+    <!-- Favicon -->
+    <link href="img/WebsiteSmallIcon.png" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Jost:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Free SEO & Web Design Tools",
+      "url": "https://www.dbellcreations.com/tools.html",
+      "description": "Free SEO and web design tools from DBell Creations for small businesses.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "DBell Creations",
+        "url": "https://www.dbellcreations.com"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.dbellcreations.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Free Tools", "item": "https://www.dbellcreations.com/tools.html" }
+        ]
+      }
+    }
+    </script>
+
+    <style>
+        .tool-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(98,34,204,0.07);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(98,34,204,0.08);
+        }
+        .tool-card h3 { font-size: 1.3rem; color: var(--dark); }
+        .tool-card .tool-icon {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, var(--primary), #9b59e8);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1.3rem; margin-bottom: 1rem;
+        }
+        /* Google SERP Preview */
+        .serp-preview {
+            background: #fff;
+            border: 1px solid #dfe1e5;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+        }
+        .serp-url { color: #202124; font-size: 0.8rem; margin-bottom: 2px; }
+        .serp-title { color: #1a0dab; font-size: 1.15rem; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+        .serp-title:hover { text-decoration: underline; }
+        .serp-desc { color: #4d5156; font-size: 0.875rem; line-height: 1.5; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .char-bar { height: 6px; border-radius: 3px; background: #e9ecef; overflow: hidden; margin-top: 4px; }
+        .char-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s, background 0.3s; }
+        .char-ok { background: #22c55e; }
+        .char-warn { background: #f59e0b; }
+        .char-over { background: #ef4444; }
+        /* Keyword results table */
+        .kw-table td, .kw-table th { font-size: 0.88rem; padding: 0.4rem 0.75rem; }
+        /* ROI */
+        .roi-result { font-size: 2rem; font-weight: 700; color: var(--primary); }
+        .roi-highlight { background: var(--light); border-radius: 10px; padding: 1.25rem 1.5rem; }
+    </style>
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Navbar Start -->
+        <div class="container-xxl position-relative p-0">
+            <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+                <a href="index.html" class="navbar-brand p-0">
+                    <span class="brand-logo-text"><span class="brand-dbell">DBELL</span><span class="brand-creations">CREATIONS</span></span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav mx-auto py-0">
+                        <a href="index.html" class="nav-item nav-link">Home</a>
+                        <a href="about.html" class="nav-item nav-link">About</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Services</a>
+                            <div class="dropdown-menu m-0">
+                                <a href="webDesign.html" class="dropdown-item">Web Design</a>
+                                <a href="software.html" class="dropdown-item">Custom Software</a>
+                                <a href="automations.html" class="dropdown-item">Business Automation</a>
+                                <a href="marketing.html" class="dropdown-item">Digital Marketing</a>
+                                <a href="seo.html" class="dropdown-item">SEO Optimization</a>
+                                <a href="scan.html" class="dropdown-item">Free Website Scanner</a>
+                            </div>
+                        </div>
+                        <a href="project.html" class="nav-item nav-link">Portfolio</a>
+                        <a href="frequentlyaskedquestions.html" class="nav-item nav-link">FAQ</a>
+                        <a href="blog/index.html" class="nav-item nav-link">Blog</a>
+                        <a href="tools.html" class="nav-item nav-link active">Free Tools</a>
+                        <a href="pricing.html" class="nav-item nav-link">Pricing</a>
+                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <a href="scan.html" class="btn rounded-pill py-2 px-4 ms-3 d-none d-lg-block">Free Audit</a>
+                </div>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="container-xxl bg-primary py-5" style="padding-top:7rem!important;">
+                <div class="container py-4 px-lg-5">
+                    <div class="row">
+                        <div class="col-lg-8 text-center text-lg-start">
+                            <p class="text-white-50 text-uppercase fw-semibold mb-2" style="letter-spacing:3px; font-size:0.85rem;">100% Free, No Sign-Up Required</p>
+                            <h1 class="text-white mb-3">Free SEO &amp; Web Design Tools</h1>
+                            <p class="text-white mb-0" style="opacity:0.85; font-size:1.05rem;">Practical tools to help you improve your website's SEO, check your content, and estimate your marketing ROI — all free, all instant, all right here.</p>
+                        </div>
+                    </div>
+                    <nav aria-label="breadcrumb" class="mt-3">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="index.html" style="color:rgba(255,255,255,0.65);">Home</a></li>
+                            <li class="breadcrumb-item active text-white-50" aria-current="page">Free Tools</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Navbar End -->
+
+
+        <!-- Tools Grid Start -->
+        <div class="container-xxl py-5">
+            <div class="container py-4 px-lg-5">
+
+                <!-- Tool Nav Pills -->
+                <div class="d-flex flex-wrap gap-2 mb-5 justify-content-center">
+                    <a href="#tool-scanner" class="btn btn-outline-primary rounded-pill btn-sm">Website Scanner</a>
+                    <a href="#tool-serp" class="btn btn-outline-primary rounded-pill btn-sm">SERP Preview</a>
+                    <a href="#tool-counter" class="btn btn-outline-primary rounded-pill btn-sm">SEO Character Counter</a>
+                    <a href="#tool-keywords" class="btn btn-outline-primary rounded-pill btn-sm">Keyword Density</a>
+                    <a href="#tool-roi" class="btn btn-outline-primary rounded-pill btn-sm">ROI Calculator</a>
+                    <a href="#tool-schema" class="btn btn-outline-primary rounded-pill btn-sm">Schema Generator</a>
+                </div>
+
+                <!-- Tool 1: Website Scanner -->
+                <div class="tool-card" id="tool-scanner">
+                    <div class="tool-icon"><i class="fa fa-search"></i></div>
+                    <h3 class="mb-1">Free Website Scanner</h3>
+                    <p class="text-muted mb-4">Run a full audit of any website — checks SEO, performance, accessibility, Core Web Vitals, and more. Get a prioritized report in minutes.</p>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold">Enter your website URL</label>
+                            <input type="url" class="form-control" id="scannerUrl" placeholder="https://yourwebsite.com" value="">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary w-100" onclick="launchScanner()"><i class="fa fa-rocket me-2"></i>Run Free Audit</button>
+                        </div>
+                    </div>
+                    <p class="text-muted small mt-3 mb-0"><i class="fa fa-lock me-1 text-primary"></i>No account required &nbsp;&middot;&nbsp; <i class="fa fa-clock me-1 text-primary"></i>Results in ~60 seconds &nbsp;&middot;&nbsp; <i class="fa fa-check me-1 text-primary"></i>50+ checks performed</p>
+                </div>
+
+                <!-- Tool 2: SERP Preview -->
+                <div class="tool-card" id="tool-serp">
+                    <div class="tool-icon"><i class="fab fa-google"></i></div>
+                    <h3 class="mb-1">Google SERP Preview</h3>
+                    <p class="text-muted mb-4">See exactly how your page will appear in Google search results before you publish. Preview your title, URL, and meta description in real time.</p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Page URL (shown in search results)</label>
+                            <input type="text" class="form-control" id="serpUrl" placeholder="https://www.yoursite.com/page" oninput="updateSerp()">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Page Title <span id="titleCount" class="text-muted small">(0/60)</span></label>
+                            <input type="text" class="form-control" id="serpTitle" placeholder="Your Page Title Goes Here | Brand Name" maxlength="90" oninput="updateSerp()">
+                            <div class="char-bar mt-1"><div class="char-bar-fill" id="titleBar" style="width:0%"></div></div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <small class="text-muted">Ideal: 50–60 characters</small>
+                                <small id="titleMsg" class="text-muted"></small>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Meta Description <span id="descCount" class="text-muted small">(0/160)</span></label>
+                            <textarea class="form-control" id="serpDesc" rows="2" placeholder="Write a compelling description of this page for search results (120–160 characters ideal)..." oninput="updateSerp()"></textarea>
+                            <div class="char-bar mt-1"><div class="char-bar-fill" id="descBar" style="width:0%"></div></div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <small class="text-muted">Ideal: 120–160 characters</small>
+                                <small id="descMsg" class="text-muted"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="form-label fw-semibold mb-2">Live Google Preview</label>
+                    <div class="serp-preview">
+                        <div class="serp-url" id="previewUrl">https://www.yoursite.com/page</div>
+                        <div class="serp-title" id="previewTitle">Your Page Title Goes Here | Brand Name</div>
+                        <div class="serp-desc" id="previewDesc">Your meta description will appear here. Write something that makes users want to click your link in the search results.</div>
+                    </div>
+                </div>
+
+                <!-- Tool 3: SEO Character Counter -->
+                <div class="tool-card" id="tool-counter">
+                    <div class="tool-icon"><i class="fa fa-text-width"></i></div>
+                    <h3 class="mb-1">SEO Character Counter</h3>
+                    <p class="text-muted mb-4">Check the character count of any text against SEO best-practice limits. Paste your title, description, or any copy to see instant feedback.</p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Page Title</label>
+                            <input type="text" class="form-control" id="ccTitle" placeholder="Enter your page title..." oninput="updateCounter()">
+                            <div class="d-flex justify-content-between mt-1">
+                                <div class="char-bar flex-grow-1 me-2 mt-1"><div class="char-bar-fill" id="ccTitleBar" style="width:0%"></div></div>
+                                <span id="ccTitleCount" class="small text-muted" style="white-space:nowrap;">0 / 60</span>
+                            </div>
+                            <small id="ccTitleMsg" class="d-block mt-1"></small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Meta Description</label>
+                            <textarea class="form-control" id="ccDesc" rows="2" placeholder="Enter your meta description..." oninput="updateCounter()"></textarea>
+                            <div class="d-flex justify-content-between mt-1">
+                                <div class="char-bar flex-grow-1 me-2 mt-1"><div class="char-bar-fill" id="ccDescBar" style="width:0%"></div></div>
+                                <span id="ccDescCount" class="small text-muted" style="white-space:nowrap;">0 / 160</span>
+                            </div>
+                            <small id="ccDescMsg" class="d-block mt-1"></small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">H1 Heading</label>
+                            <input type="text" class="form-control" id="ccH1" placeholder="Enter your main heading..." oninput="updateCounter()">
+                            <div class="d-flex justify-content-between mt-1">
+                                <div class="char-bar flex-grow-1 me-2 mt-1"><div class="char-bar-fill" id="ccH1Bar" style="width:0%"></div></div>
+                                <span id="ccH1Count" class="small text-muted" style="white-space:nowrap;">0 / 70</span>
+                            </div>
+                            <small id="ccH1Msg" class="d-block mt-1"></small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Alt Text (for images)</label>
+                            <input type="text" class="form-control" id="ccAlt" placeholder="Enter your image alt text..." oninput="updateCounter()">
+                            <div class="d-flex justify-content-between mt-1">
+                                <div class="char-bar flex-grow-1 me-2 mt-1"><div class="char-bar-fill" id="ccAltBar" style="width:0%"></div></div>
+                                <span id="ccAltCount" class="small text-muted" style="white-space:nowrap;">0 / 125</span>
+                            </div>
+                            <small id="ccAltMsg" class="d-block mt-1"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool 4: Keyword Density Checker -->
+                <div class="tool-card" id="tool-keywords">
+                    <div class="tool-icon"><i class="fa fa-key"></i></div>
+                    <h3 class="mb-1">Keyword Density Checker</h3>
+                    <p class="text-muted mb-4">Paste your page content to see the top keywords and their density. Aim for 1–2% for your primary keyword — anything higher may look spammy to Google.</p>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Paste your page content below</label>
+                            <textarea class="form-control" id="kwText" rows="6" placeholder="Paste your blog post, page copy, or any text here to analyze keyword density..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Target Keyword (optional)</label>
+                            <input type="text" class="form-control" id="kwTarget" placeholder="e.g. web design alabama">
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" onclick="analyzeKeywords()"><i class="fa fa-chart-bar me-2"></i>Analyze Keywords</button>
+                        </div>
+                        <div class="col-12" id="kwResults" style="display:none;">
+                            <div id="kwTargetResult" class="roi-highlight mb-3" style="display:none;"></div>
+                            <label class="form-label fw-semibold">Top 15 Keywords by Density</label>
+                            <div class="table-responsive">
+                                <table class="table table-sm kw-table">
+                                    <thead class="table-light">
+                                        <tr><th>#</th><th>Keyword</th><th>Count</th><th>Density</th><th>Assessment</th></tr>
+                                    </thead>
+                                    <tbody id="kwTableBody"></tbody>
+                                </table>
+                            </div>
+                            <p class="text-muted small mb-0">Word count: <strong id="kwWordCount"></strong> &nbsp;|&nbsp; Unique words: <strong id="kwUniqueCount"></strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool 5: ROI Calculator -->
+                <div class="tool-card" id="tool-roi">
+                    <div class="tool-icon"><i class="fa fa-chart-line"></i></div>
+                    <h3 class="mb-1">Website ROI Calculator</h3>
+                    <p class="text-muted mb-4">Estimate the return on your website investment based on your traffic, conversion rate, and average customer value. See how quickly a better website pays for itself.</p>
+                    <div class="row g-3">
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Monthly Website Visitors</label>
+                            <input type="number" class="form-control" id="roiVisitors" placeholder="e.g. 500" value="500" oninput="calcROI()">
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Current Conversion Rate (%)</label>
+                            <input type="number" class="form-control" id="roiConvCurr" placeholder="e.g. 1" value="1" step="0.1" oninput="calcROI()">
+                            <small class="text-muted">Industry avg: 1–3%</small>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">New Conversion Rate (%)</label>
+                            <input type="number" class="form-control" id="roiConvNew" placeholder="e.g. 2.5" value="2.5" step="0.1" oninput="calcROI()">
+                            <small class="text-muted">With optimized site</small>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Avg Customer Value ($)</label>
+                            <input type="number" class="form-control" id="roiValue" placeholder="e.g. 500" value="500" oninput="calcROI()">
+                        </div>
+                        <div class="col-12">
+                            <div class="row g-3 mt-1" id="roiResultBox">
+                                <div class="col-md-4">
+                                    <div class="roi-highlight text-center">
+                                        <div class="text-muted small mb-1">Additional Monthly Revenue</div>
+                                        <div class="roi-result" id="roiMonthly">$0</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="roi-highlight text-center">
+                                        <div class="text-muted small mb-1">Additional Annual Revenue</div>
+                                        <div class="roi-result" id="roiAnnual">$0</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="roi-highlight text-center">
+                                        <div class="text-muted small mb-1">Break-Even on $3,000 Site</div>
+                                        <div class="roi-result" id="roiBreakeven">—</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted small mt-3 mb-0"><i class="fa fa-info-circle me-1 text-primary"></i>This is an estimate based on the inputs provided. Actual results vary based on industry, traffic quality, and offer.</p>
+                </div>
+
+                <!-- Tool 6: Local Business Schema Generator -->
+                <div class="tool-card" id="tool-schema">
+                    <div class="tool-icon"><i class="fa fa-code"></i></div>
+                    <h3 class="mb-1">Local Business Schema Generator</h3>
+                    <p class="text-muted mb-4">Generate a <code>LocalBusiness</code> JSON-LD schema tag for your website. Structured data helps Google show your business info directly in search results (Knowledge Panel, Maps, etc.).</p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Business Name *</label>
+                            <input type="text" class="form-control" id="schName" placeholder="e.g. DBell Creations" oninput="genSchema()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Business Type *</label>
+                            <select class="form-select" id="schType" onchange="genSchema()">
+                                <option value="LocalBusiness">Local Business (General)</option>
+                                <option value="ProfessionalService">Professional Service</option>
+                                <option value="HomeAndConstructionBusiness">Home &amp; Construction</option>
+                                <option value="FoodEstablishment">Restaurant / Food</option>
+                                <option value="MedicalBusiness">Medical / Health</option>
+                                <option value="LegalService">Legal Service</option>
+                                <option value="AutomotiveBusiness">Automotive</option>
+                                <option value="Store">Retail Store</option>
+                                <option value="SportsActivityLocation">Fitness / Sports</option>
+                                <option value="TravelAgency">Travel Agency</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Website URL *</label>
+                            <input type="url" class="form-control" id="schUrl" placeholder="https://www.yoursite.com" oninput="genSchema()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Phone Number</label>
+                            <input type="text" class="form-control" id="schPhone" placeholder="+1-555-000-0000" oninput="genSchema()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Street Address</label>
+                            <input type="text" class="form-control" id="schStreet" placeholder="123 Main St" oninput="genSchema()">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">City</label>
+                            <input type="text" class="form-control" id="schCity" placeholder="Fairhope" oninput="genSchema()">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">State</label>
+                            <input type="text" class="form-control" id="schState" placeholder="AL" oninput="genSchema()">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">ZIP Code</label>
+                            <input type="text" class="form-control" id="schZip" placeholder="36532" oninput="genSchema()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email Address</label>
+                            <input type="email" class="form-control" id="schEmail" placeholder="hello@yoursite.com" oninput="genSchema()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Business Description</label>
+                            <input type="text" class="form-control" id="schDesc" placeholder="Short description of your business" oninput="genSchema()">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Generated Schema Code</label>
+                            <textarea class="form-control font-monospace" id="schOutput" rows="10" readonly style="font-size:0.8rem; background:#f8f9fa;"></textarea>
+                            <div class="mt-2">
+                                <button class="btn btn-primary btn-sm" onclick="copySchema()"><i class="fa fa-copy me-2"></i>Copy Code</button>
+                                <span id="schemaCopied" class="text-success small ms-2" style="display:none;"><i class="fa fa-check me-1"></i>Copied!</span>
+                                <p class="text-muted small mt-2 mb-0">Paste this code inside the <code>&lt;head&gt;</code> section of your HTML page.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Tools Grid End -->
+
+
+        <!-- CTA Banner Start -->
+        <div class="container-xxl bg-primary newsletter py-5 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="container py-5 px-lg-5">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-8 text-center text-lg-start">
+                        <h2 class="text-white mb-3">Want a Full Professional SEO Audit?</h2>
+                        <p class="text-white mb-3" style="opacity:0.85;">These tools give you a solid starting point — but a custom audit from our team goes deeper. We'll analyze your full site, competitors, and local search opportunities and deliver a prioritized action plan.</p>
+                        <p class="text-white mb-0" style="opacity:0.75; font-size:0.9rem;">
+                            <i class="fa fa-check me-2" style="color:var(--secondary);"></i>Competitor gap analysis &nbsp;&nbsp;
+                            <i class="fa fa-check me-2" style="color:var(--secondary);"></i>Local SEO review &nbsp;&nbsp;
+                            <i class="fa fa-check me-2" style="color:var(--secondary);"></i>Technical + content audit
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-center text-lg-end">
+                        <a href="scan.html" class="btn btn-secondary py-sm-3 px-sm-5 rounded-pill d-inline-block mb-2">Run Free Website Scan</a>
+                        <br>
+                        <a href="contact.html" class="btn btn-outline-light py-sm-3 px-sm-5 rounded-pill d-inline-block mt-2">Get Custom Audit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- CTA Banner End -->
+
+
+        <!-- Footer Start -->
+        <footer>
+            <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">
+                <div class="container py-5 px-lg-5">
+                    <div class="row g-5">
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">DBell Creations<span></span></p>
+                            <p class="text-white-50 small mb-3">Full-service digital agency in Fairhope, AL &mdash; web design, software, automation, SEO, and marketing.</p>
+                            <p><i class="fa fa-map-marker-alt me-3"></i>Fairhope, AL</p>
+                            <p><i class="fa fa-phone-alt me-3"></i><a id="number" href="tel:251-406-2292">251-406-2292</a></p>
+                            <p><i class="fa fa-envelope me-3"></i><a id="number" href="mailto:dbellcreations@gmail.com">Dbellcreations@gmail.com</a></p>
+                            <div class="d-flex pt-2">
+                                <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/profile.php?id=100090989871594&mibextid=LQQJ4d" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-light btn-social" href="https://www.instagram.com/dbellcreations/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Services<span></span></p>
+                            <a class="btn btn-link" href="webDesign.html">Web Design</a>
+                            <a class="btn btn-link" href="software.html">Custom Software</a>
+                            <a class="btn btn-link" href="automations.html">Business Automation</a>
+                            <a class="btn btn-link" href="marketing.html">Digital Marketing</a>
+                            <a class="btn btn-link" href="seo.html">SEO Optimization</a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Quick Links<span></span></p>
+                            <a class="btn btn-link" href="about.html">About Us</a>
+                            <a class="btn btn-link" href="project.html">Portfolio</a>
+                            <a class="btn btn-link" href="tools.html">Free Tools</a>
+                            <a class="btn btn-link" href="frequentlyaskedquestions.html">FAQs</a>
+                            <a class="btn btn-link" href="contact.html">Contact Us</a>
+                            <a class="btn btn-link" href="blog/index.html">Blog</a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Local SEO Pages<span></span></p>
+                            <a class="btn btn-link" href="web-design-fairhope-al.html">Web Design Fairhope AL</a>
+                            <a class="btn btn-link" href="seo-fairhope-al.html">SEO Fairhope AL</a>
+                            <a class="btn btn-link" href="custom-software-development-alabama.html">Custom Software Alabama</a>
+                            <a class="btn btn-link" href="automation-services-alabama.html">Automation Alabama</a>
+                            <a class="btn btn-link" href="website-redesign-alabama.html">Website Redesign Alabama</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="container px-lg-5">
+                    <div class="copyright">
+                        <div class="row">
+                            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                                &copy; 2025 <a class="border-bottom" href="index.html">DBell Creations</a>. All Rights Reserved.
+                            </div>
+                            <div class="col-md-6 text-center text-md-end">
+                                <div class="footer-menu">
+                                    <a href="index.html">Home</a>
+                                    <a href="about.html">About</a>
+                                    <a href="contact.html">Contact</a>
+                                    <a href="tools.html">Free Tools</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-secondary btn-lg-square back-to-top" aria-label="Back to top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script defer src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="lib/wow/wow.min.js"></script>
+    <script defer src="lib/easing/easing.min.js"></script>
+    <script defer src="lib/waypoints/waypoints.min.js"></script>
+    <script defer src="lib/counterup/counterup.min.js"></script>
+    <script defer src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script defer src="lib/isotope/isotope.pkgd.min.js"></script>
+    <script defer src="lib/lightbox/js/lightbox.min.js"></script>
+    <script defer src="js/main.js"></script>
+
+    <script>
+    /* ===== Tool 1: Website Scanner ===== */
+    function launchScanner() {
+        var url = document.getElementById('scannerUrl').value.trim();
+        if (!url) { alert('Please enter a website URL first.'); return; }
+        if (!url.startsWith('http://') && !url.startsWith('https://')) { url = 'https://' + url; }
+        var encoded = encodeURIComponent(url);
+        window.open('WebsiteScan/audit?url=' + encoded, '_blank');
+    }
+
+    /* ===== Tool 2: SERP Preview ===== */
+    function updateSerp() {
+        var title = document.getElementById('serpTitle').value || 'Your Page Title Goes Here | Brand Name';
+        var desc = document.getElementById('serpDesc').value || 'Your meta description will appear here. Write something that makes users want to click your link in the search results.';
+        var url = document.getElementById('serpUrl').value || 'https://www.yoursite.com/page';
+
+        document.getElementById('previewTitle').textContent = title;
+        document.getElementById('previewDesc').textContent = desc;
+        document.getElementById('previewUrl').textContent = url;
+
+        var tLen = document.getElementById('serpTitle').value.length;
+        var dLen = document.getElementById('serpDesc').value.length;
+
+        document.getElementById('titleCount').textContent = '(' + tLen + '/60)';
+        document.getElementById('descCount').textContent = '(' + dLen + '/160)';
+
+        var tPct = Math.min(100, (tLen / 60) * 100);
+        var tEl = document.getElementById('titleBar');
+        tEl.style.width = tPct + '%';
+        tEl.className = 'char-bar-fill ' + (tLen < 30 ? 'char-warn' : tLen <= 60 ? 'char-ok' : 'char-over');
+        document.getElementById('titleMsg').textContent = tLen === 0 ? '' : tLen < 30 ? '⚠ Too short' : tLen <= 60 ? '✓ Good length' : '✗ Too long — may be cut off';
+        document.getElementById('titleMsg').className = tLen > 60 ? 'text-danger small' : tLen > 0 && tLen < 30 ? 'text-warning small' : 'text-success small';
+
+        var dPct = Math.min(100, (dLen / 160) * 100);
+        var dEl = document.getElementById('descBar');
+        dEl.style.width = dPct + '%';
+        dEl.className = 'char-bar-fill ' + (dLen < 70 ? 'char-warn' : dLen <= 160 ? 'char-ok' : 'char-over');
+        document.getElementById('descMsg').textContent = dLen === 0 ? '' : dLen < 70 ? '⚠ Too short' : dLen <= 160 ? '✓ Good length' : '✗ Too long — may be cut off';
+        document.getElementById('descMsg').className = dLen > 160 ? 'text-danger small' : dLen > 0 && dLen < 70 ? 'text-warning small' : 'text-success small';
+    }
+
+    /* ===== Tool 3: Character Counter ===== */
+    var ccFields = [
+        { id: 'ccTitle', bar: 'ccTitleBar', count: 'ccTitleCount', msg: 'ccTitleMsg', max: 60, low: 30, label: 'Title' },
+        { id: 'ccDesc', bar: 'ccDescBar', count: 'ccDescCount', msg: 'ccDescMsg', max: 160, low: 70, label: 'Description' },
+        { id: 'ccH1', bar: 'ccH1Bar', count: 'ccH1Count', msg: 'ccH1Msg', max: 70, low: 20, label: 'H1' },
+        { id: 'ccAlt', bar: 'ccAltBar', count: 'ccAltCount', msg: 'ccAltMsg', max: 125, low: 10, label: 'Alt Text' }
+    ];
+    function updateCounter() {
+        ccFields.forEach(function(f) {
+            var len = document.getElementById(f.id).value.length;
+            document.getElementById(f.count).textContent = len + ' / ' + f.max;
+            var pct = Math.min(100, (len / f.max) * 100);
+            var bar = document.getElementById(f.bar);
+            bar.style.width = pct + '%';
+            bar.className = 'char-bar-fill ' + (len === 0 ? '' : len > f.max ? 'char-over' : len < f.low ? 'char-warn' : 'char-ok');
+            var msg = document.getElementById(f.msg);
+            if (len === 0) { msg.textContent = ''; }
+            else if (len > f.max) { msg.textContent = '✗ Too long by ' + (len - f.max) + ' chars'; msg.className = 'text-danger small d-block mt-1'; }
+            else if (len < f.low) { msg.textContent = '⚠ A bit short — try to add more detail'; msg.className = 'text-warning small d-block mt-1'; }
+            else { msg.textContent = '✓ Looks good!'; msg.className = 'text-success small d-block mt-1'; }
+        });
+    }
+
+    /* ===== Tool 4: Keyword Density ===== */
+    var stopWords = new Set(['the','a','an','and','or','but','in','on','at','to','for','of','with','by','from','as','is','was','are','were','be','been','being','have','has','had','do','does','did','will','would','could','should','may','might','shall','can','need','dare','ought','used','that','this','these','those','it','its','they','them','their','we','our','you','your','i','my','me','he','she','him','her','his','not','no','nor','so','yet','both','either','each','few','more','most','other','some','such','than','then','though','when','where','which','while','who','whose','why','how','all','any','also','just','very','too','up','about','after','before','during','into','through','under','over']);
+    function analyzeKeywords() {
+        var text = document.getElementById('kwText').value.trim();
+        if (!text) { alert('Please paste some content first.'); return; }
+        var target = document.getElementById('kwTarget').value.trim().toLowerCase();
+        var words = text.toLowerCase().replace(/[^a-z0-9\s'-]/g, ' ').split(/\s+/).filter(function(w){ return w.length > 2 && !stopWords.has(w); });
+        var total = words.length;
+        var freq = {};
+        words.forEach(function(w){ freq[w] = (freq[w]||0)+1; });
+        var sorted = Object.entries(freq).sort(function(a,b){ return b[1]-a[1]; }).slice(0,15);
+
+        var tbody = document.getElementById('kwTableBody');
+        tbody.innerHTML = '';
+        sorted.forEach(function(entry, i) {
+            var density = ((entry[1] / total) * 100).toFixed(2);
+            var assessment = density > 3 ? '<span class="text-danger">High — may look spammy</span>' : density >= 1 ? '<span class="text-success">Good</span>' : '<span class="text-muted">Low</span>';
+            tbody.innerHTML += '<tr><td>' + (i+1) + '</td><td><strong>' + entry[0] + '</strong></td><td>' + entry[1] + '</td><td>' + density + '%</td><td>' + assessment + '</td></tr>';
+        });
+
+        document.getElementById('kwWordCount').textContent = total;
+        document.getElementById('kwUniqueCount').textContent = Object.keys(freq).length;
+
+        if (target) {
+            var targetWords = target.split(/\s+/);
+            var phraseCount = 0;
+            var textLower = text.toLowerCase();
+            var start = 0;
+            while ((start = textLower.indexOf(target, start)) !== -1) { phraseCount++; start += target.length; }
+            var allWords = text.toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(Boolean);
+            var targetDensity = ((phraseCount / allWords.length) * 100).toFixed(2);
+            var el = document.getElementById('kwTargetResult');
+            el.innerHTML = '<strong>Target keyword: "' + target + '"</strong><br>Found <strong>' + phraseCount + ' times</strong> &nbsp;|&nbsp; Density: <strong>' + targetDensity + '%</strong> &nbsp;|&nbsp; ' + (targetDensity > 3 ? '<span class="text-danger">Too high — reduce usage</span>' : targetDensity >= 1 ? '<span class="text-success">Good density</span>' : '<span class="text-warning">Too low — add more occurrences</span>');
+            el.style.display = '';
+        } else {
+            document.getElementById('kwTargetResult').style.display = 'none';
+        }
+        document.getElementById('kwResults').style.display = '';
+    }
+
+    /* ===== Tool 5: ROI Calculator ===== */
+    function calcROI() {
+        var visitors = parseFloat(document.getElementById('roiVisitors').value) || 0;
+        var convCurr = parseFloat(document.getElementById('roiConvCurr').value) || 0;
+        var convNew = parseFloat(document.getElementById('roiConvNew').value) || 0;
+        var value = parseFloat(document.getElementById('roiValue').value) || 0;
+        var currLeads = visitors * (convCurr / 100);
+        var newLeads = visitors * (convNew / 100);
+        var additionalLeads = Math.max(0, newLeads - currLeads);
+        var monthly = additionalLeads * value;
+        var annual = monthly * 12;
+        var breakeven = monthly > 0 ? Math.ceil(3000 / monthly) : null;
+        document.getElementById('roiMonthly').textContent = '$' + Math.round(monthly).toLocaleString();
+        document.getElementById('roiAnnual').textContent = '$' + Math.round(annual).toLocaleString();
+        document.getElementById('roiBreakeven').textContent = breakeven ? breakeven + (breakeven === 1 ? ' month' : ' months') : '—';
+    }
+    window.addEventListener('load', calcROI);
+
+    /* ===== Tool 6: Schema Generator ===== */
+    function genSchema() {
+        var name = document.getElementById('schName').value.trim() || 'Your Business Name';
+        var type = document.getElementById('schType').value;
+        var url = document.getElementById('schUrl').value.trim() || 'https://www.yoursite.com';
+        var phone = document.getElementById('schPhone').value.trim();
+        var street = document.getElementById('schStreet').value.trim();
+        var city = document.getElementById('schCity').value.trim();
+        var state = document.getElementById('schState').value.trim();
+        var zip = document.getElementById('schZip').value.trim();
+        var email = document.getElementById('schEmail').value.trim();
+        var desc = document.getElementById('schDesc').value.trim();
+
+        var schema = { "@context": "https://schema.org", "@type": type, "name": name, "url": url };
+        if (desc) schema.description = desc;
+        if (phone) schema.telephone = phone;
+        if (email) schema.email = email;
+        if (street || city || state || zip) {
+            schema.address = { "@type": "PostalAddress" };
+            if (street) schema.address.streetAddress = street;
+            if (city) schema.address.addressLocality = city;
+            if (state) schema.address.addressRegion = state;
+            if (zip) schema.address.postalCode = zip;
+            schema.address.addressCountry = "US";
+        }
+
+        var output = '<script type="application/ld+json">\n' + JSON.stringify(schema, null, 2) + '\n<\/script>';
+        document.getElementById('schOutput').value = output;
+    }
+    window.addEventListener('load', genSchema);
+
+    function copySchema() {
+        var ta = document.getElementById('schOutput');
+        ta.select();
+        document.execCommand('copy');
+        var msg = document.getElementById('schemaCopied');
+        msg.style.display = 'inline';
+        setTimeout(function(){ msg.style.display = 'none'; }, 2500);
+    }
+    </script>
+</body>
+</html>
