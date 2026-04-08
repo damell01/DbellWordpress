@@ -24,7 +24,7 @@ This is the production codebase for the DBell Creations website. The site is a s
 ├── pricing.html                — Pricing packages
 ├── project.html                — Portfolio / case studies
 ├── frequentlyaskedquestions.html — FAQ (with FAQPage schema)
-├── tools.html                  — Free SEO & web design tools
+├── resources.html              — Free Resources (guides, checklists, curated blog links)
 ├── webDesign.html              — Web Design service page
 ├── software.html               — Custom Software service page
 ├── automations.html            — Business Automation service page
@@ -40,8 +40,8 @@ This is the production codebase for the DBell Creations website. The site is a s
 ├── website-redesign-alabama.html
 │
 ├── blog/
-│   ├── index.html              — Blog listing page (search + filter)
-│   └── [article].html          — 34 individual blog posts (see Blog section)
+│   ├── index.html              — Blog listing page (search + filter by category)
+│   └── [article].html          — 38 individual blog posts (see Blog section)
 │
 ├── WebsiteScan/                — PHP-based website audit tool (separate app)
 │   └── ...
@@ -93,15 +93,15 @@ Defined in `css/style.css`:
 
 ---
 
-## Blog Posts
+## Blog Posts (38 articles)
 
-The blog (`blog/index.html`) contains 34+ articles across these categories:
+The blog (`blog/index.html`) contains 38+ articles across these categories, with search + filter functionality:
 
-**Web Design:** affordable web design, contractor websites, website redesign checklist, mobile-first design, web design trends, signs you need a redesign, website cost in Alabama, why your site isn't getting leads, website accessibility guide
+**Web Design:** affordable web design, contractor websites, website redesign checklist, mobile-first design, web design trends, signs you need a redesign, website cost in Alabama, why your site isn't getting leads, website accessibility guide, **7 web design mistakes small businesses make** *(new)*
 
-**SEO:** local SEO guide Alabama, local SEO for service businesses, Google My Business guide, how to get more Google reviews, SEO vs PPC, website speed optimization, how to rank on Google Maps Alabama
+**SEO:** local SEO guide Alabama, local SEO for service businesses, Google My Business guide, how to get more Google reviews, SEO vs PPC, website speed optimization, how to rank on Google Maps Alabama, **Google Business Profile optimization guide** *(new)*
 
-**Digital Marketing:** social media marketing, content marketing, email marketing, digital marketing budget, lead generation strategies
+**Digital Marketing:** social media marketing, content marketing, email marketing, digital marketing budget, lead generation strategies, **how to get your first clients as a new business** *(new)*
 
 **Automation & AI:** business automation intro, workflow automation guide, automate invoicing, AI tools for small business, ChatGPT prompts for small business
 
@@ -109,16 +109,14 @@ The blog (`blog/index.html`) contains 34+ articles across these categories:
 
 ---
 
-## Free Tools Page (`tools.html`)
+## Free Resources Page (`resources.html`)
 
-The site includes a free interactive tools page with:
+The site includes a Free Resources page with:
 
-1. **Free Website Scanner** — launches the WebsiteScan audit tool
-2. **Google SERP Preview** — real-time Google search result preview
-3. **SEO Character Counter** — validates title, description, H1, and alt text lengths
-4. **Keyword Density Checker** — analyzes text for top keywords and density %
-5. **Website ROI Calculator** — estimates revenue impact of conversion rate improvements
-6. **Local Business Schema Generator** — generates JSON-LD structured data markup
+1. **Website & Business Guides** — curated links to in-depth blog posts: Website Launch Checklist, Local SEO Quick-Start Guide, Business Automation Starter, Digital Marketing Budget Guide
+2. **Free Website Audit** — launches the WebsiteScan PHP tool (50+ point SEO, speed & accessibility report)
+3. **Free Strategy Call** — links to contact page for a complimentary 30-minute consultation
+4. **Top Blog Posts by Topic** — organized by Web Design, SEO, and Automation for easy browsing
 
 ---
 
@@ -130,15 +128,19 @@ Every page includes:
 - ✅ Meta `keywords`
 - ✅ `robots: index, follow`
 - ✅ Canonical URL (`<link rel="canonical">`)
-- ✅ Open Graph tags (og:title, og:description, og:image absolute URL, og:url)
-- ✅ Twitter Card tags (including twitter:image)
+- ✅ Open Graph tags (`og:title`, `og:description`, `og:image` absolute URL, `og:url`, `og:locale`, `og:site_name`)
+- ✅ Twitter Card tags (including `twitter:image`)
 - ✅ `meta name="theme-color" content="#6222CC"`
 - ✅ Schema.org JSON-LD structured data
 - ✅ Google site verification tag (index.html)
 - ✅ XML sitemap (`sitemap.xml`)
 - ✅ Robots.txt with sitemap reference
+- ✅ Google Analytics 4 tracking on all pages
 
-**Schema types in use:** LocalBusiness, Article, FAQPage, WebPage, BreadcrumbList, ItemList/Product (pricing page)
+**Enhanced schema on homepage (`index.html`):**
+- `LocalBusiness` with `aggregateRating` (5-star), `hasOfferCatalog`, `areaServed` (multiple cities), `geo` coordinates, full `OpeningHoursSpecification`
+
+**Schema types in use:** LocalBusiness, Service, Article, FAQPage, WebPage, BreadcrumbList, Blog, ItemList
 
 ---
 
@@ -188,6 +190,38 @@ Google Analytics 4 (GA4) tracking code is included on all pages with a placehold
 
 ---
 
+## Future Improvements to Consider
+
+Here are additional features and improvements that could further grow the site:
+
+### Content & SEO
+- **More local SEO landing pages** — Target nearby markets: Mobile AL, Gulf Shores AL, Foley AL, Daphne AL, Spanish Fort AL
+- **Industry-specific landing pages** — "Web Design for Restaurants," "Web Design for Contractors," "Web Design for Law Firms"
+- **Case study detail pages** — Dedicated pages for each portfolio project with measurable results
+- **Video content** — Embed YouTube/Loom explainer videos on service pages to boost dwell time
+- **Testimonials page** — Dedicated page with full client reviews + review schema markup
+- **Press/Media page** — Build authority with any press mentions or awards
+
+### Lead Generation & Conversion
+- **Live chat widget** — Tawk.to or Crisp (free options) to capture leads in real time
+- **Exit-intent popup** — Offer a free guide download or audit to reduce bounce rate
+- **Lead magnet** — A downloadable PDF (e.g., "The Alabama Small Business Website Checklist") in exchange for email signup
+- **Email newsletter** — Monthly tips via Mailchimp/ConvertKit to nurture leads
+- **Project quote calculator** — Interactive widget estimating website or software project cost
+
+### Technical
+- **Web Vitals / Core Web Vitals** — Optimize LCP image with `fetchpriority="high"`, add `width`/`height` to images to prevent layout shift
+- **Service Worker / PWA** — Offline support for the main pages
+- **Image lazy loading audit** — Ensure all below-fold images have `loading="lazy"` and are served as WebP
+- **Preload critical fonts/CSS** — `<link rel="preload">` for style.css and Google Fonts to improve FCP
+
+### Trust & Social Proof
+- **Google Reviews widget** — Embed live Google reviews using a free widget (Elfsight or custom API)
+- **Client logo strip** — Display logos of businesses you've worked with
+- **Before/after slider** — Show website redesign comparisons for social proof
+
+---
+
 ## Contact & Support
 
 **DBell Creations**  
@@ -201,3 +235,4 @@ Fairhope, AL
 ---
 
 *Base template: DGital by HTML Codex (htmlcodex.com) — modified extensively for DBell Creations.*
+
