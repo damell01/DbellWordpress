@@ -218,3 +218,14 @@
     
 })(jQuery);
 
+// Copy current page URL to clipboard (used by blog share buttons)
+function copyBlogLink(btn) {
+    navigator.clipboard.writeText(window.location.href).then(function () {
+        var original = btn.innerHTML;
+        btn.textContent = 'Copied!';
+        setTimeout(function () {
+            btn.innerHTML = original;
+        }, 2000);
+    });
+}
+
