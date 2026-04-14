@@ -21,6 +21,7 @@
 html { scroll-behavior: smooth; }
 
 body {
+    margin: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.7;
@@ -2340,6 +2341,20 @@ button:focus-visible,
         width: 100%;
         max-width: 100% !important;
     }
+}
+
+html,
+body {
+    overflow-x: hidden;
+    background: #fff;
+}
+
+.container-xxl.bg-white {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
 }
 
 
