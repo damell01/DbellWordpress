@@ -36,58 +36,7 @@ if (!empty($errors)) {
     exit;
 }
 
-// â”€â”€ Save to Database â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $leadId = null;
-try {
-    $dbConfig = [];
-    $dbConfigFile = __DIR__ . '/WebsiteScan/config/database.php';
-    if (file_exists($dbConfigFile)) {
-        $dbConfig = require $dbConfigFile;
-    }
-
-    if (!empty($dbConfig['database'])) {
-        $dsn = sprintf(
-            'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
-            $dbConfig['host'] ?? '127.0.0.1',
-            $dbConfig['port'] ?? 3306,
-            $dbConfig['database']
-        );
-        $pdo = new PDO($dsn, $dbConfig['username'] ?? 'root', $dbConfig['password'] ?? '', [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ]);
-
-        $now = date('Y-m-d H:i:s');
-
-        // Check if lead already exists by email
-        $existingLead = null;
-        if (!empty($email)) {
-            $stmt = $pdo->prepare("SELECT id FROM leads WHERE email = ? LIMIT 1");
-            $stmt->execute([$email]);
-            $existingLead = $stmt->fetch();
-        }
-
-        if ($existingLead) {
-            $leadId = (int)$existingLead['id'];
-            // Update existing lead
-            $pdo->prepare("UPDATE leads SET contact_name = ?, phone = ?, business_name = ?, website_url = ?, service_interest = ?, source_page = ?, notes = ? WHERE id = ?")
-                ->execute([$name, $phone ?: null, $businessName ?: null, $website ?: null, $serviceInterest ?: null, $sourcePage, $message, $leadId]);
-        } else {
-            // Insert new lead â€” 9 bound params: contact_name, email, phone, business_name,
-            // website_url, notes, service_interest, source_page, created_at
-            $stmt = $pdo->prepare("INSERT INTO leads (contact_name, email, phone, business_name, website_url, notes, source, service_interest, source_page, status, follow_up_stage, next_follow_up_at, created_at) VALUES (?, ?, ?, ?, ?, ?, 'contact_form', ?, ?, 'new', 0, DATE_ADD(NOW(), INTERVAL 1 DAY), ?)");
-            $stmt->execute([$name, $email, $phone ?: null, $businessName ?: null, $website ?: null, $message, $serviceInterest ?: null, $sourcePage, $now]);
-            $leadId = (int)$pdo->lastInsertId();
-        }
-
-        // Also save contact request
-        $pdo->prepare("INSERT INTO contact_requests (lead_id, name, email, phone, company, message, service_type, source, website_url, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'contact_form', ?, 'new', ?)")
-            ->execute([$leadId ?: null, $name, $email, $phone ?: null, $businessName ?: null, $message, $serviceInterest ?: null, $website ?: null, $now]);
-    }
-} catch (\Throwable $e) {
-    // DB save failed â€” log but don't block the form submission
-    error_log('DBell Contact Form DB Error: ' . $e->getMessage());
-}
 
 // â”€â”€ Send Admin Notification Email â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $adminSubject = "New Lead: {$name}" . ($businessName ? " ({$businessName})" : '');
@@ -112,7 +61,7 @@ $adminHeaders .= "X-Mailer: PHP/" . phpversion();
 @mail($adminEmail, $adminSubject, $adminBody, $adminHeaders);
 
 // â”€â”€ Send Confirmation Email to Lead â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-$confirmSubject = "Thanks for reaching out, {$name}! â€” DBell Creations";
+$confirmSubject = "Thanks for reaching out, {$name}! - DBell Creations";
 $confirmBody  = "Hi {$name},\n\n";
 $confirmBody .= "Thanks for getting in touch with DBell Creations! I received your message and I'll be back with you within 24 hours.\n\n";
 $confirmBody .= "Here's a quick recap of what you submitted:\n";
@@ -120,7 +69,7 @@ $confirmBody .= "- Service interest: " . ($serviceInterest ?: 'General inquiry')
 $confirmBody .= "- Your message: \"" . substr($message, 0, 200) . (strlen($message) > 200 ? '...' : '') . "\"\n\n";
 $confirmBody .= "While you wait, here are a few things you can explore:\n";
 $confirmBody .= "ðŸ‘‰ View our pricing: https://www.dbellcreations.com/pricing.html\n";
-$confirmBody .= "ðŸ‘‰ Run a free website audit: https://www.dbellcreations.com/WebsiteScan/public/audit\n";
+$confirmBody .= "ðŸ‘‰ Run a free consultation: https://www.dbellcreations.com/contact.html\n";
 $confirmBody .= "ðŸ‘‰ See our portfolio: https://www.dbellcreations.com/project.html\n\n";
 $confirmBody .= "Talk soon,\nDBell Creations\n";
 $confirmBody .= "ðŸ“ž 251-406-2292\n";
@@ -154,4 +103,6 @@ function respond(array $data): void {
     }
     exit;
 }
+
+
 

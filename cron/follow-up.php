@@ -123,8 +123,8 @@ function buildFollowUpEmail(int $stage, string $firstName, array $lead): array {
             $body .= "âœ… Affordable websites (starting at just \$350)\n";
             $body .= "âœ… Custom software & business automation\n";
             $body .= "âœ… SEO that actually gets you more traffic\n\n";
-            $body .= "One quick thing â€” have you run a free website audit yet? It's completely free and will show you exactly what's hurting your site's performance and rankings:\n";
-            $body .= "ðŸ‘‰ https://www.dbellcreations.com/WebsiteScan/public/audit\n\n";
+            $body .= "One quick thing â€” have you run a free consultation yet? It's completely free and will show you exactly what's hurting your site's performance and rankings:\n";
+            $body .= "ðŸ‘‰ https://www.dbellcreations.com/contact.html\n\n";
             $body .= "I'll be back in touch shortly. In the meantime, feel free to reply to this email with any questions!\n\n";
             $body .= "Talk soon,\nDBell Creations\nðŸ“ž 251-406-2292\nðŸŒ https://www.dbellcreations.com";
             break;
@@ -140,8 +140,8 @@ function buildFollowUpEmail(int $stage, string $firstName, array $lead): array {
             $body .= "âŒ Missing SEO basics (your site isn't being found for the right keywords)\n";
             $body .= "âŒ No lead capture (you're losing potential customers daily)\n\n";
             $body .= "Any of those sound familiar?\n\n";
-            $body .= "If so, our free website audit will catch all of these and give you a prioritized action plan:\n";
-            $body .= "ðŸ‘‰ Run your free audit: https://www.dbellcreations.com/WebsiteScan/public/audit\n\n";
+            $body .= "If so, our free consultation will catch all of these and give you a prioritized action plan:\n";
+            $body .= "ðŸ‘‰ Run your free audit: https://www.dbellcreations.com/contact.html\n\n";
             $body .= "Just reply to this email if you have questions â€” happy to help!\n\n";
             $body .= "â€” DBell Creations\nðŸ“ž 251-406-2292";
             break;
@@ -169,7 +169,7 @@ function buildFollowUpEmail(int $stage, string $firstName, array $lead): array {
             $body .= "If you're still looking to improve your online presence â€” whether it's a new website, better SEO, or a custom software solution â€” I'd love to help.\n\n";
             $body .= "Even if the timing isn't right now, here are some resources to save for later:\n";
             $body .= "ðŸ“‹ View our pricing: https://www.dbellcreations.com/pricing.html\n";
-            $body .= "ðŸ” Free website audit: https://www.dbellcreations.com/WebsiteScan/public/audit\n";
+            $body .= "ðŸ” Free website audit: https://www.dbellcreations.com/contact.html\n";
             $body .= "ðŸ“ž Call us: 251-406-2292\n\n";
             $body .= "No need to reply if now isn't the right time â€” we'll be here when you're ready.\n\n";
             $body .= "Wishing you the best,\nDBell Creations\nðŸŒ https://www.dbellcreations.com";
@@ -182,4 +182,6 @@ function buildFollowUpEmail(int $stage, string $firstName, array $lead): array {
 
     return [$subject, $body];
 }
+
+
 

@@ -11,7 +11,6 @@ function envFileValue(string $key, ?string $filePath = null): ?string {
     }
 
     $candidates[] = __DIR__ . DIRECTORY_SEPARATOR . '.env';
-    $candidates[] = __DIR__ . DIRECTORY_SEPARATOR . 'WebsiteScan' . DIRECTORY_SEPARATOR . '.env';
 
     foreach ($candidates as $candidate) {
         if (!is_file($candidate) || !is_readable($candidate)) {
@@ -344,12 +343,12 @@ function appendQueryValue($path, $key, $value) {
 }
 
 /**
- * Save a contact form submission to the WebsiteScan CRM database.
+ * Save a contact form submission to the local CRM database when configured.
  * Silently fails if the DB is unavailable so email delivery is never blocked.
  */
 function saveToCrm(string $name, string $email, string $phone, string $contactMessage, string $subject): void {
     try {
-        $dbConfigFile = __DIR__ . '/WebsiteScan/config/database.php';
+        $dbConfigFile = __DIR__ . '/config/database.php';
         if (!file_exists($dbConfigFile)) {
             return;
         }

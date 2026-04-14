@@ -1,7 +1,7 @@
-# DBell Creations — Production Website
+﻿# DBell Creations â€” Production Website
 
 **Website:** [dbellcreations.com](https://www.dbellcreations.com)  
-**Business:** DBell Creations — Full-Service Digital Agency  
+**Business:** DBell Creations â€” Full-Service Digital Agency  
 **Location:** Fairhope, AL (Baldwin County)  
 **Phone:** 251-406-2292  
 **Email:** dbellcreations@gmail.com
@@ -18,47 +18,43 @@ This is the production codebase for the DBell Creations website. The site is a s
 
 ```
 / (root)
-├── index.html                  — Homepage
-├── about.html                  — About page
-├── contact.html                — Contact page
-├── pricing.html                — Pricing packages
-├── project.html                — Portfolio / case studies
-├── frequentlyaskedquestions.html — FAQ (with FAQPage schema)
-├── resources.html              — Free Resources (guides, checklists, curated blog links)
-├── webDesign.html              — Web Design service page
-├── software.html               — Custom Software service page
-├── automations.html            — Business Automation service page
-├── marketing.html              — Digital Marketing service page
-├── seo.html                    — SEO Optimization service page
-├── scan.html                   — Redirects to /WebsiteScan/public/audit
-│
-├── — Local SEO Landing Pages —
-├── web-design-fairhope-al.html
-├── seo-fairhope-al.html
-├── custom-software-development-alabama.html
-├── automation-services-alabama.html
-├── website-redesign-alabama.html
-│
-├── blog/
-│   ├── index.html              — Blog listing page (search + filter by category)
-│   └── [article].html          — 38 individual blog posts (see Blog section)
-│
-├── WebsiteScan/                — PHP-based website audit tool (separate app)
-│   └── ...
-│
-├── css/
-│   ├── bootstrap.min.css
-│   └── style.css               — All custom styles (CSS variables, components)
-│
-├── js/
-│   └── main.js                 — All custom JavaScript
-│
-├── img/                        — Images and icons
-├── lib/                        — JS/CSS libraries (WOW.js, Owl Carousel, etc.)
-│
-├── sitemap.xml                 — XML sitemap (submit to Google Search Console)
-├── robots.txt                  — Robots crawl rules
-└── 404.html                    — Custom 404 error page
+â”œâ”€â”€ index.html                  â€” Homepage
+â”œâ”€â”€ about.html                  â€” About page
+â”œâ”€â”€ contact.html                â€” Contact page
+â”œâ”€â”€ pricing.html                â€” Pricing packages
+â”œâ”€â”€ project.html                â€” Portfolio / case studies
+â”œâ”€â”€ frequentlyaskedquestions.html â€” FAQ (with FAQPage schema)
+â”œâ”€â”€ resources.html              â€” Free Resources (guides, checklists, curated blog links)
+â”œâ”€â”€ webDesign.html              â€” Web Design service page
+â”œâ”€â”€ software.html               â€” Custom Software service page
+â”œâ”€â”€ automations.html            â€” Business Automation service page
+â”œâ”€â”€ marketing.html              â€” Digital Marketing service page
+â”œâ”€â”€ seo.html                    â€” SEO Optimization service page
+â”œâ”€â”€ scan.html                   â€” Redirects to /contact.html
+â”‚
+â”œâ”€â”€ â€” Local SEO Landing Pages â€”
+â”œâ”€â”€ web-design-fairhope-al.html
+â”œâ”€â”€ seo-fairhope-al.html
+â”œâ”€â”€ custom-software-development-alabama.html
+â”œâ”€â”€ automation-services-alabama.html
+â”œâ”€â”€ website-redesign-alabama.html
+â”‚
+â”œâ”€â”€ blog/
+â”‚   â”œâ”€â”€ index.html              â€” Blog listing page (search + filter by category)
+â”‚   â””â”€â”€ [article].html          â€” 38 individual blog posts (see Blog section)
+â”œâ”€â”€ css/
+â”‚   â”œâ”€â”€ bootstrap.min.css
+â”‚   â””â”€â”€ style.css               â€” All custom styles (CSS variables, components)
+â”‚
+â”œâ”€â”€ js/
+â”‚   â””â”€â”€ main.js                 â€” All custom JavaScript
+â”‚
+â”œâ”€â”€ img/                        â€” Images and icons
+â”œâ”€â”€ lib/                        â€” JS/CSS libraries (WOW.js, Owl Carousel, etc.)
+â”‚
+â”œâ”€â”€ sitemap.xml                 â€” XML sitemap (submit to Google Search Console)
+â”œâ”€â”€ robots.txt                  â€” Robots crawl rules
+â””â”€â”€ 404.html                    â€” Custom 404 error page
 ```
 
 ---
@@ -113,29 +109,29 @@ The blog (`blog/index.html`) contains 38+ articles across these categories, with
 
 The site includes a Free Resources page with:
 
-1. **Website & Business Guides** — curated links to in-depth blog posts: Website Launch Checklist, Local SEO Quick-Start Guide, Business Automation Starter, Digital Marketing Budget Guide
-2. **Free Website Audit** — launches the WebsiteScan PHP tool (50+ point SEO, speed & accessibility report)
-3. **Free Strategy Call** — links to contact page for a complimentary 30-minute consultation
-4. **Top Blog Posts by Topic** — organized by Web Design, SEO, and Automation for easy browsing
+1. **Website & Business Guides** â€” curated links to in-depth blog posts: Website Launch Checklist, Local SEO Quick-Start Guide, Business Automation Starter, Digital Marketing Budget Guide
+2. **Contact Us** â€” directs visitors to request a consultation or quote
+3. **Free Strategy Call** â€” links to contact page for a complimentary 30-minute consultation
+4. **Top Blog Posts by Topic** â€” organized by Web Design, SEO, and Automation for easy browsing
 
 ---
 
 ## SEO Implementation
 
 Every page includes:
-- ✅ Unique `<title>` tag (50–60 chars)
-- ✅ Meta `description` (120–160 chars)
-- ✅ Meta `keywords`
-- ✅ `robots: index, follow`
-- ✅ Canonical URL (`<link rel="canonical">`)
-- ✅ Open Graph tags (`og:title`, `og:description`, `og:image` absolute URL, `og:url`, `og:locale`, `og:site_name`)
-- ✅ Twitter Card tags (including `twitter:image`)
-- ✅ `meta name="theme-color" content="#6222CC"`
-- ✅ Schema.org JSON-LD structured data
-- ✅ Google site verification tag (index.html)
-- ✅ XML sitemap (`sitemap.xml`)
-- ✅ Robots.txt with sitemap reference
-- ✅ Google Analytics 4 tracking on all pages
+- âœ… Unique `<title>` tag (50â€“60 chars)
+- âœ… Meta `description` (120â€“160 chars)
+- âœ… Meta `keywords`
+- âœ… `robots: index, follow`
+- âœ… Canonical URL (`<link rel="canonical">`)
+- âœ… Open Graph tags (`og:title`, `og:description`, `og:image` absolute URL, `og:url`, `og:locale`, `og:site_name`)
+- âœ… Twitter Card tags (including `twitter:image`)
+- âœ… `meta name="theme-color" content="#6222CC"`
+- âœ… Schema.org JSON-LD structured data
+- âœ… Google site verification tag (index.html)
+- âœ… XML sitemap (`sitemap.xml`)
+- âœ… Robots.txt with sitemap reference
+- âœ… Google Analytics 4 tracking on all pages
 
 **Enhanced schema on homepage (`index.html`):**
 - `LocalBusiness` with `aggregateRating` (5-star), `hasOfferCatalog`, `areaServed` (multiple cities), `geo` coordinates, full `OpeningHoursSpecification`
@@ -144,18 +140,9 @@ Every page includes:
 
 ---
 
-## WebsiteScan Tool
-
-The `WebsiteScan/` directory contains a PHP-based website audit application. It runs independently and performs 50+ SEO, performance, and accessibility checks on any URL.
-
-**Setup requirements:** PHP 8.0+, Composer dependencies installed  
-See `WebsiteScan/README.md` for full setup instructions.
-
----
-
 ## Deployment Notes
 
-This is a **static HTML site** with one PHP component (WebsiteScan). The main site can be hosted on any web host that serves static files. The WebsiteScan tool requires PHP and Composer.
+This is a primarily static HTML site with lightweight PHP handlers for contact and email workflows.
 
 **After deploying:**
 1. Submit `sitemap.xml` to [Google Search Console](https://search.google.com/search-console)
@@ -195,30 +182,30 @@ Google Analytics 4 (GA4) tracking code is included on all pages with a placehold
 Here are additional features and improvements that could further grow the site:
 
 ### Content & SEO
-- **More local SEO landing pages** — Target nearby markets: Mobile AL, Gulf Shores AL, Foley AL, Daphne AL, Spanish Fort AL
-- **Industry-specific landing pages** — "Web Design for Restaurants," "Web Design for Contractors," "Web Design for Law Firms"
-- **Case study detail pages** — Dedicated pages for each portfolio project with measurable results
-- **Video content** — Embed YouTube/Loom explainer videos on service pages to boost dwell time
-- **Testimonials page** — Dedicated page with full client reviews + review schema markup
-- **Press/Media page** — Build authority with any press mentions or awards
+- **More local SEO landing pages** â€” Target nearby markets: Mobile AL, Gulf Shores AL, Foley AL, Daphne AL, Spanish Fort AL
+- **Industry-specific landing pages** â€” "Web Design for Restaurants," "Web Design for Contractors," "Web Design for Law Firms"
+- **Case study detail pages** â€” Dedicated pages for each portfolio project with measurable results
+- **Video content** â€” Embed YouTube/Loom explainer videos on service pages to boost dwell time
+- **Testimonials page** â€” Dedicated page with full client reviews + review schema markup
+- **Press/Media page** â€” Build authority with any press mentions or awards
 
 ### Lead Generation & Conversion
-- **Live chat widget** — Tawk.to or Crisp (free options) to capture leads in real time
-- **Exit-intent popup** — Offer a free guide download or audit to reduce bounce rate
-- **Lead magnet** — A downloadable PDF (e.g., "The Alabama Small Business Website Checklist") in exchange for email signup
-- **Email newsletter** — Monthly tips via Mailchimp/ConvertKit to nurture leads
-- **Project quote calculator** — Interactive widget estimating website or software project cost
+- **Live chat widget** â€” Tawk.to or Crisp (free options) to capture leads in real time
+- **Exit-intent popup** â€” Offer a free guide download or audit to reduce bounce rate
+- **Lead magnet** â€” A downloadable PDF (e.g., "The Alabama Small Business Website Checklist") in exchange for email signup
+- **Email newsletter** â€” Monthly tips via Mailchimp/ConvertKit to nurture leads
+- **Project quote calculator** â€” Interactive widget estimating website or software project cost
 
 ### Technical
-- **Web Vitals / Core Web Vitals** — Optimize LCP image with `fetchpriority="high"`, add `width`/`height` to images to prevent layout shift
-- **Service Worker / PWA** — Offline support for the main pages
-- **Image lazy loading audit** — Ensure all below-fold images have `loading="lazy"` and are served as WebP
-- **Preload critical fonts/CSS** — `<link rel="preload">` for style.css and Google Fonts to improve FCP
+- **Web Vitals / Core Web Vitals** â€” Optimize LCP image with `fetchpriority="high"`, add `width`/`height` to images to prevent layout shift
+- **Service Worker / PWA** â€” Offline support for the main pages
+- **Image lazy loading audit** â€” Ensure all below-fold images have `loading="lazy"` and are served as WebP
+- **Preload critical fonts/CSS** â€” `<link rel="preload">` for style.css and Google Fonts to improve FCP
 
 ### Trust & Social Proof
-- **Google Reviews widget** — Embed live Google reviews using a free widget (Elfsight or custom API)
-- **Client logo strip** — Display logos of businesses you've worked with
-- **Before/after slider** — Show website redesign comparisons for social proof
+- **Google Reviews widget** â€” Embed live Google reviews using a free widget (Elfsight or custom API)
+- **Client logo strip** â€” Display logos of businesses you've worked with
+- **Before/after slider** â€” Show website redesign comparisons for social proof
 
 ---
 
@@ -226,13 +213,15 @@ Here are additional features and improvements that could further grow the site:
 
 **DBell Creations**  
 Fairhope, AL  
-📞 251-406-2292  
-✉️ dbellcreations@gmail.com  
-🌐 [dbellcreations.com](https://www.dbellcreations.com)  
-📘 [Facebook](https://www.facebook.com/profile.php?id=100090989871594)  
-📷 [Instagram](https://www.instagram.com/dbellcreations/)
+ðŸ“ž 251-406-2292  
+âœ‰ï¸ dbellcreations@gmail.com  
+ðŸŒ [dbellcreations.com](https://www.dbellcreations.com)  
+ðŸ“˜ [Facebook](https://www.facebook.com/profile.php?id=100090989871594)  
+ðŸ“· [Instagram](https://www.instagram.com/dbellcreations/)
 
 ---
 
-*Base template: DGital by HTML Codex (htmlcodex.com) — modified extensively for DBell Creations.*
+*Base template: DGital by HTML Codex (htmlcodex.com) â€” modified extensively for DBell Creations.*
+
+
 
