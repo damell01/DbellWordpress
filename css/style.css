@@ -2309,9 +2309,37 @@ button:focus-visible,
     overflow-x: hidden;
 }
 
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl {
+    max-width: 100% !important;
+}
+
 .container-xxl > .container,
 .container-xxl > .container-fluid {
     max-width: 100%;
+}
+
+@media (min-width: 1200px) {
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl,
+    .container-xxl > .container,
+    .container-xxl > .container-fluid {
+        width: 100%;
+        padding-left: clamp(28px, 4vw, 64px);
+        padding-right: clamp(28px, 4vw, 64px);
+    }
+
+    .container-xxl.bg-white {
+        width: 100%;
+        max-width: 100% !important;
+    }
 }
 
 

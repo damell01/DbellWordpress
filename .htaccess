@@ -4,7 +4,7 @@ RewriteCond %{HTTPS} !=on [OR]
 RewriteCond %{HTTP_HOST} ^dbellcreations\.com$ [NC]
 RewriteRule ^(.*)$ https://www.dbellcreations.com/$1 [R=301,L]
 
-RewriteRule ^WebsiteScan/?$ /WebsiteScan/public/ [L]
+RewriteRule ^WebsiteScan/?$ /WebsiteScan/public/audit [R=301,L]
 RewriteCond %{REQUEST_URI} ^/WebsiteScan/ [NC]
 RewriteCond %{REQUEST_URI} !^/WebsiteScan/public/ [NC]
 RewriteCond %{REQUEST_FILENAME} !-f
