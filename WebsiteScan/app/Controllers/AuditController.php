@@ -18,7 +18,11 @@ class AuditController extends BaseController {
     }
 
     public function form(Request $request): void {
-        $this->view('audit', ['title' => 'Free Website Audit']);
+        $this->view('audit', [
+            'title' => 'Free Website Audit Tool | Scan SEO, UX, Mobile, and Speed',
+            'metaDescription' => 'Run a free website audit to uncover SEO issues, mobile UX problems, speed concerns, and lead-generation blockers in one report.',
+            'canonicalUrl' => url('audit'),
+        ]);
     }
 
     public function submit(Request $request): void {
@@ -317,6 +321,8 @@ class AuditController extends BaseController {
 
         $this->view('report', [
             'title'            => 'Audit Report - ' . ($requestData['website_url'] ?? ''),
+            'metaDescription'  => 'Review your website audit report with prioritized SEO, UX, mobile, and performance findings plus next-step recommendations.',
+            'canonicalUrl'     => url("report/{$report['report_token']}"),
             'report'           => $report,
             'full'             => $full,
             'scores'           => $scores,

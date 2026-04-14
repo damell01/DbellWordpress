@@ -1,15 +1,39 @@
-<?php $isEmbed = (($_GET['embed'] ?? '') === '1'); ?>
+<?php
+$isEmbed = (($_GET['embed'] ?? '') === '1');
+$resolvedTitle = $title ?? $appName ?? 'DBell Website Scanner';
+$resolvedDescription = $metaDescription ?? 'Run a free website audit to uncover SEO, performance, UX, and mobile issues that may be hurting your rankings and lead generation.';
+$resolvedCanonical = $canonicalUrl ?? url(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/', '/'));
+$resolvedRobots = $robots ?? 'index,follow';
+$schemaPayload = $schema ?? [
+    '@context' => 'https://schema.org',
+    '@type' => 'WebPage',
+    'name' => $resolvedTitle,
+    'description' => $resolvedDescription,
+    'url' => $resolvedCanonical,
+];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= e($title ?? $appName ?? 'DBell Website Scanner') ?></title>
-    <meta name="description" content="<?= e($metaDescription ?? 'Free website audit tool - find SEO, accessibility, and conversion issues instantly.') ?>">
+    <title><?= e($resolvedTitle) ?></title>
+    <meta name="description" content="<?= e($resolvedDescription) ?>">
+    <meta name="robots" content="<?= e($resolvedRobots) ?>">
+    <link rel="canonical" href="<?= e($resolvedCanonical) ?>">
     <link rel="icon" href="<?= asset('img/favicon.svg') ?>" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/img/WebsiteSmallIcon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Jost:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?= e($resolvedTitle) ?>">
+    <meta property="og:description" content="<?= e($resolvedDescription) ?>">
+    <meta property="og:url" content="<?= e($resolvedCanonical) ?>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= e($resolvedTitle) ?>">
+    <meta name="twitter:description" content="<?= e($resolvedDescription) ?>">
+    <script type="application/ld+json"><?= json_encode($schemaPayload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= asset('css/app.css') ?>">

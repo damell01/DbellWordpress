@@ -100,7 +100,8 @@ if (!function_exists('csrf_field')) {
 
 if (!function_exists('old')) {
     function old(string $key, string $default = ''): string {
-        return e(\App\Core\Session::getFlash('_old')[$key] ?? $default);
+        $old = \App\Core\Session::peekFlash('_old', []);
+        return e((is_array($old) ? ($old[$key] ?? $default) : $default));
     }
 }
 
@@ -111,7 +112,7 @@ if (!function_exists('flash')) {
 }
 
 if (!function_exists('get_flash')) {
-    function get_flash(string $key): ?string {
+    function get_flash(string $key): mixed {
         return \App\Core\Session::getFlash($key);
     }
 }

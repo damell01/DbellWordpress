@@ -54,6 +54,10 @@ class Session {
         return $value;
     }
 
+    public static function peekFlash(string $key, mixed $default = null): mixed {
+        return $_SESSION['_flash'][$key] ?? $default;
+    }
+
     public static function flush(): void {
         session_unset();
         session_destroy();

@@ -7,17 +7,27 @@ class HomeController extends BaseController {
     public function index(Request $request): void {
         $this->view('home', [
             'title'       => $this->settings->get('site_name', 'VerityScan') . ' - Free Website Audit',
+            'metaDescription' => 'Run a free website audit to uncover SEO, accessibility, speed, UX, and conversion issues before they cost you rankings or leads.',
+            'canonicalUrl' => url('/'),
             'headline'    => $this->settings->get('hero_headline', 'Find Out What\'s Holding Your Website Back'),
             'subheadline' => $this->settings->get('hero_subheadline', 'Get a free, instant audit of your website - SEO, accessibility, performance, and conversion issues revealed in seconds.'),
         ]);
     }
 
     public function features(Request $request): void {
-        $this->view('features', ['title' => 'Features - ' . $this->settings->get('site_name', 'VerityScan')]);
+        $this->view('features', [
+            'title' => 'Website Scanner Features',
+            'metaDescription' => 'Explore the website scanner features that check SEO, accessibility, speed, technical quality, and conversion opportunities.',
+            'canonicalUrl' => url('features'),
+        ]);
     }
 
     public function about(Request $request): void {
-        $this->view('about', ['title' => 'About - ' . $this->settings->get('site_name', 'VerityScan')]);
+        $this->view('about', [
+            'title' => 'About DBell Website Scanner',
+            'metaDescription' => 'Learn how the DBell Website Scanner helps businesses identify website issues that affect rankings, usability, and lead generation.',
+            'canonicalUrl' => url('about'),
+        ]);
     }
 
     public function contact(Request $request): void {
@@ -26,7 +36,11 @@ class HomeController extends BaseController {
             return;
         }
 
-        $this->view('contact', ['title' => 'Contact Us']);
+        $this->view('contact', [
+            'title' => 'Contact DBell Creations',
+            'metaDescription' => 'Contact DBell Creations for help with website audits, SEO improvements, web design, conversion optimization, and custom software.',
+            'canonicalUrl' => url('contact'),
+        ]);
     }
 
     private function handleContact(Request $request): void {
@@ -56,7 +70,7 @@ class HomeController extends BaseController {
             'company'      => $request->post('company', ''),
             'message'      => $request->post('message'),
             'service_type' => $request->post('service_type', ''),
-            'source'       => 'websitescan',
+            'source'       => 'website_scan',
             'website_url'  => $request->post('website_url', ''),
             'status'       => 'new',
             'created_at'   => date('Y-m-d H:i:s'),
@@ -79,15 +93,19 @@ class HomeController extends BaseController {
     }
 
     public function privacy(Request $request): void {
-        $this->view('privacy', ['title' => 'Privacy Policy']);
+        $this->view('privacy', ['title' => 'Privacy Policy', 'robots' => 'noindex,follow', 'canonicalUrl' => url('privacy')]);
     }
 
     public function terms(Request $request): void {
-        $this->view('terms', ['title' => 'Terms of Service']);
+        $this->view('terms', ['title' => 'Terms of Service', 'robots' => 'noindex,follow', 'canonicalUrl' => url('terms')]);
     }
 
     public function fixMyWebsite(Request $request): void {
-        $this->view('fix-my-website', ['title' => 'Fix My Website - Get Professional Help']);
+        $this->view('fix-my-website', [
+            'title' => 'Fix My Website | Professional SEO, UX, and Website Help',
+            'metaDescription' => 'Need help fixing website SEO, speed, UX, or lead-generation issues? Request professional website help from DBell Creations.',
+            'canonicalUrl' => url('fix-my-website'),
+        ]);
     }
 
     private function contactRedirectTarget(Request $request): string {
