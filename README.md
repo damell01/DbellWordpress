@@ -30,7 +30,7 @@ This is the production codebase for the DBell Creations website. The site is a s
 ├── automations.html            — Business Automation service page
 ├── marketing.html              — Digital Marketing service page
 ├── seo.html                    — SEO Optimization service page
-├── scan.html                   — Free Website Scanner (redirects to WebsiteScan/)
+├── scan.html                   — Redirects to /WebsiteScan/public/audit
 │
 ├── — Local SEO Landing Pages —
 ├── web-design-fairhope-al.html

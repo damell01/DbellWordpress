@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 $statusOptions = [
     'new'         => ['label'=>'New',        'bg'=>'primary', 'hex'=>'#6222CC'],
     'reviewed'    => ['label'=>'Reviewed',   'bg'=>'info',    'hex'=>'#06b6d4'],
     'contacted'   => ['label'=>'Contacted',  'bg'=>'warning', 'hex'=>'#FBA504'],
     'quote_sent'  => ['label'=>'Quote Sent', 'bg'=>'warning', 'hex'=>'#f59e0b'],
-    'closed_won'  => ['label'=>'Won ✓',      'bg'=>'success', 'hex'=>'#10b981'],
+    'closed_won'  => ['label'=>'Won âœ“',      'bg'=>'success', 'hex'=>'#10b981'],
     'closed_lost' => ['label'=>'Lost',       'bg'=>'secondary','hex'=>'#94a3b8'],
 ];
 $curStatus = $lead['status'] ?? 'new';
@@ -19,29 +19,29 @@ $_tplFirstName = !empty($lead['contact_name'])
 // Suggested templates (beyond the auto-pipeline templates)
 $suggestedTemplates = [
     [
-        'label'   => '📞 Quick Check-In',
-        'subject' => 'Checking in — DBell Creations',
-        'body'    => "Hey {$_tplFirstName},\n\nJust wanted to check in and see if you have any questions or if there's anything I can help you with.\n\nFeel free to reply to this email or give us a call at 251-406-2292.\n\n— DBell Creations",
+        'label'   => 'ðŸ“ž Quick Check-In',
+        'subject' => 'Checking in â€” DBell Creations',
+        'body'    => "Hey {$_tplFirstName},\n\nJust wanted to check in and see if you have any questions or if there's anything I can help you with.\n\nFeel free to reply to this email or give us a call at 251-406-2292.\n\nâ€” DBell Creations",
     ],
     [
-        'label'   => '🔍 Free Audit Offer',
-        'subject' => 'Your free website audit is ready — DBell Creations',
-        'body'    => "Hey {$_tplFirstName},\n\nI wanted to make sure you saw this — we offer a completely free website audit that shows you exactly what's hurting your site's performance and search rankings.\n\n👉 Run your free audit: https://www.dbellcreations.com/scan.html\n\nNo obligation, takes about 60 seconds. Let me know if you have questions!\n\n— DBell Creations\n📞 251-406-2292",
+        'label'   => 'ðŸ” Free Audit Offer',
+        'subject' => 'Your free website audit is ready â€” DBell Creations',
+        'body'    => "Hey {$_tplFirstName},\n\nI wanted to make sure you saw this â€” we offer a completely free website audit that shows you exactly what's hurting your site's performance and search rankings.\n\nðŸ‘‰ Run your free audit: https://www.dbellcreations.com/WebsiteScan/public/audit\n\nNo obligation, takes about 60 seconds. Let me know if you have questions!\n\nâ€” DBell Creations\nðŸ“ž 251-406-2292",
     ],
     [
-        'label'   => '💰 Pricing Overview',
-        'subject' => 'Our website packages — DBell Creations',
-        'body'    => "Hey {$_tplFirstName},\n\nWanted to send over a quick overview of our most popular packages:\n\n⭐ Starter Website — \$350 (SALE)\n   Professional web presence, fast turnaround.\n\n⭐ Business Website — \$750 (SALE)\n   Full site with lead forms, SEO, and CMS.\n\n⭐ Custom Build — \$1,000–\$1,500+\n   Advanced features and custom designs.\n\n👉 Full pricing: https://www.dbellcreations.com/pricing.html\n\nReply anytime and I'll help you choose the right fit!\n\n— DBell Creations\n📞 251-406-2292",
+        'label'   => 'ðŸ’° Pricing Overview',
+        'subject' => 'Our website packages â€” DBell Creations',
+        'body'    => "Hey {$_tplFirstName},\n\nWanted to send over a quick overview of our most popular packages:\n\nâ­ Starter Website â€” \$350 (SALE)\n   Professional web presence, fast turnaround.\n\nâ­ Business Website â€” \$750 (SALE)\n   Full site with lead forms, SEO, and CMS.\n\nâ­ Custom Build â€” \$1,000â€“\$1,500+\n   Advanced features and custom designs.\n\nðŸ‘‰ Full pricing: https://www.dbellcreations.com/pricing.html\n\nReply anytime and I'll help you choose the right fit!\n\nâ€” DBell Creations\nðŸ“ž 251-406-2292",
     ],
     [
-        'label'   => '🤝 Schedule a Call',
-        'subject' => "Let's hop on a quick call — DBell Creations",
-        'body'    => "Hey {$_tplFirstName},\n\nI'd love to connect for a quick 15-minute call to learn more about your business and see how we can help.\n\nJust reply to this email with a time that works for you, or call us directly at 📞 251-406-2292.\n\nLooking forward to chatting!\n\n— DBell Creations\n🌐 https://www.dbellcreations.com",
+        'label'   => 'ðŸ¤ Schedule a Call',
+        'subject' => "Let's hop on a quick call â€” DBell Creations",
+        'body'    => "Hey {$_tplFirstName},\n\nI'd love to connect for a quick 15-minute call to learn more about your business and see how we can help.\n\nJust reply to this email with a time that works for you, or call us directly at ðŸ“ž 251-406-2292.\n\nLooking forward to chatting!\n\nâ€” DBell Creations\nðŸŒ https://www.dbellcreations.com",
     ],
 ];
 ?>
 
-<!-- ── Breadcrumb ────────────────────────────── -->
+<!-- â”€â”€ Breadcrumb â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div class="d-flex align-items-center gap-2 mb-4 flex-wrap">
     <a href="<?= url('admin/leads') ?>" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">
         <i class="bi bi-arrow-left me-1"></i>Back to Leads
@@ -54,7 +54,7 @@ $suggestedTemplates = [
 </div>
 
 <div class="row g-4">
-    <!-- ── Left Column ───────────────────────── -->
+    <!-- â”€â”€ Left Column â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
     <div class="col-lg-7">
 
         <!-- Lead Header -->
@@ -187,14 +187,14 @@ $suggestedTemplates = [
                         <label class="form-label" style="font-size:.8rem;font-weight:600;color:#6b5b8f;">Subject</label>
                         <input type="text" name="subject" id="msgSubject" class="form-control form-control-sm"
                                style="border-color:#d1c4e9;"
-                               placeholder="Enter subject…"
+                               placeholder="Enter subjectâ€¦"
                                value="<?= $nextMessage ? e($nextMessage['subject']) : '' ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" style="font-size:.8rem;font-weight:600;color:#6b5b8f;">Message</label>
                         <textarea name="body" id="msgBody" class="form-control" rows="10"
                                   style="border-color:#d1c4e9;resize:vertical;font-family:monospace;font-size:.82rem;"
-                                  placeholder="Compose your message…" required><?= $nextMessage ? e($nextMessage['body']) : '' ?></textarea>
+                                  placeholder="Compose your messageâ€¦" required><?= $nextMessage ? e($nextMessage['body']) : '' ?></textarea>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
                         <button type="submit" class="btn btn-primary btn-sm">
@@ -239,7 +239,7 @@ $suggestedTemplates = [
                     <div class="mb-2">
                         <textarea name="note" class="form-control" rows="3"
                                   style="border-color:#d1c4e9;resize:vertical;"
-                                  placeholder="Add an internal note, next steps, call summary…" required></textarea>
+                                  placeholder="Add an internal note, next steps, call summaryâ€¦" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-outline-secondary btn-sm">
                         <i class="bi bi-plus-circle me-1"></i>Add Note
@@ -264,13 +264,13 @@ $suggestedTemplates = [
                     <?php endforeach; ?>
                 </ul>
                 <?php else: ?>
-                <div class="text-muted small fst-italic text-center py-2">No notes yet — add one above.</div>
+                <div class="text-muted small fst-italic text-center py-2">No notes yet â€” add one above.</div>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 
-    <!-- ── Right Column ──────────────────────── -->
+    <!-- â”€â”€ Right Column â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
     <div class="col-lg-5">
 
         <!-- Quick Actions -->
@@ -284,7 +284,7 @@ $suggestedTemplates = [
                    onclick="document.getElementById('sendMessageCard').scrollIntoView({behavior:'smooth'});return false;">
                     <i class="bi bi-send-fill me-2"></i>Compose & Send Message
                 </a>
-                <a href="mailto:<?= e($lead['email']) ?>?subject=<?= urlencode('Following up — DBell Creations') ?>"
+                <a href="mailto:<?= e($lead['email']) ?>?subject=<?= urlencode('Following up â€” DBell Creations') ?>"
                    class="btn btn-outline-secondary">
                     <i class="bi bi-envelope-fill me-2"></i>Open in Email Client
                 </a>
@@ -323,7 +323,7 @@ $suggestedTemplates = [
                                 <div class="fw-600 text-truncate" style="font-size:.8rem;color:#1e0a3c;" title="<?= e($log['subject']) ?>">
                                     <?= e($log['subject']) ?>
                                 </div>
-                                <div class="text-muted" style="font-size:.7rem;">Stage <?= (int)$log['email_stage'] ?> · <?= timeAgo($log['sent_at']) ?></div>
+                                <div class="text-muted" style="font-size:.7rem;">Stage <?= (int)$log['email_stage'] ?> Â· <?= timeAgo($log['sent_at']) ?></div>
                             </div>
                             <span class="badge ms-2 flex-shrink-0 <?= $log['status'] === 'sent' ? 'bg-success' : 'bg-danger' ?>" style="font-size:.65rem;">
                                 <?= e($log['status']) ?>
@@ -381,7 +381,7 @@ $suggestedTemplates = [
                 <?php else: ?>
                 <div class="empty-state py-4">
                     <i class="bi bi-search"></i>
-                    <p>No audits yet. <a href="<?= !empty($lead['website_url']) ? url('audit').'?url='.urlencode($lead['website_url']) : url('audit') ?>" target="_blank">Run one now →</a></p>
+                    <p>No audits yet. <a href="<?= !empty($lead['website_url']) ? url('audit').'?url='.urlencode($lead['website_url']) : url('audit') ?>" target="_blank">Run one now â†’</a></p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -419,4 +419,5 @@ $suggestedTemplates = [
     }
 })();
 </script>
+
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * DBell Creations - Contact Form Handler
  * Saves leads to DB and sends email notifications
@@ -13,7 +13,7 @@ $adminEmail = 'dbellcreations@gmail.com';
 $errors = [];
 $responseArray = [];
 
-// ── Input Validation ──────────────────────────────────────────────────────────
+// â”€â”€ Input Validation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $name           = trim(strip_tags($_POST['name'] ?? ''));
 $email          = trim(strip_tags($_POST['email'] ?? ''));
 $phone          = trim(strip_tags($_POST['phone'] ?? ''));
@@ -36,7 +36,7 @@ if (!empty($errors)) {
     exit;
 }
 
-// ── Save to Database ──────────────────────────────────────────────────────────
+// â”€â”€ Save to Database â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $leadId = null;
 try {
     $dbConfig = [];
@@ -73,7 +73,7 @@ try {
             $pdo->prepare("UPDATE leads SET contact_name = ?, phone = ?, business_name = ?, website_url = ?, service_interest = ?, source_page = ?, notes = ? WHERE id = ?")
                 ->execute([$name, $phone ?: null, $businessName ?: null, $website ?: null, $serviceInterest ?: null, $sourcePage, $message, $leadId]);
         } else {
-            // Insert new lead — 9 bound params: contact_name, email, phone, business_name,
+            // Insert new lead â€” 9 bound params: contact_name, email, phone, business_name,
             // website_url, notes, service_interest, source_page, created_at
             $stmt = $pdo->prepare("INSERT INTO leads (contact_name, email, phone, business_name, website_url, notes, source, service_interest, source_page, status, follow_up_stage, next_follow_up_at, created_at) VALUES (?, ?, ?, ?, ?, ?, 'contact_form', ?, ?, 'new', 0, DATE_ADD(NOW(), INTERVAL 1 DAY), ?)");
             $stmt->execute([$name, $email, $phone ?: null, $businessName ?: null, $website ?: null, $message, $serviceInterest ?: null, $sourcePage, $now]);
@@ -85,11 +85,11 @@ try {
             ->execute([$leadId ?: null, $name, $email, $phone ?: null, $businessName ?: null, $message, $serviceInterest ?: null, $website ?: null, $now]);
     }
 } catch (\Throwable $e) {
-    // DB save failed — log but don't block the form submission
+    // DB save failed â€” log but don't block the form submission
     error_log('DBell Contact Form DB Error: ' . $e->getMessage());
 }
 
-// ── Send Admin Notification Email ─────────────────────────────────────────────
+// â”€â”€ Send Admin Notification Email â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $adminSubject = "New Lead: {$name}" . ($businessName ? " ({$businessName})" : '');
 $adminBody  = "You have a new contact form submission!\n";
 $adminBody .= "=====================================\n";
@@ -111,21 +111,21 @@ $adminHeaders .= "X-Mailer: PHP/" . phpversion();
 
 @mail($adminEmail, $adminSubject, $adminBody, $adminHeaders);
 
-// ── Send Confirmation Email to Lead ──────────────────────────────────────────
-$confirmSubject = "Thanks for reaching out, {$name}! — DBell Creations";
+// â”€â”€ Send Confirmation Email to Lead â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+$confirmSubject = "Thanks for reaching out, {$name}! â€” DBell Creations";
 $confirmBody  = "Hi {$name},\n\n";
 $confirmBody .= "Thanks for getting in touch with DBell Creations! I received your message and I'll be back with you within 24 hours.\n\n";
 $confirmBody .= "Here's a quick recap of what you submitted:\n";
 $confirmBody .= "- Service interest: " . ($serviceInterest ?: 'General inquiry') . "\n";
 $confirmBody .= "- Your message: \"" . substr($message, 0, 200) . (strlen($message) > 200 ? '...' : '') . "\"\n\n";
 $confirmBody .= "While you wait, here are a few things you can explore:\n";
-$confirmBody .= "👉 View our pricing: https://www.dbellcreations.com/pricing.html\n";
-$confirmBody .= "👉 Run a free website audit: https://www.dbellcreations.com/scan.html\n";
-$confirmBody .= "👉 See our portfolio: https://www.dbellcreations.com/project.html\n\n";
+$confirmBody .= "ðŸ‘‰ View our pricing: https://www.dbellcreations.com/pricing.html\n";
+$confirmBody .= "ðŸ‘‰ Run a free website audit: https://www.dbellcreations.com/WebsiteScan/public/audit\n";
+$confirmBody .= "ðŸ‘‰ See our portfolio: https://www.dbellcreations.com/project.html\n\n";
 $confirmBody .= "Talk soon,\nDBell Creations\n";
-$confirmBody .= "📞 251-406-2292\n";
-$confirmBody .= "📧 dbellcreations@gmail.com\n";
-$confirmBody .= "🌐 https://www.dbellcreations.com\n";
+$confirmBody .= "ðŸ“ž 251-406-2292\n";
+$confirmBody .= "ðŸ“§ dbellcreations@gmail.com\n";
+$confirmBody .= "ðŸŒ https://www.dbellcreations.com\n";
 
 $confirmHeaders  = "From: DBell Creations <{$adminEmail}>\r\n";
 $confirmHeaders .= "Reply-To: {$adminEmail}\r\n";
@@ -133,7 +133,7 @@ $confirmHeaders .= "X-Mailer: PHP/" . phpversion();
 
 @mail($email, $confirmSubject, $confirmBody, $confirmHeaders);
 
-// ── Success Response ──────────────────────────────────────────────────────────
+// â”€â”€ Success Response â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $responseArray = [
     'type'    => 'success',
     'message' => "Thank you, {$name}! Your message has been received. We'll be in touch within 24 hours.",
@@ -149,8 +149,9 @@ function respond(array $data): void {
             header('Location: contact.html?success=1');
         } else {
             echo '<p style="color:red;">' . htmlspecialchars($data['message']) . '</p>';
-            echo '<p><a href="contact.html">← Go back</a></p>';
+            echo '<p><a href="contact.html">â† Go back</a></p>';
         }
     }
     exit;
 }
+

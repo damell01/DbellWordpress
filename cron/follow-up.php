@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * DBell Creations - Lead Follow-Up Automation
  * Run daily via cron: 0 9 * * * php /path/to/cron/follow-up.php
@@ -63,7 +63,7 @@ foreach ($leads as $lead) {
     $dupCheck = $pdo->prepare("SELECT id FROM email_log WHERE lead_id = ? AND email_stage = ? LIMIT 1");
     $dupCheck->execute([$lead['id'], $nextStage]);
     if ($dupCheck->fetch()) {
-        // Already sent this stage — advance stage silently
+        // Already sent this stage â€” advance stage silently
         $pdo->prepare("UPDATE leads SET follow_up_stage = ?, last_contacted_at = NOW(), next_follow_up_at = ? WHERE id = ?")
             ->execute([$nextStage, getNextFollowUpDate($nextStage), $lead['id']]);
         continue;
@@ -102,7 +102,7 @@ foreach ($leads as $lead) {
 echo "Done. Sent: {$sent}, Failed: {$failed}\n";
 
 function getNextFollowUpDate(int $stage): ?string {
-    // Intervals (days) between stages: stage 1→2 waits 1 day, 2→3 waits 3 days, 3→4 waits 5 days
+    // Intervals (days) between stages: stage 1â†’2 waits 1 day, 2â†’3 waits 3 days, 3â†’4 waits 5 days
     // Cumulative from first contact: stage 1 = day 0, stage 2 = day 1, stage 3 = day 4, stage 4 = day 9
     $daysMap = [1 => 1, 2 => 3, 3 => 5, 4 => null];
     $days = $daysMap[$stage] ?? null;
@@ -116,69 +116,70 @@ function buildFollowUpEmail(int $stage, string $firstName, array $lead): array {
 
     switch ($stage) {
         case 1:
-            $subject = "Thanks for reaching out, {$firstName}! Here's what's next 🙌";
+            $subject = "Thanks for reaching out, {$firstName}! Here's what's next ðŸ™Œ";
             $body  = "Hey {$firstName},\n\n";
             $body .= "Thanks for reaching out to DBell Creations{$businessName}! I wanted to personally follow up and make sure you got everything you need.\n\n";
             $body .= "We help small businesses like yours with:\n";
-            $body .= "✅ Affordable websites (starting at just \$350)\n";
-            $body .= "✅ Custom software & business automation\n";
-            $body .= "✅ SEO that actually gets you more traffic\n\n";
-            $body .= "One quick thing — have you run a free website audit yet? It's completely free and will show you exactly what's hurting your site's performance and rankings:\n";
-            $body .= "👉 https://www.dbellcreations.com/scan.html\n\n";
+            $body .= "âœ… Affordable websites (starting at just \$350)\n";
+            $body .= "âœ… Custom software & business automation\n";
+            $body .= "âœ… SEO that actually gets you more traffic\n\n";
+            $body .= "One quick thing â€” have you run a free website audit yet? It's completely free and will show you exactly what's hurting your site's performance and rankings:\n";
+            $body .= "ðŸ‘‰ https://www.dbellcreations.com/WebsiteScan/public/audit\n\n";
             $body .= "I'll be back in touch shortly. In the meantime, feel free to reply to this email with any questions!\n\n";
-            $body .= "Talk soon,\nDBell Creations\n📞 251-406-2292\n🌐 https://www.dbellcreations.com";
+            $body .= "Talk soon,\nDBell Creations\nðŸ“ž 251-406-2292\nðŸŒ https://www.dbellcreations.com";
             break;
 
         case 2:
-            $subject = "Quick question for you, {$firstName} — is your website holding you back?";
+            $subject = "Quick question for you, {$firstName} â€” is your website holding you back?";
             $body  = "Hey {$firstName},\n\n";
             $body .= "I wanted to share something that might be helpful.\n\n";
-            $body .= "Most small business websites we audit have at least 3-5 issues that are quietly killing their results — things like:\n\n";
-            $body .= "❌ Slow load times (Google penalizes sites that take more than 3 seconds to load)\n";
-            $body .= "❌ No clear call-to-action (visitors don't know what to do next)\n";
-            $body .= "❌ Poor mobile experience (60%+ of traffic is on phones)\n";
-            $body .= "❌ Missing SEO basics (your site isn't being found for the right keywords)\n";
-            $body .= "❌ No lead capture (you're losing potential customers daily)\n\n";
+            $body .= "Most small business websites we audit have at least 3-5 issues that are quietly killing their results â€” things like:\n\n";
+            $body .= "âŒ Slow load times (Google penalizes sites that take more than 3 seconds to load)\n";
+            $body .= "âŒ No clear call-to-action (visitors don't know what to do next)\n";
+            $body .= "âŒ Poor mobile experience (60%+ of traffic is on phones)\n";
+            $body .= "âŒ Missing SEO basics (your site isn't being found for the right keywords)\n";
+            $body .= "âŒ No lead capture (you're losing potential customers daily)\n\n";
             $body .= "Any of those sound familiar?\n\n";
             $body .= "If so, our free website audit will catch all of these and give you a prioritized action plan:\n";
-            $body .= "👉 Run your free audit: https://www.dbellcreations.com/scan.html\n\n";
-            $body .= "Just reply to this email if you have questions — happy to help!\n\n";
-            $body .= "— DBell Creations\n📞 251-406-2292";
+            $body .= "ðŸ‘‰ Run your free audit: https://www.dbellcreations.com/WebsiteScan/public/audit\n\n";
+            $body .= "Just reply to this email if you have questions â€” happy to help!\n\n";
+            $body .= "â€” DBell Creations\nðŸ“ž 251-406-2292";
             break;
 
         case 3:
-            $subject = "Still thinking it over? Here's our pricing 👇";
+            $subject = "Still thinking it over? Here's our pricing ðŸ‘‡";
             $body  = "Hey {$firstName},\n\n";
-            $body .= "Just wanted to circle back quickly — wanted to make sure you saw our website packages.\n\n";
+            $body .= "Just wanted to circle back quickly â€” wanted to make sure you saw our website packages.\n\n";
             $body .= "Our most popular options:\n\n";
-            $body .= "⭐ Starter Website — \$350 (SALE)\n";
+            $body .= "â­ Starter Website â€” \$350 (SALE)\n";
             $body .= "   Perfect for getting a professional web presence fast.\n\n";
-            $body .= "⭐ Business Website — \$750 (SALE)\n";
+            $body .= "â­ Business Website â€” \$750 (SALE)\n";
             $body .= "   Full site you can manage yourself, with lead forms and SEO built in.\n\n";
-            $body .= "⭐ Custom Build — \$1,000–\$1,500+\n";
+            $body .= "â­ Custom Build â€” \$1,000â€“\$1,500+\n";
             $body .= "   For businesses that need advanced features or custom designs.\n\n";
-            $body .= "👉 See all pricing: https://www.dbellcreations.com/pricing.html\n\n";
-            $body .= "If you're not sure which option is right for you, just reply here and I'll help you figure it out — no pressure, no obligation.\n\n";
-            $body .= "— DBell Creations\n📞 251-406-2292\n🌐 https://www.dbellcreations.com";
+            $body .= "ðŸ‘‰ See all pricing: https://www.dbellcreations.com/pricing.html\n\n";
+            $body .= "If you're not sure which option is right for you, just reply here and I'll help you figure it out â€” no pressure, no obligation.\n\n";
+            $body .= "â€” DBell Creations\nðŸ“ž 251-406-2292\nðŸŒ https://www.dbellcreations.com";
             break;
 
         case 4:
-            $subject = "Last check-in from DBell Creations 👋";
+            $subject = "Last check-in from DBell Creations ðŸ‘‹";
             $body  = "Hey {$firstName},\n\n";
-            $body .= "I know you're busy — just wanted to do one final check-in.\n\n";
-            $body .= "If you're still looking to improve your online presence — whether it's a new website, better SEO, or a custom software solution — I'd love to help.\n\n";
+            $body .= "I know you're busy â€” just wanted to do one final check-in.\n\n";
+            $body .= "If you're still looking to improve your online presence â€” whether it's a new website, better SEO, or a custom software solution â€” I'd love to help.\n\n";
             $body .= "Even if the timing isn't right now, here are some resources to save for later:\n";
-            $body .= "📋 View our pricing: https://www.dbellcreations.com/pricing.html\n";
-            $body .= "🔍 Free website audit: https://www.dbellcreations.com/scan.html\n";
-            $body .= "📞 Call us: 251-406-2292\n\n";
-            $body .= "No need to reply if now isn't the right time — we'll be here when you're ready.\n\n";
-            $body .= "Wishing you the best,\nDBell Creations\n🌐 https://www.dbellcreations.com";
+            $body .= "ðŸ“‹ View our pricing: https://www.dbellcreations.com/pricing.html\n";
+            $body .= "ðŸ” Free website audit: https://www.dbellcreations.com/WebsiteScan/public/audit\n";
+            $body .= "ðŸ“ž Call us: 251-406-2292\n\n";
+            $body .= "No need to reply if now isn't the right time â€” we'll be here when you're ready.\n\n";
+            $body .= "Wishing you the best,\nDBell Creations\nðŸŒ https://www.dbellcreations.com";
             break;
 
         default:
             $subject = "Following up from DBell Creations";
-            $body = "Hey {$firstName},\n\nJust following up from DBell Creations. Reply anytime if we can help!\n\n— DBell Creations\n📞 251-406-2292";
+            $body = "Hey {$firstName},\n\nJust following up from DBell Creations. Reply anytime if we can help!\n\nâ€” DBell Creations\nðŸ“ž 251-406-2292";
     }
 
     return [$subject, $body];
 }
+

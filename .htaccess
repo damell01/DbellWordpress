@@ -4,6 +4,13 @@ RewriteCond %{HTTPS} !=on [OR]
 RewriteCond %{HTTP_HOST} ^dbellcreations\.com$ [NC]
 RewriteRule ^(.*)$ https://www.dbellcreations.com/$1 [R=301,L]
 
+RewriteRule ^WebsiteScan/?$ /WebsiteScan/public/ [L]
+RewriteCond %{REQUEST_URI} ^/WebsiteScan/ [NC]
+RewriteCond %{REQUEST_URI} !^/WebsiteScan/public/ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^WebsiteScan/(.*)$ /WebsiteScan/public/$1 [L]
+
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
