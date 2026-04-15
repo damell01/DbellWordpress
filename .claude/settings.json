@@ -12,7 +12,11 @@
       "Bash(python3 /tmp/fix_file.py)",
       "Bash(python3 /tmp/final_check.py)",
       "Bash(python3 /tmp/scan_navs.py)",
-      "Bash(python3 /tmp/verify_navs.py)"
+      "Bash(python3 /tmp/verify_navs.py)",
+      "Bash(python3 -c \"import reportlab; print\\('reportlab OK'\\)\")",
+      "Bash(python3 -c \"from fpdf import FPDF; print\\('fpdf OK'\\)\")",
+      "Bash(pip install:*)",
+      "Bash(python3 -c \"from fpdf import FPDF; print\\('fpdf2 OK'\\)\")"
     ]
   }
 }
