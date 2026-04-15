@@ -1,27 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Free Resources & Downloads | DBell Creations</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Download free checklists, guides, and resources for Alabama small businesses. Get instant access by email.">
-    <link rel="stylesheet" href="css/style.css">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="description" content="Download free checklists, guides, and resources for Alabama small businesses — website launch checklist, local SEO guide, content marketing checklist, and more.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="DBell Creations">
+    <link rel="canonical" href="https://www.dbellcreations.com/downloads.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="DBell Creations">
+    <meta property="og:url" content="https://www.dbellcreations.com/downloads.html">
+    <meta property="og:title" content="Free Resources & Downloads | DBell Creations">
+    <meta property="og:description" content="Free checklists and guides for Alabama small businesses — no fluff, just practical tools.">
+    <meta property="og:image" content="https://www.dbellcreations.com/img/DBellCreationsLogo.png">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#6222CC">
+
+    <!-- Favicon -->
+    <link href="img/WebsiteSmallIcon.png" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Jost:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Google Analytics GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V6FYWKK2QM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-V6FYWKK2QM');
+    </script>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Free Resources & Downloads</h1>
-        <p>Get instant access to our most popular checklists and guides. Enter your email below and we’ll send you the download link.</p>
-        <form action="#" method="post" style="max-width:400px;margin:2rem 0;">
-            <label for="email">Email Address:</label>
-            <input type="email" id="email" name="email" required class="form-control" style="margin-bottom:1rem;">
-            <button type="submit" class="btn btn-primary">Get My Download</button>
-        </form>
-        <ul>
-            <li><a href="downloads/website-launch-checklist.pdf" download>Website Launch Checklist (PDF)</a></li>
-            <li><a href="downloads/local-seo-guide-alabama.pdf" download>Local SEO Guide for Alabama Businesses (PDF)</a></li>
-            <li><a href="downloads/content-marketing-checklist.pdf" download>Content Marketing Checklist (PDF)</a></li>
-        </ul>
-        <p><em>We respect your privacy. Your email will only be used to send your requested download.</em></p>
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Navbar & Hero Start -->
+        <div class="container-xxl position-relative p-0">
+            <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+                <a href="index.html" class="navbar-brand p-0">
+                    <span class="brand-logo-text"><span class="brand-dbell">DBELL</span><span class="brand-creations">CREATIONS</span></span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav mx-auto py-0">
+                        <a href="index.html" class="nav-item nav-link">Home</a>
+                        <a href="about.html" class="nav-item nav-link">About</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Services</a>
+                            <div class="dropdown-menu m-0">
+                                <a href="webDesign.html" class="dropdown-item">Web Design</a>
+                                <a href="software.html" class="dropdown-item">Custom Software</a>
+                                <a href="automations.html" class="dropdown-item">Business Automation</a>
+                                <a href="marketing.html" class="dropdown-item">Digital Marketing</a>
+                                <a href="seo.html" class="dropdown-item">SEO Optimization</a>
+                                <a href="contact.html" class="dropdown-item">Contact Us</a>
+                            </div>
+                        </div>
+                        <a href="project.html" class="nav-item nav-link">Portfolio</a>
+                        <a href="frequentlyaskedquestions.html" class="nav-item nav-link">FAQ</a>
+                        <a href="blog/index.html" class="nav-item nav-link">Blog</a>
+                        <a href="pricing.html" class="nav-item nav-link">Pricing</a>
+                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <a href="contact.html" class="btn rounded-pill py-2 px-4 ms-3 d-none d-lg-block">Contact Us</a>
+                </div>
+            </nav>
+
+            <div class="container-xxl bg-primary hero-header page-hero">
+                <div class="container py-2 px-lg-5">
+                    <div class="row g-5 py-5">
+                        <div class="col-12 text-center">
+                            <h1 class="text-white mb-3 animated slideInDown">Free Resources & Downloads</h1>
+                            <p class="text-white-50 mb-4">Practical checklists and guides built for Alabama small businesses — no fluff, just tools that work.</p>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb justify-content-center text-uppercase">
+                                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                    <li class="breadcrumb-item text-white active" aria-current="page">Free Downloads</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Navbar & Hero End -->
+
+
+        <!-- Downloads Grid Start -->
+        <div class="container-xxl py-5">
+            <div class="container py-5 px-lg-5">
+                <div class="wow fadeInUp text-center mb-5" data-wow-delay="0.1s">
+                    <p class="section-title text-secondary justify-content-center"><span></span>Free Tools<span></span></p>
+                    <h2 class="mb-3">Download Your Free Guides</h2>
+                    <p class="text-muted mx-auto" style="max-width:600px;">Everything below is free. No gimmicks — we put these together because we want you to succeed online, whether you work with us or not.</p>
+                </div>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="service-item d-flex flex-column rounded h-100 p-4">
+                            <div class="service-icon flex-shrink-0 mb-3">
+                                <i class="fa fa-rocket fa-2x"></i>
+                            </div>
+                            <h5 class="mb-2">Website Launch Checklist</h5>
+                            <p class="text-muted mb-4">Everything you need to verify before going live — from mobile testing to SEO basics to analytics setup.</p>
+                            <a href="downloads/website-launch-checklist.pdf" download class="btn btn-primary rounded-pill py-2 px-4 mt-auto">
+                                <i class="fa fa-download me-2"></i>Download PDF
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="service-item d-flex flex-column rounded h-100 p-4">
+                            <div class="service-icon flex-shrink-0 mb-3">
+                                <i class="fa fa-search fa-2x"></i>
+                            </div>
+                            <h5 class="mb-2">Local SEO Guide for Alabama</h5>
+                            <p class="text-muted mb-4">A step-by-step guide to ranking higher on Google Maps and local search — written specifically for Alabama businesses.</p>
+                            <a href="downloads/local-seo-guide-alabama.pdf" download class="btn btn-primary rounded-pill py-2 px-4 mt-auto">
+                                <i class="fa fa-download me-2"></i>Download PDF
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="service-item d-flex flex-column rounded h-100 p-4">
+                            <div class="service-icon flex-shrink-0 mb-3">
+                                <i class="fa fa-pen-nib fa-2x"></i>
+                            </div>
+                            <h5 class="mb-2">Content Marketing Checklist</h5>
+                            <p class="text-muted mb-4">A practical checklist for creating content that attracts local customers and builds trust with your audience.</p>
+                            <a href="downloads/content-marketing-checklist.pdf" download class="btn btn-primary rounded-pill py-2 px-4 mt-auto">
+                                <i class="fa fa-download me-2"></i>Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email opt-in -->
+                <div class="row justify-content-center wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="col-lg-7">
+                        <div class="bg-light rounded p-4 p-lg-5 text-center">
+                            <h4 class="mb-2">Want More Free Resources?</h4>
+                            <p class="text-muted mb-4">Drop your email and we'll send you our full resource pack — plus notify you when we release new guides.</p>
+                            <form action="#" method="post" class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+                                <input type="email" name="email" placeholder="Your email address" required class="form-control" style="max-width:320px;">
+                                <button type="submit" class="btn btn-secondary rounded-pill px-4 fw-bold flex-shrink-0">Send Me the Pack</button>
+                            </form>
+                            <p class="text-muted small mt-3 mb-0"><i class="fa fa-lock me-1"></i>We respect your privacy. No spam, ever.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Downloads Grid End -->
+
+
+        <!-- CTA Start -->
+        <div class="container-xxl bg-primary newsletter py-5 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="container py-5 px-lg-5">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-8 text-center text-lg-start">
+                        <h2 class="text-white mb-3">Ready for a Website That Actually Gets You Leads?</h2>
+                        <p class="text-white mb-0" style="opacity:0.85;">The checklist is a start — let's build the real thing. Get a free mockup with no commitment.</p>
+                    </div>
+                    <div class="col-lg-4 text-center text-lg-end">
+                        <a href="free-mockup.html" class="btn btn-secondary py-sm-3 px-sm-5 rounded-pill">Request Free Mockup</a>
+                        <a href="contact.html" class="btn btn-outline-light py-sm-3 px-sm-5 rounded-pill ms-2 mt-2 mt-sm-0">Talk to Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- CTA End -->
+
+
+        <!-- Footer Start -->
+        <footer>
+            <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">
+                <div class="container py-5 px-lg-5">
+                    <div class="row g-5">
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">DBell Creations<span></span></p>
+                            <p class="text-white-50 small mb-3">Full-service digital agency in Fairhope, AL &mdash; web design, software, automation, SEO, and marketing.</p>
+                            <p><i class="fa fa-map-marker-alt me-3"></i>Fairhope, AL</p>
+                            <p><i class="fa fa-phone-alt me-3"></i><a id="number" href="tel:251-406-2292">251-406-2292</a></p>
+                            <p><i class="fa fa-envelope me-3"></i><a id="number" href="mailto:dbellcreations@gmail.com">Dbellcreations@gmail.com</a></p>
+                            <div class="d-flex pt-2">
+                                <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/profile.php?id=100090989871594&mibextid=LQQJ4d" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-light btn-social" href="https://www.instagram.com/dbellcreations/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Services<span></span></p>
+                            <a class="btn btn-link" href="webDesign.html">Web Design</a>
+                            <a class="btn btn-link" href="software.html">Custom Software</a>
+                            <a class="btn btn-link" href="automations.html">Business Automation</a>
+                            <a class="btn btn-link" href="marketing.html">Digital Marketing</a>
+                            <a class="btn btn-link" href="seo.html">SEO Optimization</a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Quick Links<span></span></p>
+                            <a class="btn btn-link" href="about.html">About Us</a>
+                            <a class="btn btn-link" href="project.html">Portfolio</a>
+                            <a class="btn btn-link" href="frequentlyaskedquestions.html">FAQs</a>
+                            <a class="btn btn-link" href="resources.html">Resources</a>
+                            <a class="btn btn-link" href="downloads.html">Free Downloads</a>
+                            <a class="btn btn-link" href="why-choose-us.html">Why Choose Us</a>
+                            <a class="btn btn-link" href="privacy-policy.html">Privacy Policy</a>
+                            <a class="btn btn-link" href="terms-of-service.html">Terms of Service</a>
+                            <a class="btn btn-link" href="contact.html">Contact Us</a>
+                            <a class="btn btn-link" href="blog/index.html">Blog</a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <p class="section-title text-white h5 mb-4">Local SEO Pages<span></span></p>
+                            <a class="btn btn-link" href="web-design-fairhope-al.html">Web Design Fairhope AL</a>
+                            <a class="btn btn-link" href="seo-fairhope-al.html">SEO Fairhope AL</a>
+                            <a class="btn btn-link" href="custom-software-development-alabama.html">Custom Software Alabama</a>
+                            <a class="btn btn-link" href="automation-services-alabama.html">Automation Alabama</a>
+                            <a class="btn btn-link" href="website-redesign-alabama.html">Website Redesign Alabama</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="container px-lg-5">
+                    <div class="copyright">
+                        <div class="row">
+                            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                                &copy; 2025 <a class="border-bottom" href="index.html">DBell Creations</a>. All Rights Reserved.
+                            </div>
+                            <div class="col-md-6 text-center text-md-end">
+                                <div class="footer-menu">
+                                    <a href="index.html">Home</a>
+                                    <a href="about.html">About</a>
+                                    <a href="pricing.html">Pricing</a>
+                                    <a href="compare.html">Compare</a>
+                                    <a href="contact.html">Contact</a>
+                                    <a href="frequentlyaskedquestions.html">FAQs</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-secondary btn-lg-square back-to-top" aria-label="Back to top"><i class="bi bi-arrow-up"></i></a>
     </div>
+
+    <!-- JavaScript Libraries -->
+    <script defer src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="lib/wow/wow.min.js"></script>
+    <script defer src="lib/easing/easing.min.js"></script>
+    <script defer src="lib/waypoints/waypoints.min.js"></script>
+    <script defer src="lib/counterup/counterup.min.js"></script>
+    <script defer src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script defer src="lib/isotope/isotope.pkgd.min.js"></script>
+    <script defer src="lib/lightbox/js/lightbox.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script defer src="js/main.js"></script>
 </body>
+
 </html>

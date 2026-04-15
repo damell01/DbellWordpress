@@ -10,7 +10,9 @@
       "Bash(python3 /tmp/fix_one.py)",
       "Bash(python3 /tmp/deep_check.py)",
       "Bash(python3 /tmp/fix_file.py)",
-      "Bash(python3 /tmp/final_check.py)"
+      "Bash(python3 /tmp/final_check.py)",
+      "Bash(python3 /tmp/scan_navs.py)",
+      "Bash(python3 /tmp/verify_navs.py)"
     ]
   }
 }
