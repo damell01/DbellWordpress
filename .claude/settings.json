@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -rn \"ðŸ\\\\|â€\"\\\\|â€™\\\\|â€œ\\\\|â€\\\\|Ã©\\\\|Ã \" c:/Users/Shild/Downloads/DBELLCREATIONS_PRODSITE --include=\"*.html\" -l 2>/dev/null | head -20)",
+      "Bash(cat)",
+      "Bash(python3 /tmp/fix_encoding.py)",
+      "Bash(python3 -c ':*)",
+      "Bash(python3 /tmp/verify.py)",
+      "Bash(python3 /tmp/check_all.py)",
+      "Bash(python3 /tmp/fix_one.py)",
+      "Bash(python3 /tmp/deep_check.py)",
+      "Bash(python3 /tmp/fix_file.py)",
+      "Bash(python3 /tmp/final_check.py)"
+    ]
+  }
+}
