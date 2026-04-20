@@ -1,0 +1,12 @@
+{
+    "name": "dbellcreations/website",
+    "description": "DBell Creations production website",
+    "type": "project",
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "vendor-dir": "vendor"
+    }
+}
