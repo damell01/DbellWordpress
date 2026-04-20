@@ -155,8 +155,8 @@
         <div class="container-xxl py-5">
             <div class="container py-5 px-lg-5">
 
-                <!-- Section header -->
-                <div class="wow fadeInUp text-center mb-5" data-wow-delay="0.1s">
+                <!-- Section header (hidden on success) -->
+                <div class="wow fadeInUp text-center mb-5" id="contactSectionHeader" data-wow-delay="0.1s">
                     <p class="section-title text-secondary justify-content-center"><span></span>Get In Touch<span></span></p>
                     <h2 class="mb-2">Tell Us About Your Business</h2>
                     <p class="text-muted mx-auto" style="max-width:540px;">We review every inquiry and respond within 24 hours — usually the same day. No sales pressure, just a straight conversation about what you need.</p>
@@ -168,12 +168,16 @@
                     <div class="col-lg-7 wow fadeInLeft" data-wow-delay="0.1s">
                         <div class="booking-card p-4 p-lg-5">
 
-                            <!-- Success state (hidden until form submits) -->
-                            <div id="contactSuccess" class="text-center py-4" style="display:none;">
-                                <i class="fa fa-check-circle fa-4x text-secondary mb-3"></i>
-                                <h4 class="mb-2 fw-bold">Message received!</h4>
-                                <p class="text-muted mb-4">We'll be in touch within 24 hours — usually much sooner. Keep an eye on your inbox.</p>
-                                <a href="free-mockup.html" class="btn btn-secondary rounded-pill py-2 px-4 fw-bold">Request Your Free Mockup While You Wait</a>
+                            <!-- Success state — shown on AJAX success OR when URL contains ?submitted=1 / ?success=1 -->
+                            <div id="contactSuccess" class="text-center py-5" style="display:none;">
+                                <i class="fa fa-check-circle fa-4x text-secondary mb-4 d-block"></i>
+                                <h3 class="fw-bold mb-2">Thanks for reaching out!</h3>
+                                <p class="text-muted mb-1">We received your message and will get back to you within <strong>24 hours</strong> — usually the same day.</p>
+                                <p class="text-muted mb-4">Keep an eye on your inbox (and check spam just in case).</p>
+                                <div class="d-flex flex-wrap gap-3 justify-content-center">
+                                    <a href="index.html" class="btn btn-outline-primary rounded-pill py-2 px-4">Back to Home</a>
+                                    <a href="free-mockup.html" class="btn btn-secondary rounded-pill py-2 px-4 fw-bold">Request a Free Mockup While You Wait</a>
+                                </div>
                             </div>
 
                             <!-- Error banner (hidden by default) -->
@@ -588,37 +592,32 @@
     function showFeedbackFromQuery() {
         var params = new URLSearchParams(window.location.search);
         var submitted = params.get('submitted');
-        var mode = params.get('mode');
-        var mail = params.get('mail');
-        var wrap = document.getElementById('form-feedback');
-        var box = document.getElementById('form-feedback-box');
+        var success   = params.get('success');
+        var mail      = params.get('mail');
 
-        if (submitted === '1' || submitted === '0') {
-            switchTab(mode === 'contact' ? 'contact' : 'booking');
-        } else {
-            switchTab('booking');
-        }
+        var isSuccess = submitted === '1' || success === '1' || mail === 'sent';
+        var isError   = submitted === '0';
 
-        if (submitted === '1') {
-            wrap.style.display = '';
-            box.className = 'alert alert-success mb-0 rounded-3';
-            if (mail === 'sent') {
-                box.innerHTML = '<strong>Thanks for submitting.</strong> Your request email was sent successfully, and we will follow up shortly.';
-            } else {
-                box.innerHTML = '<strong>Thanks for submitting.</strong> We got your request and will follow up shortly.';
+        if (isSuccess) {
+            // Hide the form and section header, show the thank-you state
+            var form    = document.getElementById('mainContactForm');
+            var header  = document.getElementById('contactSectionHeader');
+            var rightCol = document.querySelector('.col-lg-4.wow.fadeInRight');
+            var successDiv = document.getElementById('contactSuccess');
+
+            if (form)       form.style.display = 'none';
+            if (header)     header.style.display = 'none';
+            if (rightCol)   rightCol.style.display = 'none';
+            if (successDiv) successDiv.style.display = '';
+
+            trackLeadEvent('lead_form_success', { mode: params.get('mode') || 'contact' });
+        } else if (isError) {
+            var errBox = document.getElementById('contactError');
+            if (errBox) {
+                errBox.textContent = 'Something went wrong. Please try again or call us at 251-406-2292.';
+                errBox.style.display = '';
             }
-            trackLeadEvent('lead_form_success', { mode: mode || 'booking' });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else if (submitted === '0') {
-            wrap.style.display = '';
-            box.className = 'alert alert-danger mb-0 rounded-3';
-            if (mail === 'failed') {
-                box.innerHTML = '<strong>Email delivery failed.</strong> Your request could not be emailed right now. Please try again or email us directly at dbellcreations@gmail.com.';
-            } else {
-                box.innerHTML = '<strong>Submission failed.</strong> Please double-check your info and try again.';
-            }
-            trackLeadEvent('lead_form_failure', { mode: mode || 'booking' });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            trackLeadEvent('lead_form_failure', { mode: params.get('mode') || 'contact' });
         }
     }
 
