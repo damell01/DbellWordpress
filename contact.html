@@ -175,11 +175,12 @@
                 <div id="panel-contact" class="row justify-content-center" style="display:none;">
                     <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.3s">
                         <div class="booking-card p-4 p-lg-5">
-                            <form method="post" action="sendEmail.php">
+                            <form method="post" action="contact.php">
                                 <div class="row g-3">
                                     <input type="hidden" name="formStartedAt" class="form-started-at" value="">
-                                    <!-- Honeypot: must stay blank -->
-                                    <input type="text" name="websiteUrl" class="d-none" tabindex="-1" autocomplete="off" value="">
+                                    <input type="hidden" name="source_page" value="contact">
+                                    <!-- Honeypot: leave blank — bots fill it -->
+                                    <input type="text" name="websiteUrl" class="d-none" tabindex="-1" autocomplete="off" aria-hidden="true" value="">
                                     <div class="col-md-6">
                                         <div class="form-floating">
                                             <input type="text" name="contactName" class="form-control" id="name" placeholder="Your Name" required>
