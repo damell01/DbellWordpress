@@ -163,7 +163,11 @@
             $('#auditFormError').addClass('d-none');
         }
     });
-    
+
+    // Populate form timing fields (Unix timestamp in seconds) for bot detection
+    var nowSec = Math.floor(Date.now() / 1000);
+    $('.form-started-at').val(nowSec);
+
 })(jQuery);
 
 // Copy current page URL to clipboard (used by blog share buttons)

@@ -1,108 +1,217 @@
-﻿<?php
+<?php
 /**
- * DBell Creations - Contact Form Handler
- * Saves leads to DB and sends email notifications
+ * DBell Creations — Contact Form Handler
+ * Sends HTML email to admin and plain confirmation to the lead.
+ *
+ * Accepts both field-name conventions:
+ *   Modern:  name, email, phone, message, service_interest
+ *   Legacy:  contactName, contactEmail, contactPhone, contactMessage
  */
 
-// CORS + JSON header for AJAX
-if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+session_start();
+
+$adminEmail = 'dbellcreations@gmail.com';
+$allowedOrigins = ['https://www.dbellcreations.com', 'https://dbellcreations.com'];
+
+// ── AJAX detection ─────────────────────────────────────────────────────────
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+    && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+if ($isAjax) {
     header('Content-Type: application/json');
 }
 
-$adminEmail = 'dbellcreations@gmail.com';
-$errors = [];
-$responseArray = [];
-
-// â”€â”€ Input Validation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-$name           = trim(strip_tags($_POST['name'] ?? ''));
-$email          = trim(strip_tags($_POST['email'] ?? ''));
-$phone          = trim(strip_tags($_POST['phone'] ?? ''));
-$businessName   = trim(strip_tags($_POST['business_name'] ?? ''));
-$website        = trim(strip_tags($_POST['website'] ?? ''));
-$message        = trim(strip_tags($_POST['message'] ?? ''));
-$serviceInterest= trim(strip_tags($_POST['service_interest'] ?? ''));
-$sourcePage     = trim(strip_tags($_POST['source_page'] ?? 'contact'));
-
-if (empty($name))  $errors[] = 'Name is required.';
-if (empty($email)) $errors[] = 'Email is required.';
-if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors[] = 'Please enter a valid email address.';
-}
-if (empty($message)) $errors[] = 'Message is required.';
-
-if (!empty($errors)) {
-    $responseArray = ['type' => 'danger', 'message' => implode(' ', $errors)];
-    respond($responseArray);
-    exit;
-}
-
-$leadId = null;
-
-// â”€â”€ Send Admin Notification Email â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-$adminSubject = "New Lead: {$name}" . ($businessName ? " ({$businessName})" : '');
-$adminBody  = "You have a new contact form submission!\n";
-$adminBody .= "=====================================\n";
-$adminBody .= "Name:             {$name}\n";
-$adminBody .= "Email:            {$email}\n";
-$adminBody .= "Phone:            " . ($phone ?: 'Not provided') . "\n";
-$adminBody .= "Business Name:    " . ($businessName ?: 'Not provided') . "\n";
-$adminBody .= "Website:          " . ($website ?: 'Not provided') . "\n";
-$adminBody .= "Service Interest: " . ($serviceInterest ?: 'Not specified') . "\n";
-$adminBody .= "Source Page:      {$sourcePage}\n";
-$adminBody .= "Message:\n{$message}\n";
-$adminBody .= "=====================================\n";
-$adminBody .= "Lead ID: " . ($leadId ?: 'Not saved to DB') . "\n";
-$adminBody .= "Time: " . date('Y-m-d H:i:s') . "\n";
-
-$adminHeaders  = "From: DBell Creations <{$adminEmail}>\r\n";
-$adminHeaders .= "Reply-To: {$name} <{$email}>\r\n";
-$adminHeaders .= "X-Mailer: PHP/" . phpversion();
-
-@mail($adminEmail, $adminSubject, $adminBody, $adminHeaders);
-
-// â”€â”€ Send Confirmation Email to Lead â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-$confirmSubject = "Thanks for reaching out, {$name}! - DBell Creations";
-$confirmBody  = "Hi {$name},\n\n";
-$confirmBody .= "Thanks for getting in touch with DBell Creations! I received your message and I'll be back with you within 24 hours.\n\n";
-$confirmBody .= "Here's a quick recap of what you submitted:\n";
-$confirmBody .= "- Service interest: " . ($serviceInterest ?: 'General inquiry') . "\n";
-$confirmBody .= "- Your message: \"" . substr($message, 0, 200) . (strlen($message) > 200 ? '...' : '') . "\"\n\n";
-$confirmBody .= "While you wait, here are a few things you can explore:\n";
-$confirmBody .= "ðŸ‘‰ View our pricing: https://www.dbellcreations.com/pricing.html\n";
-$confirmBody .= "ðŸ‘‰ Run a free consultation: https://www.dbellcreations.com/contact.html\n";
-$confirmBody .= "ðŸ‘‰ See our portfolio: https://www.dbellcreations.com/project.html\n\n";
-$confirmBody .= "Talk soon,\nDBell Creations\n";
-$confirmBody .= "ðŸ“ž 251-406-2292\n";
-$confirmBody .= "ðŸ“§ dbellcreations@gmail.com\n";
-$confirmBody .= "ðŸŒ https://www.dbellcreations.com\n";
-
-$confirmHeaders  = "From: DBell Creations <{$adminEmail}>\r\n";
-$confirmHeaders .= "Reply-To: {$adminEmail}\r\n";
-$confirmHeaders .= "X-Mailer: PHP/" . phpversion();
-
-@mail($email, $confirmSubject, $confirmBody, $confirmHeaders);
-
-// â”€â”€ Success Response â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-$responseArray = [
-    'type'    => 'success',
-    'message' => "Thank you, {$name}! Your message has been received. We'll be in touch within 24 hours.",
-];
-respond($responseArray);
-
-function respond(array $data): void {
-    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+function respond(array $data, bool $isAjax): void {
+    if ($isAjax) {
         echo json_encode($data);
     } else {
-        // Non-AJAX fallback
         if ($data['type'] === 'success') {
             header('Location: contact.html?success=1');
         } else {
-            echo '<p style="color:red;">' . htmlspecialchars($data['message']) . '</p>';
-            echo '<p><a href="contact.html">â† Go back</a></p>';
+            echo '<p style="color:red;font-family:sans-serif;">' . htmlspecialchars($data['message']) . '</p>';
+            echo '<p><a href="contact.html">&larr; Go back</a></p>';
         }
     }
     exit;
 }
 
+// ── Only accept POST ───────────────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    respond(['type' => 'danger', 'message' => 'Invalid request.'], $isAjax);
+}
 
+// ── Origin / Referer check ─────────────────────────────────────────────────
+$origin  = $_SERVER['HTTP_ORIGIN']  ?? '';
+$referer = $_SERVER['HTTP_REFERER'] ?? '';
+$originOk = false;
+foreach ($allowedOrigins as $allowed) {
+    if ($origin === $allowed || str_starts_with($referer, $allowed)) {
+        $originOk = true;
+        break;
+    }
+}
+// Allow local dev (empty origin/referer) and CLI testing
+if (!$originOk && $origin !== '') {
+    respond(['type' => 'danger', 'message' => 'Request origin not allowed.'], $isAjax);
+}
 
+// ── Honeypot checks ────────────────────────────────────────────────────────
+// Silently succeed to confuse bots — don't reveal the check
+if (!empty($_POST['websiteUrl']) || !empty($_POST['website_url'])) {
+    respond(['type' => 'success', 'message' => "Thank you! We'll be in touch within 24 hours."], $isAjax);
+}
+
+// ── Rate limiting (1 submission per 90 s per IP) ───────────────────────────
+$ip      = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+$rateKey = 'last_submit_' . md5($ip);
+if (isset($_SESSION[$rateKey]) && (time() - $_SESSION[$rateKey]) < 90) {
+    respond(['type' => 'danger', 'message' => 'Please wait a moment before submitting again.'], $isAjax);
+}
+
+// ── Timing check (minimum 3 s, max 7200 s fill time) ──────────────────────
+$startedAt = (int) ($_POST['formStartedAt'] ?? 0);
+if ($startedAt > 0) {
+    $elapsed = time() - $startedAt;
+    if ($elapsed < 3 || $elapsed > 7200) {
+        respond(['type' => 'danger', 'message' => 'Form submission timing invalid. Please try again.'], $isAjax);
+    }
+}
+
+// ── Sanitise inputs (support both naming conventions) ─────────────────────
+function sp(string $key, string $fallback = ''): string {
+    $alt = [
+        'name'             => 'contactName',
+        'email'            => 'contactEmail',
+        'phone'            => 'contactPhone',
+        'message'          => 'contactMessage',
+        'service_interest' => 'contactSubject',
+    ];
+    $val = $_POST[$key] ?? $_POST[$alt[$key] ?? ''] ?? $fallback;
+    return trim(strip_tags((string) $val));
+}
+
+$name            = sp('name');
+$email           = sp('email');
+$phone           = sp('phone');
+$businessName    = trim(strip_tags($_POST['business_name'] ?? ''));
+$message         = sp('message');
+$serviceInterest = sp('service_interest');
+$sourcePage      = trim(strip_tags($_POST['source_page'] ?? 'contact'));
+
+// ── Validation ─────────────────────────────────────────────────────────────
+$errors = [];
+if ($name    === '')  $errors[] = 'Name is required.';
+if ($email   === '')  $errors[] = 'Email is required.';
+if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors[] = 'Please enter a valid email address.';
+}
+if ($message === '')  $errors[] = 'Message is required.';
+
+if ($errors) {
+    respond(['type' => 'danger', 'message' => implode(' ', $errors)], $isAjax);
+}
+
+// ── Record rate-limit timestamp after validation ───────────────────────────
+$_SESSION[$rateKey] = time();
+
+// ── Build emails ───────────────────────────────────────────────────────────
+$safeN  = htmlspecialchars($name,            ENT_QUOTES);
+$safeE  = htmlspecialchars($email,           ENT_QUOTES);
+$safeP  = htmlspecialchars($phone ?: 'Not provided', ENT_QUOTES);
+$safeBN = htmlspecialchars($businessName ?: 'Not provided', ENT_QUOTES);
+$safeSI = htmlspecialchars($serviceInterest ?: 'Not specified', ENT_QUOTES);
+$safeSP = htmlspecialchars($sourcePage,      ENT_QUOTES);
+$safeM  = nl2br(htmlspecialchars($message,   ENT_QUOTES));
+$time   = date('Y-m-d H:i:s T');
+
+$adminSubject = "New Lead: {$name}" . ($businessName ? " ({$businessName})" : '');
+
+$adminHtml = <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;">
+  <h2 style="color:#6222CC;margin-bottom:4px;">New Lead — DBell Creations</h2>
+  <p style="color:#888;margin-top:0;font-size:13px;">{$time}</p>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+    <tr><td style="padding:8px 10px;border-bottom:1px solid #eee;font-weight:bold;width:150px;">Name</td><td style="padding:8px 10px;border-bottom:1px solid #eee;">{$safeN}</td></tr>
+    <tr><td style="padding:8px 10px;border-bottom:1px solid #eee;font-weight:bold;">Email</td><td style="padding:8px 10px;border-bottom:1px solid #eee;"><a href="mailto:{$safeE}" style="color:#6222CC;">{$safeE}</a></td></tr>
+    <tr><td style="padding:8px 10px;border-bottom:1px solid #eee;font-weight:bold;">Phone</td><td style="padding:8px 10px;border-bottom:1px solid #eee;">{$safeP}</td></tr>
+    <tr><td style="padding:8px 10px;border-bottom:1px solid #eee;font-weight:bold;">Business</td><td style="padding:8px 10px;border-bottom:1px solid #eee;">{$safeBN}</td></tr>
+    <tr><td style="padding:8px 10px;border-bottom:1px solid #eee;font-weight:bold;">Service</td><td style="padding:8px 10px;border-bottom:1px solid #eee;">{$safeSI}</td></tr>
+    <tr><td style="padding:8px 10px;border-bottom:1px solid #eee;font-weight:bold;">Source Page</td><td style="padding:8px 10px;border-bottom:1px solid #eee;">{$safeSP}</td></tr>
+  </table>
+  <h3 style="color:#6222CC;">Message</h3>
+  <p style="background:#f9f9f9;padding:16px;border-left:4px solid #6222CC;border-radius:4px;margin:0;">{$safeM}</p>
+</body>
+</html>
+HTML;
+
+$adminText = "New Lead: {$name}" . ($businessName ? " ({$businessName})" : '') . "\n"
+           . "Email: {$email}\nPhone: {$phone}\nService: {$serviceInterest}\n"
+           . "Source: {$sourcePage}\nMessage: {$message}\nTime: {$time}\n";
+
+$confirmSubject = "Thanks for reaching out, {$name}! — DBell Creations";
+
+$confirmHtml = <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;">
+  <h2 style="color:#6222CC;">We got your message, {$safeN}!</h2>
+  <p>Thanks for contacting DBell Creations. I'll get back to you within <strong>24 hours</strong> — usually the same day.</p>
+  <p>While you wait:</p>
+  <ul>
+    <li><a href="https://www.dbellcreations.com/free-mockup.html" style="color:#6222CC;">Request a free homepage mockup</a></li>
+    <li><a href="https://www.dbellcreations.com/project.html" style="color:#6222CC;">See our portfolio</a></li>
+    <li><a href="https://www.dbellcreations.com/pricing.html" style="color:#6222CC;">View our pricing</a></li>
+  </ul>
+  <p style="margin-top:24px;">Talk soon,<br>
+  <strong>DBell Creations</strong><br>
+  <a href="tel:2514062292" style="color:#6222CC;">251-406-2292</a> &nbsp;|&nbsp;
+  <a href="mailto:dbellcreations@gmail.com" style="color:#6222CC;">dbellcreations@gmail.com</a></p>
+</body>
+</html>
+HTML;
+
+$confirmText = "Hi {$name},\n\nThanks for contacting DBell Creations! "
+             . "I'll get back to you within 24 hours.\n\n"
+             . "Talk soon,\nDBell Creations\n251-406-2292\ndbellcreations@gmail.com\n";
+
+// ── Send via MIME multipart ────────────────────────────────────────────────
+function buildMimeEmail(string $textPart, string $htmlPart, string $from, string $replyTo): array {
+    $b = md5(uniqid('', true));
+    $headers  = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: multipart/alternative; boundary=\"{$b}\"\r\n";
+    $headers .= "From: DBell Creations <{$from}>\r\n";
+    $headers .= "Reply-To: {$replyTo}\r\n";
+    $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
+
+    $body  = "--{$b}\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n{$textPart}\r\n";
+    $body .= "--{$b}\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n{$htmlPart}\r\n";
+    $body .= "--{$b}--";
+
+    return [$headers, $body];
+}
+
+[$aH, $aB] = buildMimeEmail($adminText,   $adminHtml,   $adminEmail, "{$name} <{$email}>");
+[$cH, $cB] = buildMimeEmail($confirmText, $confirmHtml, $adminEmail, $adminEmail);
+
+$adminSent = mail($adminEmail, $adminSubject,   $aB, $aH);
+             mail($email,      $confirmSubject, $cB, $cH);
+
+if (!$adminSent) {
+    error_log("DBell contact.php: admin mail failed — from {$email} at {$time}");
+}
+
+// ── Non-AJAX success redirect ──────────────────────────────────────────────
+$redirectSuccess = trim(strip_tags($_POST['redirectSuccess'] ?? ''));
+if (!$isAjax && $redirectSuccess) {
+    // Validate redirect stays on same domain
+    if (preg_match('/^[a-zA-Z0-9_\-\.\/]+\.html(\?[a-zA-Z0-9=&_\-]+)?$/', $redirectSuccess)) {
+        header("Location: {$redirectSuccess}");
+        exit;
+    }
+}
+
+respond([
+    'type'    => 'success',
+    'message' => "Thank you, {$name}! Your message has been received. We'll be in touch within 24 hours.",
+], $isAjax);
