@@ -28,7 +28,7 @@
   </url>
   <url>
     <loc>https://www.dbellcreations.com/project.html</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-05-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -187,6 +187,24 @@
   <url>
     <loc>https://www.dbellcreations.com/case-study-tool-expo.html</loc>
     <lastmod>2026-04-08</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dbellcreations.com/case-study-trash-panda-roll-offs.html</loc>
+    <lastmod>2026-05-02</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dbellcreations.com/case-study-about-the-move.html</loc>
+    <lastmod>2026-05-02</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.dbellcreations.com/case-study-pirates-pit-bbq.html</loc>
+    <lastmod>2026-05-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
