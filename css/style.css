@@ -1512,17 +1512,19 @@ body.scanner-modal-open {
         transform: translateY(-5px);
     }
     .value-card .icon-wrap {
-        width: 58px;
-        height: 58px;
-        background: var(--primary-light);
-        border-radius: var(--radius-sm);
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, rgba(98, 34, 204, 0.10), rgba(98, 34, 204, 0.05));
+        border-radius: 50%;
+        border: 2px solid rgba(98, 34, 204, 0.14);
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 16px;
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         color: var(--primary);
         transition: var(--transition);
+        box-shadow: 0 4px 14px rgba(98, 34, 204, 0.10);
     }
     .value-card:hover .icon-wrap {
         background: var(--primary);
@@ -1996,19 +1998,22 @@ p.section-title.text-center {
     height: 72px;
     background: linear-gradient(135deg, rgba(98, 34, 204, 0.10) 0%, rgba(98, 34, 204, 0.06) 100%);
     border-radius: 50%;
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 16px;
+    margin: 0 auto 16px !important;
     border: 2px solid rgba(98, 34, 204, 0.12);
     transition: var(--transition);
     font-size: 1.6rem !important;
+    color: var(--primary) !important;
+    box-shadow: 0 4px 14px rgba(98, 34, 204, 0.10);
 }
 
 .trust-card:hover i {
     background: linear-gradient(135deg, rgba(251, 165, 4, 0.18) 0%, rgba(251, 165, 4, 0.10) 100%);
     border-color: rgba(251, 165, 4, 0.35);
     color: var(--secondary) !important;
+    box-shadow: 0 6px 18px rgba(251, 165, 4, 0.18);
 }
 
 
@@ -2222,6 +2227,11 @@ p.section-title.text-center {
 
 
 /* ── Who-Is-This-For cards icon ── */
+.who-card .who-icon {
+    display: flex;
+    justify-content: center;
+}
+
 .who-card .who-icon i {
     width: 68px;
     height: 68px;
@@ -2231,9 +2241,11 @@ p.section-title.text-center {
     justify-content: center;
     background: linear-gradient(135deg, rgba(98, 34, 204, 0.10), rgba(98, 34, 204, 0.05));
     border: 2px solid rgba(98, 34, 204, 0.15);
-    margin: 0 auto 12px;
+    margin: 0 auto 16px;
     transition: var(--transition);
     font-size: 1.5rem;
+    color: var(--primary);
+    box-shadow: 0 4px 14px rgba(98, 34, 204, 0.10);
 }
 
 .who-card:hover .who-icon i {
@@ -2241,6 +2253,7 @@ p.section-title.text-center {
     border-color: rgba(251, 165, 4, 0.38);
     transform: scale(1.12) translateY(-4px);
     color: var(--secondary) !important;
+    box-shadow: 0 6px 18px rgba(251, 165, 4, 0.18);
 }
 
 
@@ -2256,16 +2269,19 @@ p.section-title.text-center {
     justify-content: center;
     margin: 0 auto 16px;
     transition: var(--transition);
+    font-size: 1.5rem;
+    color: var(--primary);
+    box-shadow: 0 4px 14px rgba(98, 34, 204, 0.10);
 }
 
 .automation-card:hover .automation-icon {
     background: linear-gradient(135deg, rgba(98, 34, 204, 0.22), rgba(98, 34, 204, 0.12));
     border-color: var(--primary);
-    box-shadow: 0 6px 20px rgba(98, 34, 204, 0.22);
+    box-shadow: 0 8px 24px rgba(98, 34, 204, 0.26);
+    transform: scale(1.08) translateY(-3px);
 }
 
 .automation-card:hover .automation-icon i {
-    transform: scale(1.15) translateY(-3px);
     color: var(--primary) !important;
 }
 
@@ -2974,6 +2990,79 @@ a.navbar-brand:hover .brand-creations {
     .portfolio-section-heading {
         font-size: 0.95rem;
     }
+}
+
+
+/* ========================================
+   SERVICE TILE BARE ICON CIRCLES
+   Handles small "Who We Serve" tiles that
+   have <i> directly inside .service-item
+   (no .service-icon wrapper)
+======================================== */
+.service-item > i {
+    display: inline-flex !important;
+    width: 60px;
+    height: 60px;
+    border-radius: 50% !important;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(98, 34, 204, 0.10), rgba(98, 34, 204, 0.05));
+    border: 2px solid rgba(98, 34, 204, 0.14);
+    font-size: 1.25rem !important;
+    color: var(--primary) !important;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(98, 34, 204, 0.10);
+    margin-bottom: 10px;
+}
+
+.service-item:hover > i {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: #fff !important;
+    transform: scale(1.08) translateY(-2px);
+}
+
+
+/* ========================================
+   REUSABLE ICON CIRCLE UTILITY
+   Add class="icon-circle" to any wrapper
+   div to get a branded circle icon frame
+======================================== */
+.icon-circle {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(98, 34, 204, 0.10), rgba(98, 34, 204, 0.05));
+    border: 2px solid rgba(98, 34, 204, 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.5rem;
+    color: var(--primary);
+    transition: var(--transition);
+    box-shadow: 0 4px 14px rgba(98, 34, 204, 0.10);
+}
+
+.icon-circle-sm {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(98, 34, 204, 0.10), rgba(98, 34, 204, 0.05));
+    border: 2px solid rgba(98, 34, 204, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--primary);
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.icon-circle-secondary {
+    background: linear-gradient(135deg, rgba(251, 165, 4, 0.12), rgba(251, 165, 4, 0.06));
+    border-color: rgba(251, 165, 4, 0.18);
+    color: var(--secondary);
 }
 
 
